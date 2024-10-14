@@ -96,7 +96,7 @@ export const theme = createTheme({
       '#09090B',
     ],
   },
-  fontFamily: 'Inter, sans-serif',
+  fontFamily: 'Inter Regular, sans-serif',
   fontSizes: {
     base: rem(16),
     '2xl': rem(24),
