@@ -133,3 +133,10 @@ dist
 
 # Fonts
 *.woff2
+
+# Images, icons
+*.svg
+*.jpeg
+*.jpg
+*.webp
+*.png

@@ -1,0 +1,19 @@
+.root {
+  border-radius: 20px;
+  padding: rem(16px) rem(40px);
+  height: min-content;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.label {
+  font-size: var(--mantine-font-size-xl);
+  font-weight: 600;
+  color: $mantine-color-foreground-8;
+  line-height: var(--mantine-line-height-heading);
+}
+
+.section {
+  color: $mantine-color-foreground-8;
+}

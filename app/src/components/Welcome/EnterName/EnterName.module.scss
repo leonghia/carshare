@@ -1,0 +1,21 @@
+.input {
+  padding: rem(16px) rem(24px);
+  border-radius: 20px;
+  background-color: $mantine-color-background-1;
+  height: min-content;
+  border: none;
+  font-size: var(--mantine-font-size-lg);
+  font-weight: 400;
+  color: $mantine-color-foreground-7;
+  line-height: var(--mantine-line-height-body);
+
+  &::placeholder {
+    color: $mantine-color-foreground-4;
+  }
+}
+
+.root {
+  max-width: rem(360px);
+  margin-left: auto;
+  margin-right: auto;
+}

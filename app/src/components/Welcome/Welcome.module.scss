@@ -1,0 +1,94 @@
+@mixin figure {
+  height: 50%;
+  width: auto;
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+}
+
+@mixin light {
+  height: 50%;
+  width: auto;
+  aspect-ratio: 0.57;
+  opacity: 0.7;
+  background-color: $mantine-color-primary-flat;
+  filter: blur(100px);
+  position: absolute;
+  top: 50%;
+  border-radius: 9999px;
+  z-index: 0;
+}
+
+.container {
+  background-color: var(--mantine-color-white);
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  .section {
+    & > :not(:first-child) {
+      margin-top: rem(40px);
+    }
+
+    .logo {
+      height: rem(40px);
+      width: auto;
+
+      .image {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .title-and-enter-name {
+      & > :not(:first-child) {
+        margin-top: rem(24px);
+      }
+
+      .title {
+        font-size: var(--mantine-font-size-4xl);
+        font-weight: 600;
+        color: $mantine-color-foreground-9;
+      }
+    }
+  }
+
+  .figure {
+    &--left {
+      @include figure;
+      left: 0;
+      transform: translate(-50%, -50%);
+    }
+
+    &--right {
+      @include figure;
+      right: 0;
+      transform: translate(50%, -50%);
+    }
+
+    &__img {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .light {
+    &--left {
+      @include light;
+      left: 0;
+      transform: translate(-50%, -50%);
+    }
+
+    &--right {
+      @include light;
+      right: 0;
+      transform: translate(50%, -50%);
+    }
+  }
+}
