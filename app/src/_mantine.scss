@@ -1,0 +1,155 @@
+@use 'sass:math';
+
+// Define variables for your breakpoints,
+// values must be the same as in your theme
+$mantine-breakpoint-xs: '36em';
+$mantine-breakpoint-sm: '48em';
+$mantine-breakpoint-md: '62em';
+$mantine-breakpoint-lg: '75em';
+$mantine-breakpoint-xl: '88em';
+
+// Background shades
+$mantine-color-background-0: var(--mantine-color-zinc-0);
+$mantine-color-background-1: var(--mantine-color-zinc-1);
+$mantine-color-background-2: var(--mantine-color-zinc-2);
+$mantine-color-background-3: var(--mantine-color-zinc-3);
+$mantine-color-background-4: var(--mantine-color-zinc-4);
+$mantine-color-background-5: var(--mantine-color-zinc-5);
+$mantine-color-background-6: var(--mantine-color-zinc-6);
+$mantine-color-background-7: var(--mantine-color-zinc-7);
+$mantine-color-background-8: var(--mantine-color-zinc-8);
+$mantine-color-background-9: var(--mantine-color-zinc-9);
+
+// Foreground shades
+$mantine-color-foreground-0: var(--mantine-color-slate-0);
+$mantine-color-foreground-1: var(--mantine-color-slate-1);
+$mantine-color-foreground-2: var(--mantine-color-slate-2);
+$mantine-color-foreground-3: var(--mantine-color-slate-3);
+$mantine-color-foreground-4: var(--mantine-color-slate-4);
+$mantine-color-foreground-5: var(--mantine-color-slate-5);
+$mantine-color-foreground-6: var(--mantine-color-slate-6);
+$mantine-color-foreground-7: var(--mantine-color-slate-7);
+$mantine-color-foreground-8: var(--mantine-color-slate-8);
+$mantine-color-foreground-9: var(--mantine-color-slate-9);
+
+// Success shades
+$mantine-color-success-0: var(--mantine-color-green-0);
+$mantine-color-success-1: var(--mantine-color-green-1);
+$mantine-color-success-2: var(--mantine-color-green-2);
+$mantine-color-success-3: var(--mantine-color-green-3);
+$mantine-color-success-4: var(--mantine-color-green-4);
+$mantine-color-success-5: var(--mantine-color-green-5);
+$mantine-color-success-6: var(--mantine-color-green-6);
+$mantine-color-success-7: var(--mantine-color-green-7);
+$mantine-color-success-8: var(--mantine-color-green-8);
+$mantine-color-success-9: var(--mantine-color-green-9);
+
+// Warning shades
+$mantine-color-warning-0: var(--mantine-color-yellow-0);
+$mantine-color-warning-1: var(--mantine-color-yellow-1);
+$mantine-color-warning-2: var(--mantine-color-yellow-2);
+$mantine-color-warning-3: var(--mantine-color-yellow-3);
+$mantine-color-warning-4: var(--mantine-color-yellow-4);
+$mantine-color-warning-5: var(--mantine-color-yellow-5);
+$mantine-color-warning-6: var(--mantine-color-yellow-6);
+$mantine-color-warning-7: var(--mantine-color-yellow-7);
+$mantine-color-warning-8: var(--mantine-color-yellow-8);
+$mantine-color-warning-9: var(--mantine-color-yellow-9);
+
+// Danger shades
+$mantine-color-danger-0: var(--mantine-color-red-0);
+$mantine-color-danger-1: var(--mantine-color-red-1);
+$mantine-color-danger-2: var(--mantine-color-red-2);
+$mantine-color-danger-3: var(--mantine-color-red-3);
+$mantine-color-danger-4: var(--mantine-color-red-4);
+$mantine-color-danger-5: var(--mantine-color-red-5);
+$mantine-color-danger-6: var(--mantine-color-red-6);
+$mantine-color-danger-7: var(--mantine-color-red-7);
+$mantine-color-danger-8: var(--mantine-color-red-8);
+$mantine-color-danger-9: var(--mantine-color-red-9);
+
+// Flat colors
+$mantine-color-teal-flat: rgba(41, 222, 174, 0.2);
+$mantine-color-slate-flat-300: rgba(203, 213, 225, 0.4);
+$mantine-color-slate-flat-700: rgba(51, 65, 85, 0.4);
+$mantine-color-green-flat: rgba(34, 197, 94, 0.2);
+$mantine-color-red-flat: rgba(239, 68, 68, 0.2);
+$mantine-color-yellow-flat: rgba(234, 179, 8, 0.2);
+$mantine-color-indigo-flat: rgba(99, 102, 241, 0.2);
+$mantine-color-zinc-flat-300: rgba(212, 212, 216, 0.4);
+$mantine-color-zinc-flat-700: rgba(63, 63, 70, 0.4);
+$mantine-color-primary-flat: $mantine-color-teal-flat;
+$mantine-color-background-flat: $mantine-color-zinc-flat-300;
+$mantine-color-success-flat: $mantine-color-green-flat;
+$mantine-color-warning-flat: $mantine-color-yellow-flat;
+$mantine-color-danger-flat: $mantine-color-red-flat;
+
+// Layout colors
+$mantine-color-overlay: rgba(0, 0, 0, 0.3);
+$mantine-color-divider: rgba(17, 17, 17, 0.15);
+
+// Gradients
+@mixin gradient-primary-background {
+  background: linear-gradient(to right, #00ff87, #60efff);
+}
+
+@mixin gradient-primary-foreground {
+  background-image: linear-gradient(to right, #09e83c, #4fdfef);
+  color: transparent;
+  background-clip: text;
+}
+
+@function rem($value) {
+  @return #{math.div(math.div($value, $value * 0 + 1), 16)}rem;
+}
+
+@mixin light {
+  [data-mantine-color-scheme='light'] & {
+    @content;
+  }
+}
+
+@mixin dark {
+  [data-mantine-color-scheme='dark'] & {
+    @content;
+  }
+}
+
+@mixin hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      @content;
+    }
+  }
+}
+
+@mixin smaller-than($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin larger-than($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+// Add direction mixins if you need rtl support
+@mixin rtl {
+  [dir='rtl'] & {
+    @content;
+  }
+}
+
+@mixin ltr {
+  [dir='ltr'] & {
+    @content;
+  }
+}

@@ -1,0 +1,6 @@
+FROM node:20.18.0
+WORKDIR /usr/src/carshare/app
+COPY . .
+RUN corepack enable
+ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+EXPOSE 5173
