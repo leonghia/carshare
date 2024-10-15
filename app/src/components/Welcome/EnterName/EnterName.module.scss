@@ -9,6 +9,19 @@
   color: $mantine-color-foreground-7;
   line-height: var(--mantine-line-height-body);
 
+  @media only screen and (max-width: $mantine-breakpoint-lg) {
+    font-size: var(--mantine-font-size-base);
+  }
+
+  @media only screen and (max-width: $mantine-breakpoint-sm) {
+    padding: rem(16px);
+  }
+
+  @media only screen and (max-width: $mantine-breakpoint-xs) {
+    padding: rem(12px) rem(16px);
+    font-size: var(--mantine-font-size-sm);
+  }
+
   &::placeholder {
     color: $mantine-color-foreground-4;
   }
@@ -18,4 +31,8 @@
   max-width: rem(360px);
   margin-left: auto;
   margin-right: auto;
+
+  @media only screen and (max-width: $mantine-breakpoint-sm) {
+    max-width: 100%;
+  }
 }

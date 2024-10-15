@@ -4,6 +4,19 @@
   position: absolute;
   top: 50%;
   z-index: 1;
+
+  @media only screen and (max-width: $mantine-breakpoint-md) {
+    top: unset;
+    height: 40%;
+  }
+
+  @media only screen and (max-width: $mantine-breakpoint-sm) {
+    height: 36%;
+  }
+
+  @media only screen and (max-width: $mantine-breakpoint-xs) {
+    height: 30%;
+  }
 }
 
 @mixin light {
@@ -17,6 +30,19 @@
   top: 50%;
   border-radius: 9999px;
   z-index: 0;
+
+  @media only screen and (max-width: $mantine-breakpoint-md) {
+    height: 40%;
+    top: unset;
+  }
+
+  @media only screen and (max-width: $mantine-breakpoint-sm) {
+    height: 36%;
+  }
+
+  @media only screen and (max-width: $mantine-breakpoint-xs) {
+    height: 30%;
+  }
 }
 
 .container {
@@ -29,14 +55,42 @@
   position: relative;
   overflow: hidden;
 
+  @media only screen and (max-width: $mantine-breakpoint-sm) {
+    padding: 0 1rem;
+  }
+
   .section {
+    @media only screen and (max-width: $mantine-breakpoint-sm) {
+      width: 100%;
+    }
+
     & > :not(:first-child) {
       margin-top: rem(40px);
+
+      @media only screen and (max-width: $mantine-breakpoint-lg) {
+        margin-top: rem(32px);
+      }
+
+      @media only screen and (max-width: $mantine-breakpoint-sm) {
+        margin-top: rem(24px);
+      }
     }
 
     .logo {
       height: rem(40px);
       width: auto;
+
+      @media only screen and (max-width: $mantine-breakpoint-lg) {
+        height: rem(30px);
+      }
+
+      @media only screen and (max-width: $mantine-breakpoint-sm) {
+        height: rem(24px);
+      }
+
+      @media only screen and (max-width: $mantine-breakpoint-xs) {
+        height: rem(20px);
+      }
 
       .image {
         height: 100%;
@@ -48,27 +102,54 @@
     .title-and-enter-name {
       & > :not(:first-child) {
         margin-top: rem(24px);
+
+        @media only screen and (max-width: $mantine-breakpoint-sm) {
+          margin-top: rem(16px);
+        }
       }
 
       .title {
         font-size: var(--mantine-font-size-4xl);
         font-weight: 600;
         color: $mantine-color-foreground-9;
+        text-align: center;
+
+        @media only screen and (max-width: $mantine-breakpoint-lg) {
+          font-size: var(--mantine-font-size-3xl);
+        }
+
+        @media only screen and (max-width: $mantine-breakpoint-sm) {
+          font-size: var(--mantine-font-size-xl);
+        }
+
+        @media only screen and (max-width: $mantine-breakpoint-xs) {
+          font-size: var(--mantine-font-size-lg);
+        }
       }
     }
   }
 
   .figure {
     &--left {
-      @include figure;
       left: 0;
       transform: translate(-50%, -50%);
+      @include figure;
+
+      @media only screen and (max-width: $mantine-breakpoint-md) {
+        bottom: 0;
+        transform: translate(-50%, 0);
+      }
     }
 
     &--right {
-      @include figure;
       right: 0;
       transform: translate(50%, -50%);
+      @include figure;
+
+      @media only screen and (max-width: $mantine-breakpoint-md) {
+        top: 0;
+        transform: translate(50%, 0);
+      }
     }
 
     &__img {
@@ -80,15 +161,25 @@
 
   .light {
     &--left {
-      @include light;
       left: 0;
       transform: translate(-50%, -50%);
+      @include light;
+
+      @media only screen and (max-width: $mantine-breakpoint-md) {
+        bottom: 0;
+        transform: translate(-50%, 0);
+      }
     }
 
     &--right {
-      @include light;
       right: 0;
       transform: translate(50%, -50%);
+      @include light;
+
+      @media only screen and (max-width: $mantine-breakpoint-md) {
+        top: 0;
+        transform: translate(50%, 0);
+      }
     }
   }
 }

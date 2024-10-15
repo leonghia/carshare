@@ -117,4 +117,12 @@ export const theme = createTheme({
     to: '#60efff',
     deg: 90,
   },
+  breakpoints: {
+    xs: '23.375em', // 374px
+    sm: '39.9375em', // 639px
+    md: '47.9375em', // 767px
+    lg: '63.9375em', // 1023px
+    xl: '79.9375em', // 1279px
+    '2xl': '95.9375em', // 1535px
+  },
 });

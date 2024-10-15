@@ -11,7 +11,7 @@ export default function NextButton({onClick}: {onClick: (this: HTMLDivElement, e
     <Button 
     ref={ref}
     variant="gradient"
-    rightSection={<TbCircleArrowRight size={24} />}
+    rightSection={<TbCircleArrowRight />}
     classNames={{
         root: classes.root,
         label: classes.label,
