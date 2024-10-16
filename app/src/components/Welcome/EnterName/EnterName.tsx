@@ -13,6 +13,7 @@ export default function EnterName(props: GetInputPropsReturnType) {
             classNames={{
                 input: classes.input,
                 root: classes.root,
+                wrapper: classes.wrapper,
                 error: classes.error,
             }}
 

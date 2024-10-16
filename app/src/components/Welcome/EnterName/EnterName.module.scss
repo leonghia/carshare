@@ -1,12 +1,15 @@
 .input {
   padding: rem(16px) rem(24px);
   border-radius: 20px;
-  background-color: $mantine-color-background-1;
   height: min-content;
   font-size: var(--mantine-font-size-lg);
   font-weight: 400;
   color: $mantine-color-foreground-7;
   line-height: var(--mantine-line-height-body);
+
+  @include light {
+    background-color: $mantine-color-background-1;
+  }
 
   @include smaller-than($mantine-breakpoint-lg) {
     font-size: var(--mantine-font-size-base);
@@ -33,6 +36,15 @@
 
   @include smaller-than($mantine-breakpoint-sm) {
     max-width: 100%;
+  }
+}
+
+.wrapper {
+  --input-bd: $mantine-color-background-1;
+  
+  @include light {
+    &[data-variant='default'] {
+    }
   }
 }
 
