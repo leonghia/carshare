@@ -2,19 +2,18 @@ import classes from "./EnterName.module.scss";
 
 import { useState } from "react";
 import { TextInput } from "@mantine/core";
+import { GetInputPropsReturnType } from "@mantine/form/lib/types";
 
-export default function EnterName() {
-    const [value, setValue] = useState("");
+export default function EnterName(props: GetInputPropsReturnType) {
 
     return (
         <TextInput
-            value={value}
-            onChange={(event) => setValue(event.currentTarget.value)}
+            {...props}
             placeholder="Nhập tên của bạn..."
-
             classNames={{
                 input: classes.input,
                 root: classes.root,
+                error: classes.error,
             }}
 
         />

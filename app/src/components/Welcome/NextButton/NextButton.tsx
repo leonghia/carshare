@@ -1,15 +1,13 @@
 import { Button } from '@mantine/core';
 import classes from "./NextButton.module.scss";
 import {TbCircleArrowRight} from "react-icons/tb";
-import {useEventListener} from "@mantine/hooks";
 import { MouseEventHandler } from 'react';
 
-export default function NextButton({onClick}: {onClick: (this: HTMLDivElement, ev: MouseEvent) => any}) {
-    const ref = useEventListener("click", onClick);
+export default function NextButton({onClick}: {onClick: MouseEventHandler<HTMLButtonElement>}) {
 
     return (
     <Button 
-    ref={ref}
+    onClick={onClick}
     variant="gradient"
     rightSection={<TbCircleArrowRight />}
     classNames={{

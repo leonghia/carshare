@@ -145,13 +145,13 @@ $mantine-color-divider: rgba(17, 17, 17, 0.15);
 }
 
 @mixin smaller-than($breakpoint) {
-  @media (max-width: $breakpoint) {
+  @media only screen and (max-width: $breakpoint) {
     @content;
   }
 }
 
 @mixin larger-than($breakpoint) {
-  @media (min-width: $breakpoint) {
+  @media only screen and (min-width: $breakpoint) {
     @content;
   }
 }
