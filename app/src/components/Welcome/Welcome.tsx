@@ -1,36 +1,75 @@
+import { useState } from 'react';
 import classes from './Welcome.module.scss';
+import { useField } from '@mantine/form';
+import { useLocalStorage } from '@mantine/hooks';
+import helloIllustrator from '../../assets/images/hello_illustrator.webp';
 import logo from '../../assets/images/logo.svg';
 import leftSideIllustrators from '../../assets/images/side_illustrators_1.webp';
 import rightSideIllustrators from '../../assets/images/side_illustrators_2.webp';
 import EnterName from './EnterName/EnterName';
+import GetStartedButton from './GetStartedButton/GetStartedButton';
 import NextButton from './NextButton/NextButton';
-import { useField } from '@mantine/form';
 
 export default function Welcome() {
+  const [isNameValid, setIsNameValid] = useState(false);
+  const [name, setName] = useLocalStorage({
+    key: 'user_name',
+    defaultValue: '',
+  });
+
   const field = useField({
     initialValue: '',
     validate: (value) => (value.trim().length == 0 ? 'Tên không được để trống' : null),
   });
 
+  const handleClickNext = async () => {
+    const node = await field.validate();
+    if (node) return;
+    setIsNameValid(true);
+    // Save name to localStorage
+    setName(field.getValue());
+  };
+
+  const logoMarkup = (
+    <figure className={classes.logo}>
+      <img src={logo} alt="CarShare logo" />
+    </figure>
+  );
+
   return (
     // Container
     <div className={classes.container}>
-      {/* Section */}
-      <div className={classes.section}>
-        {/* Logo */}
-        <figure className={classes.logo}>
-          <img className={classes.image} src={logo} alt="CarShare logo" />
-        </figure>
-        {/* Title & Enter name */}
-        <div className={classes['title-and-enter-name']}>
-          {/* Title */}
-          <h1 className={classes.title}>Chúng mình có thể gọi bạn là?</h1>
-          {/* Enter name */}
-          <EnterName {...field.getInputProps()} />
+      {!isNameValid ? (
+        <div className={classes['section--enter-name']}>
+          {/* Logo */}
+          {logoMarkup}
+          {/* Title & Enter name */}
+          <div className={classes['title-and-enter-name']}>
+            {/* Title */}
+            <h1 className={classes.title}>Chúng mình có thể gọi bạn là?</h1>
+            {/* Enter name */}
+            <EnterName {...field.getInputProps()} />
+          </div>
+          {/* Next button */}
+          <NextButton onClick={handleClickNext} />
         </div>
-        {/* Button */}
-        <NextButton onClick={field.validate}  />
-      </div>
+      ) : (
+        <div className={classes['section--hello']}>
+          {/* Logo */}
+          {logoMarkup}
+          {/* Illustrator */}
+          <figure className={classes['hello-illustrator']}>
+            <img src={helloIllustrator} alt="Hello illustrator" />
+          </figure>
+          {/* Hello text & Welcome text */}
+          <div className={classes['hello-and-welcome-text']}>
+            <p className={classes['hello-text']}>Chào {field.getValue()}!</p>
+            <h1 className={classes['welcome-text']}>Chào mừng bạn đến với CarShare</h1>
+          </div>
+          {/* Get started button */}
+          <GetStartedButton />
+        </div>
+      )}
       {/* Left side illustrators */}
       <figure className={classes['figure--left']}>
         <img
