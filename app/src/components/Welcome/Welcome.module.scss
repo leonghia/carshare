@@ -59,7 +59,8 @@
     padding: 0 1rem;
   }
 
-  .section {
+  .section--enter-name,
+  .section--hello {
     @include smaller-than($mantine-breakpoint-sm) {
       width: 100%;
     }
@@ -79,6 +80,7 @@
     .logo {
       height: rem(40px);
       width: auto;
+      text-align: center;
 
       @include smaller-than($mantine-breakpoint-lg) {
         height: rem(30px);
@@ -92,13 +94,15 @@
         height: rem(20px);
       }
 
-      .image {
+      img {
         height: 100%;
-        width: 100%;
+        width: auto;
         object-fit: contain;
       }
     }
+  }
 
+  .section--enter-name {
     .title-and-enter-name {
       & > :not(:first-child) {
         margin-top: rem(24px);
@@ -113,6 +117,87 @@
         font-weight: 600;
         color: $mantine-color-foreground-9;
         text-align: center;
+
+        @include smaller-than($mantine-breakpoint-lg) {
+          font-size: var(--mantine-font-size-3xl);
+        }
+
+        @include smaller-than($mantine-breakpoint-sm) {
+          font-size: var(--mantine-font-size-xl);
+        }
+
+        @include smaller-than($mantine-breakpoint-xs) {
+          font-size: var(--mantine-font-size-lg);
+        }
+      }
+    }
+  }
+
+  .section--hello {
+    .hello-illustrator {
+      width: rem(260px);
+      height: rem(260px);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+
+      @include smaller-than($mantine-breakpoint-lg) {
+        width: rem(200px);
+        height: rem(200px);
+      }
+
+      @include smaller-than($mantine-breakpoint-sm) {
+        width: rem(150px);
+        height: rem(150px);
+      }
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        width: rem(120px);
+        height: rem(120px);
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .hello-and-welcome-text {
+      & > :not(:first-child) {
+        margin-top: rem(16px);
+
+        @include smaller-than($mantine-breakpoint-sm) {
+          margin-top: rem(8px);
+        }
+      }
+
+      .hello-text {
+        font-size: var(--mantine-font-size-3xl);
+        font-weight: 300;
+        color: $mantine-color-foreground-5;
+        text-align: center;
+        line-height: var(--mantine-line-height-heading);
+
+        @include smaller-than($mantine-breakpoint-lg) {
+          font-size: var(--mantine-font-size-2xl);
+        }
+
+        @include smaller-than($mantine-breakpoint-sm) {
+          font-size: var(--mantine-font-size-lg);
+        }
+
+        @include smaller-than($mantine-breakpoint-xs) {
+          font-size: var(--mantine-font-size-base);
+        }
+      }
+
+      .welcome-text {
+        font-size: var(--mantine-font-size-4xl);
+        font-weight: 600;
+        color: $mantine-color-foreground-9;
+        text-align: center;
+        line-height: var(--mantine-line-height-heading);
 
         @include smaller-than($mantine-breakpoint-lg) {
           font-size: var(--mantine-font-size-3xl);

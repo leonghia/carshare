@@ -6,10 +6,8 @@
   font-weight: 400;
   color: $mantine-color-foreground-7;
   line-height: var(--mantine-line-height-body);
-
-  @include light {
-    background-color: $mantine-color-background-1;
-  }
+  background-color: $mantine-color-background-1;
+  border-width: rem(2px);
 
   @include smaller-than($mantine-breakpoint-lg) {
     font-size: var(--mantine-font-size-base);
@@ -40,10 +38,9 @@
 }
 
 .wrapper {
-  --input-bd: $mantine-color-background-1;
-  
-  @include light {
-    &[data-variant='default'] {
+  &[data-variant='default'] {
+    @include light {
+      --input-bd: #{$mantine-color-background-1};
     }
   }
 }

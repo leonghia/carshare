@@ -1,6 +1,4 @@
 import classes from "./EnterName.module.scss";
-
-import { useState } from "react";
 import { TextInput } from "@mantine/core";
 import { GetInputPropsReturnType } from "@mantine/form/lib/types";
 
