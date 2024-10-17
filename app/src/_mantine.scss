@@ -103,6 +103,16 @@ $mantine-color-danger-flat: $mantine-color-red-flat;
 $mantine-color-overlay: rgba(0, 0, 0, 0.3);
 $mantine-color-divider: rgba(17, 17, 17, 0.15);
 
+// Font weights
+$mantine-font-extralight: 200;
+$mantine-font-light: 300;
+$mantine-font-normal: 400;
+$mantine-font-medium: 500;
+$mantine-font-semibold: 600;
+$mantine-font-bold: 700;
+$mantine-font-extrabold: 800;
+$mantine-font-black: 900;
+
 // Gradients
 @mixin gradient-primary-background {
   background: linear-gradient(to right, #00ff87, #60efff);
