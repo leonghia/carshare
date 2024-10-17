@@ -182,6 +182,21 @@ $mantine-font-black: 900;
   }
 }
 
+// Input border
+@mixin border-input-light($color, $isDark: false) {
+  &[data-variant='default'] {
+    @if $isDark {
+      @include dark {
+        --input-bd: #{$color};
+      }
+    } @else {
+      @include light {
+        --input-bd: #{$color};
+      }
+    }
+  }
+}
+
 // CSS reset
 * {
   margin: 0;
