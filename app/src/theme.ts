@@ -6,15 +6,15 @@ export const theme = createTheme({
   colors: {
     teal: [
       '#EAFEF9',
-      '#C0FDEC',
-      '#97FBE0',
-      '#6DF9D4',
+      '#D5FDF3',
+      '#ABFCE6',
+      '#82FADA',
+      '#58F9CD',
       '#2EF7C1',
       '#29DEAE',
       '#20AD87',
       '#177C61',
       '#0E4A3A',
-      '#093127',
       '#051913',
     ],
     slate: [
@@ -140,4 +140,5 @@ export const theme = createTheme({
     'xl-x':
       '1.25rem 0 1.5625rem -2rem rgb(70 76 136 / 0.1), 0.5rem 0 0.625rem -0.375rem rgb(70 76 136 / 0.1)',
   },
+  cursorType: 'pointer',
 });
