@@ -6,7 +6,6 @@ export default function NextButton({ onClick }: { onClick: MouseEventHandler<HTM
   return (
     <Button
       onClick={onClick}
-      variant="gradient"
       classNames={{
         root: classes.root,
         label: classes.label,
