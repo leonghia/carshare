@@ -1,0 +1,35 @@
+.input {
+  background-color: $mantine-color-background-1;
+  border-radius: 20px;
+  padding: rem(12px) rem(16px);
+  height: min-content;
+  font-size: var(--mantine-font-size-base);
+  border-width: rem(2px);
+}
+
+.placeholder {
+  font-weight: $mantine-font-light;
+  color: $mantine-color-foreground-5;
+}
+
+.wrapper {
+  @include border-input-light($mantine-color-background-1);
+}
+
+.section {
+  &[data-position='right'] {
+    right: rem(12px);
+
+    svg {
+      width: rem(24px);
+      height: rem(24px);
+      color: $mantine-color-foreground-5;
+    }
+  }
+}
+
+.popover-dropdown {
+  border: none;
+  box-shadow: var(--mantine-shadow-xl);
+  border-radius: 16px;
+}

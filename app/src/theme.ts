@@ -6,15 +6,15 @@ export const theme = createTheme({
   colors: {
     teal: [
       '#EAFEF9',
-      '#C0FDEC',
-      '#97FBE0',
-      '#6DF9D4',
+      '#D5FDF3',
+      '#ABFCE6',
+      '#82FADA',
+      '#58F9CD',
       '#2EF7C1',
       '#29DEAE',
       '#20AD87',
       '#177C61',
       '#0E4A3A',
-      '#093127',
       '#051913',
     ],
     slate: [
@@ -125,4 +125,20 @@ export const theme = createTheme({
     xl: '79.9375em', // 1279px
     '2xl': '95.9375em', // 1535px
   },
+  shadows: {
+    sm: '0 0.0625rem 2rem 0 rgb(70 76 136 / 0.05)',
+    'sm-x': '0.0625rem 0 2rem 0 rgb(70 76 136 / 0.05)',
+    base: '0 0.0625rem 0.1875rem 0 rgba(70 76 136 / 0.1), 0 0.0625rem 0.125rem -0.0625rem rgba(70 76 136 / 0.1)',
+    md: '0 0.25rem 0.375rem -0.0625rem rgba(70 76 136 / 0.1), 0 0.125rem 0.25rem -0.125rem rgba(70 76 136 / 0.1)',
+    'md-x':
+      '0.25rem 0 0.375rem -0.0625rem rgb(70 76 136 / 0.1), 0.125rem 0 0.25rem -0.125rem rgb(70 76 136 / 0.1)',
+    lg: '0 0.625rem 0.9375rem -0.1875rem rgba(70 76 136 / 0.1), 0 0.25rem 0.375rem -0.25rem rgba(70 76 136 / 0.1)',
+    xl: '0 1.25rem 1.5625rem -0.3125rem rgb(70 76 136 / 0.1), 0 0.5rem 0.625rem -0.375rem rgb(70 76 136 / 0.1)',
+    '2xl': '0 1.5625rem 3.125rem 0 rgb(70 76 136 / 0.25)',
+    'xl-reverse':
+      '0 -1.25rem 1.5625rem -0.3125rem rgb(70 76 136 / 0.1), 0 -0.5rem 0.625rem -0.375rem rgb(70 76 136 / 0.1)',
+    'xl-x':
+      '1.25rem 0 1.5625rem -2rem rgb(70 76 136 / 0.1), 0.5rem 0 0.625rem -0.375rem rgb(70 76 136 / 0.1)',
+  },
+  cursorType: 'pointer',
 });
