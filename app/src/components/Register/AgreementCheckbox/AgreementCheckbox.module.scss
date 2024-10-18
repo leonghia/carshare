@@ -1,0 +1,37 @@
+.root {
+  --checkbox-size: rem(24px);
+  --checkbox-icon-color: #{$mantine-color-foreground-8};
+
+  .input {
+    border-radius: 8px;
+    border-color: transparent;
+    transition: background-color 0.3s ease-out;
+
+    &:checked {
+      background-color: var(--mantine-primary-color-5);
+    }
+  }
+
+  .icon {
+    width: 60%;
+    height: 60%;
+    // transition: opacity 0.1s ease-out;
+  }
+
+  .labelWrapper {
+    font-size: var(--mantine-font-size-base);
+    font-weight: $mantine-font-medium;
+    line-height: var(--mantine-line-height-body);
+    color: $mantine-color-foreground-6;
+
+    .label {
+      padding-inline-start: rem(12px);
+    }
+  }
+}
+
+:where([data-mantine-color-scheme='light']) {
+  .input {
+    background-color: $mantine-color-background-2;
+  }
+}

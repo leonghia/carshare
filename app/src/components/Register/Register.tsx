@@ -3,7 +3,9 @@ import classes from './Register.module.scss';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { PasswordInput, TextInput } from '@mantine/core';
 import registerSideImage784w from '../../assets/images/register_side_image_784w.webp';
+import AgreementCheckbox from './AgreementCheckbox/AgreementCheckbox';
 import PublishedDatePickerInput from './PublishedDatePickerInput/PublishedDatePickerInput';
+import SubmitButton from './SubmitButton/SubmitButton';
 
 function VisibilityToggleIcon({ reveal }: { reveal: boolean }) {
   return reveal ? <EyeSlash variant="Bold" /> : <Eye variant="Bold" />;
@@ -114,12 +116,12 @@ export default function Register() {
             </div>
             {/* Retype password */}
             <div className={classes['input-group']}>
-              <label htmlFor="password" className={classes.label}>
+              <label htmlFor="retype_password" className={classes.label}>
                 Nhập lại mật khẩu <span className={classes.asterisk}>*</span>
               </label>
               <PasswordInput
                 placeholder="Nhập lại mật khẩu mà bạn đã điền ở trên..."
-                id="password"
+                id="retype_password"
                 classNames={{
                   wrapper: classes['wrapper--password'],
                   input: classes['input--password'],
@@ -129,8 +131,11 @@ export default function Register() {
                 visibilityToggleIcon={VisibilityToggleIcon}
               />
             </div>
-            {/* Submit button */}
+            {/* Agreement checkbox */}
+            <AgreementCheckbox />
           </form>
+          {/* Submit button */}
+          <SubmitButton />
         </section>
         {/* Side image */}
         <figure className={classes['side-image']}>

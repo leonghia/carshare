@@ -1,10 +1,14 @@
 .input {
   background-color: $mantine-color-background-1;
   border-radius: 20px;
-  padding: rem(12px) rem(16px);
+  // padding: rem(12px) rem(16px);
   height: min-content;
   font-size: var(--mantine-font-size-base);
+  line-height: var(--mantine-line-height-body);
   border-width: rem(2px);
+  padding-inline-start: rem(16px);
+  padding-bottom: rem(12px);
+  padding-top: rem(12px);
 }
 
 .placeholder {
@@ -14,15 +18,14 @@
 
 .wrapper {
   @include border-input-light($mantine-color-background-1);
+  --input-height: calc(3.25rem * var(--mantine-scale));
 }
 
 .section {
   &[data-position='right'] {
-    right: rem(12px);
-
     svg {
-      width: rem(24px);
-      height: rem(24px);
+      width: rem(22px);
+      height: rem(22px);
       color: $mantine-color-foreground-5;
     }
   }

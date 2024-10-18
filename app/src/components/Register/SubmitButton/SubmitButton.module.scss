@@ -1,0 +1,46 @@
+.container {
+  .root {
+    border-radius: 20px;
+    padding-top: rem(16px);
+    padding-bottom: rem(16px);
+    font-weight: $mantine-font-semibold;
+    line-height: var(--mantine-line-height-body);
+    font-size: var(--mantine-font-size-lg);
+    width: 100%;
+    --button-height: min-content;
+    overflow: visible;
+    border: none;
+
+    @include gradientAnimation(#00ff87, #60efff, #00e67a, #4fdfef, 0.3s) {
+      filter: blur(0);
+      border-radius: 20px;
+      top: 100%;
+    }
+
+    .label {
+      color: $mantine-color-foreground-8;
+    }
+  }
+
+  .lower {
+    margin-top: rem(12px);
+    font-size: var(--mantine-font-size-base);
+    line-height: var(--mantine-line-height-body);
+    text-align: center;
+
+    span {
+      font-weight: $mantine-font-normal;
+      color: $mantine-color-foreground-5;
+    }
+
+    .rootAnchor {
+      font-weight: $mantine-font-semibold;
+      color: var(--mantine-primary-color-6);
+      transition: color 0.3s ease-out;
+
+      &:hover {
+        color: var(--mantine-primary-color-7);
+      }
+    }
+  }
+}

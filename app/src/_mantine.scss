@@ -118,13 +118,37 @@ $mantine-font-black: 900;
 
 // Gradients
 @mixin gradient-primary-background {
-  background: linear-gradient(to right, #00ff87, #60efff);
+  background-image: linear-gradient(to right, #00ff87, #60efff);
 }
 
-@mixin gradient-primary-foreground {
-  background-image: linear-gradient(to right, #09e83c, #4fdfef);
-  color: transparent;
-  background-clip: text;
+@mixin gradient-primary-dimmed {
+  background-image: linear-gradient(to right, #00e67a, #4fdfef);
+}
+
+@mixin gradientAnimation($startBase, $endBase, $startEffect, $endEffect, $transTime) {
+  background-size: 100%;
+  background-image: linear-gradient(to right, $startBase, $endBase);
+  position: relative;
+  z-index: 100;
+  &:before {
+    background-image: linear-gradient(to right, $startEffect, $endEffect);
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    z-index: -100;
+    transition: opacity $transTime ease-out;
+    @content;
+  }
+  &:hover {
+    &:before {
+      opacity: 1;
+    }
+  }
 }
 
 @function rem($value) {

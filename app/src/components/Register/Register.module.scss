@@ -97,7 +97,7 @@
 
           .wrapper--password {
             --input-radius: 20px;
-            --input-height: rem(48px);
+            --input-height: rem(52px);
             --input-padding-inline-start: rem(16px);
 
             &[data-variant='default'] {
@@ -118,12 +118,13 @@
 
             .input--password {
               border-width: rem(2px);
+              line-height: var(--mantine-line-height-body);
+              font-size: var(--mantine-font-size-base);
+              color: $mantine-color-foreground-7;
 
               .inner-input--password {
                 &::placeholder {
                   font-weight: $mantine-font-light;
-                  font-size: var(--mantine-font-size-base);
-                  line-height: var(--mantine-line-height-body);
                   color: $mantine-color-foreground-5;
                 }
               }
