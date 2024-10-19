@@ -28,10 +28,14 @@
       padding-inline-start: rem(12px);
     }
   }
+
+  .error {
+    @include inputError;
+  }
 }
 
 :where([data-mantine-color-scheme='light']) {
   .input {
-    background-color: $mantine-color-background-2;
+    background-color: $mantine-color-background-1;
   }
 }

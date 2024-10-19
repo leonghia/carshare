@@ -5,6 +5,7 @@ export default function SubmitButton() {
   return (
     <div className={classes.container}>
       <Button
+        type="submit"
         classNames={{
           root: classes.root,
           label: classes.label,

@@ -1,0 +1,89 @@
+.form {
+  & > :not(:first-child) {
+    margin-top: rem(32px);
+  }
+
+  .input-group {
+    & > :nth-child(2) {
+      margin-top: rem(12px);
+    }
+
+    .label {
+      font-size: var(--mantine-font-size-lg);
+      font-weight: $mantine-font-semibold;
+      color: $mantine-color-foreground-7;
+      display: block;
+
+      .asterisk {
+        color: $mantine-color-danger;
+      }
+    }
+
+    .root {
+      .wrapper {
+        margin-bottom: rem(12px);
+
+        @include inputWrapperDefaultLight {
+          .input--phone-number:focus,
+          .input--phone-number:focus-within {
+            background-color: var(--mantine-color-white);
+          }
+        }
+
+        .section--phone-number {
+          color: $mantine-color-foreground-7;
+          font-weight: $mantine-font-normal;
+          font-size: var(--mantine-font-size-base);
+          left: rem(20px);
+          line-height: var(--mantine-line-height-body);
+        }
+
+        .input {
+          @include inputInput;
+
+          &--phone-number {
+            @include inputInput;
+            padding-left: rem(64px);
+          }
+        }
+      }
+
+      .error {
+        @include inputError;
+      }
+    }
+  }
+
+  .national-id-n-published-date {
+    display: grid;
+    gap: rem(24px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.passwordInputWrapper {
+  --input-radius: 20px;
+  --input-height: rem(52px);
+  --input-padding-inline-start: rem(16px);
+  @include passwordInputWrapper;
+
+  .passwordInputInput {
+    @include passwordInputInput;
+
+    .passwordInputInnerInput {
+      @include passwordInputInnerInput;
+    }
+  }
+
+  .visibility-toggle {
+    svg {
+      width: rem(24px);
+      height: rem(24px);
+      color: $mantine-color-foreground-5;
+    }
+  }
+}
+
+.passwordInputError {
+  @include inputError;
+}

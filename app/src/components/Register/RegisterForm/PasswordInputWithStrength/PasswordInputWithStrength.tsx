@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { Key, useState } from 'react';
 import classes from './PasswordInputWithStrength.module.scss';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Eye, EyeSlash } from 'iconsax-react';
-import { Box, PasswordInput, Popover, Progress, rem } from '@mantine/core';
+import { PasswordInput, Popover, Progress, rem } from '@mantine/core';
 
 function VisibilityToggleIcon({ reveal }: { reveal: boolean }) {
   return reveal ? <EyeSlash variant="Bold" /> : <Eye variant="Bold" />;
@@ -28,7 +28,7 @@ const requirements = [
   { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: 'Bao gồm một ký tự đặc biệt' },
 ];
 
-const getStrength = (password: string) => {
+export const getPasswordStrength = (password: string) => {
   let multiplier = password.length > 5 ? 0 : 1;
 
   requirements.forEach((requirement) => {
@@ -40,16 +40,24 @@ const getStrength = (password: string) => {
   return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 10);
 };
 
-export default function PasswordInputWithStrength() {
+export default function PasswordInputWithStrength({
+  keyValue,
+  password,
+  ...props
+}: {
+  keyValue: Key;
+  password: string;
+}) {
   const [popoverOpened, setPopoverOpened] = useState(false);
-  const [value, setValue] = useState('');
+  const strength = getPasswordStrength(password);
 
   const checks = requirements.map((requirement, index) => (
-    <PasswordRequirement key={index} label={requirement.label} meets={requirement.re.test(value)} />
+    <PasswordRequirement
+      key={index}
+      label={requirement.label}
+      meets={requirement.re.test(password)}
+    />
   ));
-
-  const strength = getStrength(value);
-  const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
   return (
     <Popover
@@ -66,6 +74,7 @@ export default function PasswordInputWithStrength() {
           onBlurCapture={() => setPopoverOpened(false)}
         >
           <PasswordInput
+            key={keyValue}
             placeholder="Nhập mật khẩu bạn muốn đặt..."
             id="password"
             classNames={{
@@ -73,10 +82,10 @@ export default function PasswordInputWithStrength() {
               input: classes.input,
               innerInput: classes.innerInput,
               visibilityToggle: classes.visibilityToggle,
+              error: classes.error,
             }}
             visibilityToggleIcon={VisibilityToggleIcon}
-            value={value}
-            onChange={(event) => setValue(event.currentTarget.value)}
+            {...props}
           />
         </div>
       </Popover.Target>
@@ -87,7 +96,7 @@ export default function PasswordInputWithStrength() {
           classNames={{ root: classes.progressRoot, section: classes.progressSection }}
           data-strength={strength === 100 ? 'strong' : strength > 50 ? 'medium' : 'weak'}
         />
-        <PasswordRequirement label="Độ dài tối thiểu 6 ký tự" meets={value.length > 5} />
+        <PasswordRequirement label="Độ dài tối thiểu 6 ký tự" meets={password.length > 5} />
         {checks}
       </Popover.Dropdown>
     </Popover>

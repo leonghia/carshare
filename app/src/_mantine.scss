@@ -221,6 +221,87 @@ $mantine-font-black: 900;
   }
 }
 
+@mixin inputWrapperDefaultLight {
+  &[data-variant='default'] {
+    @include light {
+      .input:focus,
+      .input:focus-within {
+        background-color: var(--mantine-color-white);
+      }
+
+      @content;
+    }
+  }
+}
+
+@mixin passwordInputWrapper {
+  margin-bottom: rem(12px);
+}
+
+@mixin passwordInputInput {
+  border: rem(2px) solid $mantine-color-background-1;
+  background-color: $mantine-color-background-1;
+  border-radius: 20px;
+  padding: rem(12px) rem(16px);
+  font-size: var(--mantine-font-size-base);
+  color: $mantine-color-foreground-7;
+  font-weight: $mantine-font-normal;
+  line-height: var(--mantine-line-height-body);
+
+  &[data-error='true'] {
+    border: rem(2px) solid $mantine-color-danger-4;
+    background-color: $mantine-color-danger-0;
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: var(--mantine-primary-color-6);
+    background-color: var(--mantine-color-white);
+  }
+}
+
+@mixin passwordInputInnerInput {
+  &::placeholder {
+    font-weight: $mantine-font-light;
+    color: $mantine-color-foreground-5;
+  }
+}
+
+@mixin inputInput {
+  border-radius: 20px;
+  padding: rem(12px) rem(16px);
+  font-size: var(--mantine-font-size-base);
+  color: $mantine-color-foreground-7;
+  font-weight: $mantine-font-normal;
+  height: min-content;
+  line-height: var(--mantine-line-height-body);
+  border: rem(2px) solid $mantine-color-background-1;
+  background-color: $mantine-color-background-1;
+
+  &[data-error='true'] {
+    border: rem(2px) solid $mantine-color-danger-4;
+    background-color: $mantine-color-danger-0;
+  }
+
+  &:focus,
+  &:focus-within {
+    border: rem(2px) solid var(--mantine-primary-color-6);
+    background-color: var(--mantine-color-white);
+  }
+
+  &::placeholder {
+    font-weight: $mantine-font-light;
+    color: $mantine-color-foreground-5;
+  }
+}
+
+@mixin inputError {
+  color: $mantine-color-danger;
+  font-size: var(--mantine-font-size-sm);
+  line-height: var(--mantine-line-height-body);
+  font-weight: $mantine-font-normal;
+}
+
 // CSS reset
 * {
   margin: 0;

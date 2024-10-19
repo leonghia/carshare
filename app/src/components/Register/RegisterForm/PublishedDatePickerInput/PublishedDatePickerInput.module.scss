@@ -1,0 +1,43 @@
+.root {
+  .input {
+    @include inputInput;
+  }
+
+  .placeholder {
+    font-weight: $mantine-font-light;
+    color: $mantine-color-foreground-5;
+  }
+
+  .wrapper {
+    --input-height: calc(3.25rem * var(--mantine-scale));
+  }
+
+  .section {
+    &[data-position='right'] {
+      svg {
+        width: rem(22px);
+        height: rem(22px);
+        color: $mantine-color-foreground-5;
+      }
+    }
+  }
+
+  .error {
+    @include inputError;
+  }
+}
+
+.popoverDropdown {
+  border: none;
+  box-shadow: var(--mantine-shadow-xl);
+  border-radius: 16px;
+
+  .day {
+    border-radius: 9999px;
+
+    &[data-selected] {
+      color: $mantine-color-foreground-7;
+      font-weight: $mantine-font-semibold;
+    }
+  }
+}
