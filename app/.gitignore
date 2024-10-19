@@ -131,12 +131,5 @@ dist
 
 .DS_Store
 
-# Fonts
-*.woff2
-
-# Images, icons
-*.svg
-*.jpeg
-*.jpg
-*.webp
-*.png
+# assets folder
+assets/

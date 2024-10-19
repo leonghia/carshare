@@ -1,13 +1,5 @@
 .input {
-  padding: rem(16px) rem(24px);
-  border-radius: 20px;
-  height: min-content;
-  font-size: var(--mantine-font-size-lg);
-  font-weight: 400;
-  color: $mantine-color-foreground-7;
-  line-height: var(--mantine-line-height-body);
-  background-color: $mantine-color-background-1;
-  border-width: rem(2px);
+  @include inputInput;
 
   @include smaller-than($mantine-breakpoint-lg) {
     font-size: var(--mantine-font-size-base);
@@ -21,10 +13,6 @@
     padding: rem(12px) rem(16px);
     font-size: var(--mantine-font-size-sm);
   }
-
-  &::placeholder {
-    color: $mantine-color-foreground-4;
-  }
 }
 
 .root {
@@ -37,16 +25,6 @@
   }
 }
 
-.wrapper {
-  &[data-variant='default'] {
-    @include light {
-      --input-bd: #{$mantine-color-background-1};
-    }
-  }
-}
-
 .error {
-  font-size: var(--mantine-font-size-base);
-  margin-top: rem(12px);
-  transition: all 0.3s ease-out;
+  @include inputError;
 }

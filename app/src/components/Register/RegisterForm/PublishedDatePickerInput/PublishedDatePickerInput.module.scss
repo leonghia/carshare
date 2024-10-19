@@ -1,0 +1,48 @@
+.root {
+  .input {
+    @include inputInput;
+  }
+
+  .placeholder {
+    font-weight: $mantine-font-light;
+    color: $mantine-color-foreground-5;
+  }
+
+  .wrapper {
+    --input-height: calc(3.25rem * var(--mantine-scale));
+  }
+
+  .section {
+    &[data-position='right'] {
+      svg {
+        width: rem(24px);
+        height: rem(24px);
+        color: $mantine-color-foreground-5;
+
+        @include smaller-than($mantine-breakpoint-xs) {
+          width: rem(18px);
+          height: rem(18px);
+        }
+      }
+    }
+  }
+
+  .error {
+    @include inputError;
+  }
+}
+
+.popoverDropdown {
+  border: none;
+  box-shadow: var(--mantine-shadow-xl);
+  border-radius: 16px;
+
+  .day {
+    border-radius: 9999px;
+
+    &[data-selected] {
+      color: $mantine-color-foreground-7;
+      font-weight: $mantine-font-semibold;
+    }
+  }
+}

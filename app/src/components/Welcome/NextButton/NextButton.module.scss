@@ -5,6 +5,14 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
+  border: none;
+  overflow: visible;
+
+  @include gradientAnimation(#00ff87, #60efff, #00e67a, #4fdfef, 0.3s) {
+    border-radius: 20px;
+    top: 100%;
+    filter: blur(0);
+  }
 
   @include smaller-than($mantine-breakpoint-sm) {
     padding: rem(12px) rem(24px);

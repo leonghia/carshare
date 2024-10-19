@@ -14,6 +14,12 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Carattere Regular';
+  src: url('/src/assets/fonts/Carattere-Regular.woff2') format('woff2');
+  font-weight: 400;
+}
+
 // Define variables for your breakpoints,
 // values must be the same as in your theme
 $mantine-breakpoint-xs: '23.375em'; // 374px
@@ -48,6 +54,7 @@ $mantine-color-foreground-8: var(--mantine-color-slate-8);
 $mantine-color-foreground-9: var(--mantine-color-slate-9);
 
 // Success shades
+$mantine-color-success: var(--mantine-color-green-5);
 $mantine-color-success-0: var(--mantine-color-green-0);
 $mantine-color-success-1: var(--mantine-color-green-1);
 $mantine-color-success-2: var(--mantine-color-green-2);
@@ -60,6 +67,7 @@ $mantine-color-success-8: var(--mantine-color-green-8);
 $mantine-color-success-9: var(--mantine-color-green-9);
 
 // Warning shades
+$mantine-color-warning: var(--mantine-color-yellow-5);
 $mantine-color-warning-0: var(--mantine-color-yellow-0);
 $mantine-color-warning-1: var(--mantine-color-yellow-1);
 $mantine-color-warning-2: var(--mantine-color-yellow-2);
@@ -72,6 +80,7 @@ $mantine-color-warning-8: var(--mantine-color-yellow-8);
 $mantine-color-warning-9: var(--mantine-color-yellow-9);
 
 // Danger shades
+$mantine-color-danger: var(--mantine-color-red-5);
 $mantine-color-danger-0: var(--mantine-color-red-0);
 $mantine-color-danger-1: var(--mantine-color-red-1);
 $mantine-color-danger-2: var(--mantine-color-red-2);
@@ -103,15 +112,49 @@ $mantine-color-danger-flat: $mantine-color-red-flat;
 $mantine-color-overlay: rgba(0, 0, 0, 0.3);
 $mantine-color-divider: rgba(17, 17, 17, 0.15);
 
+// Font weights
+$mantine-font-extralight: 200;
+$mantine-font-light: 300;
+$mantine-font-normal: 400;
+$mantine-font-medium: 500;
+$mantine-font-semibold: 600;
+$mantine-font-bold: 700;
+$mantine-font-extrabold: 800;
+$mantine-font-black: 900;
+
 // Gradients
 @mixin gradient-primary-background {
-  background: linear-gradient(to right, #00ff87, #60efff);
+  background-image: linear-gradient(to right, #00ff87, #60efff);
 }
 
-@mixin gradient-primary-foreground {
-  background-image: linear-gradient(to right, #09e83c, #4fdfef);
-  color: transparent;
-  background-clip: text;
+@mixin gradient-primary-dimmed {
+  background-image: linear-gradient(to right, #00e67a, #4fdfef);
+}
+
+@mixin gradientAnimation($startBase, $endBase, $startEffect, $endEffect, $transTime) {
+  background-size: 100%;
+  background-image: linear-gradient(to right, $startBase, $endBase);
+  position: relative;
+  z-index: 100;
+  &:before {
+    background-image: linear-gradient(to right, $startEffect, $endEffect);
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    z-index: -100;
+    transition: opacity $transTime ease-out;
+    @content;
+  }
+  &:hover {
+    &:before {
+      opacity: 1;
+    }
+  }
 }
 
 @function rem($value) {
@@ -167,6 +210,110 @@ $mantine-color-divider: rgba(17, 17, 17, 0.15);
   [dir='ltr'] & {
     @content;
   }
+}
+
+// Input border
+@mixin border-input-light($color, $isDark: false) {
+  &[data-variant='default'] {
+    @if $isDark {
+      @include dark {
+        --input-bd: #{$color};
+      }
+    } @else {
+      @include light {
+        --input-bd: #{$color};
+      }
+    }
+  }
+}
+
+@mixin inputWrapperDefaultLight {
+  &[data-variant='default'] {
+    @include light {
+      .input:focus,
+      .input:focus-within {
+        background-color: var(--mantine-color-white);
+      }
+
+      @content;
+    }
+  }
+}
+
+@mixin passwordInputWrapper {
+  margin-bottom: rem(12px);
+}
+
+@mixin passwordInputInput {
+  border: rem(2px) solid $mantine-color-background-1;
+  background-color: $mantine-color-background-1;
+  border-radius: 20px;
+  padding: rem(12px) rem(16px);
+  font-size: var(--mantine-font-size-base);
+  color: $mantine-color-foreground-7;
+  font-weight: $mantine-font-normal;
+  line-height: var(--mantine-line-height-body);
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  &[data-error='true'] {
+    border: rem(2px) solid $mantine-color-danger-4;
+    background-color: $mantine-color-danger-0;
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: var(--mantine-primary-color-6);
+    background-color: var(--mantine-color-white);
+  }
+}
+
+@mixin passwordInputInnerInput {
+  &::placeholder {
+    font-weight: $mantine-font-light;
+    color: $mantine-color-foreground-5;
+  }
+}
+
+@mixin inputInput {
+  border-radius: 20px;
+  padding: rem(12px) rem(16px);
+  font-size: var(--mantine-font-size-base);
+  color: $mantine-color-foreground-7;
+  font-weight: $mantine-font-normal;
+  height: min-content;
+  line-height: var(--mantine-line-height-body);
+  border: rem(2px) solid $mantine-color-background-1;
+  background-color: $mantine-color-background-1;
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  &[data-error='true'] {
+    border: rem(2px) solid $mantine-color-danger-4;
+    background-color: $mantine-color-danger-0;
+  }
+
+  &:focus,
+  &:focus-within {
+    border: rem(2px) solid var(--mantine-primary-color-6);
+    background-color: var(--mantine-color-white);
+  }
+
+  &::placeholder {
+    font-weight: $mantine-font-light;
+    color: $mantine-color-foreground-5;
+  }
+}
+
+@mixin inputError {
+  color: $mantine-color-danger;
+  font-size: var(--mantine-font-size-sm);
+  line-height: var(--mantine-line-height-body);
+  font-weight: $mantine-font-normal;
 }
 
 // CSS reset

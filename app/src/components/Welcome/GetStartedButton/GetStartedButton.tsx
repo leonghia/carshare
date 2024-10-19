@@ -6,7 +6,6 @@ export default function GetStartedButton() {
     <Button
       component="a"
       href="/"
-      variant="gradient"
       classNames={{
         root: classes.root,
         label: classes.label,

@@ -1,0 +1,130 @@
+.form {
+  & > :not(:first-child) {
+    margin-top: rem(32px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-top: rem(24px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-top: rem(16px);
+    }
+  }
+
+  .input-group {
+    & > :nth-child(2) {
+      margin-top: rem(12px);
+
+      @include smaller-than($mantine-breakpoint-sm) {
+        margin-top: rem(8px);
+      }
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        margin-top: rem(4px);
+      }
+    }
+
+    .label {
+      font-size: var(--mantine-font-size-lg);
+      font-weight: $mantine-font-semibold;
+      color: $mantine-color-foreground-7;
+      display: block;
+
+      @include smaller-than($mantine-breakpoint-sm) {
+        font-size: var(--mantine-font-size-base);
+      }
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        font-size: var(--mantine-font-size-sm);
+      }
+
+      .asterisk {
+        color: $mantine-color-danger;
+      }
+    }
+
+    .root {
+      .wrapper {
+        margin-bottom: rem(12px);
+
+        @include smaller-than($mantine-breakpoint-xs) {
+          margin-bottom: 0;
+        }
+
+        @include inputWrapperDefaultLight {
+          .input--phone-number:focus,
+          .input--phone-number:focus-within {
+            background-color: var(--mantine-color-white);
+          }
+        }
+
+        .section--phone-number {
+          color: $mantine-color-foreground-7;
+          font-weight: $mantine-font-normal;
+          font-size: var(--mantine-font-size-base);
+          left: rem(20px);
+          line-height: var(--mantine-line-height-body);
+        }
+
+        .input {
+          @include inputInput;
+
+          &--phone-number {
+            @include inputInput;
+            padding-left: rem(64px);
+          }
+        }
+      }
+
+      .error {
+        @include inputError;
+      }
+    }
+  }
+
+  .national-id-n-published-date {
+    display: grid;
+    gap: rem(24px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      gap: rem(16px);
+    }
+  }
+}
+
+.passwordInputWrapper {
+  --input-radius: 20px;
+  --input-height: rem(52px);
+  --input-padding-inline-start: rem(16px);
+  @include passwordInputWrapper;
+
+  .passwordInputInput {
+    @include passwordInputInput;
+
+    .passwordInputInnerInput {
+      @include passwordInputInnerInput;
+    }
+  }
+
+  .visibility-toggle {
+    svg {
+      width: rem(24px);
+      height: rem(24px);
+      color: $mantine-color-foreground-5;
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        width: rem(18px);
+        height: rem(18px);
+      }
+    }
+  }
+}
+
+.passwordInputError {
+  @include inputError;
+}
