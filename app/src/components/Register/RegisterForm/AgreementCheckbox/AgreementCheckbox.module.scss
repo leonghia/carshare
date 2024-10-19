@@ -2,6 +2,10 @@
   --checkbox-size: rem(24px);
   --checkbox-icon-color: #{$mantine-color-foreground-8};
 
+  @include smaller-than($mantine-breakpoint-xs) {
+    --checkbox-size: rem(20px);
+  }
+
   .input {
     border-radius: 8px;
     border-color: transparent;
@@ -24,8 +28,16 @@
     line-height: var(--mantine-line-height-body);
     color: $mantine-color-foreground-6;
 
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+
     .label {
       padding-inline-start: rem(12px);
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        padding-inline-start: rem(8px);
+      }
     }
   }
 

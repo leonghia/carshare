@@ -193,7 +193,7 @@ export default function RegisterForm() {
           Nhập lại mật khẩu <span className={classes.asterisk}>*</span>
         </label>
         <PasswordInput
-          placeholder="Nhập lại mật khẩu mà bạn đã điền ở trên..."
+          placeholder="Nhập lại mật khẩu đã điền ở trên..."
           id="retype_password"
           classNames={{
             wrapper: classes.passwordInputWrapper,

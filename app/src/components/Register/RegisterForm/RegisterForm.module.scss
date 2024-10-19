@@ -1,11 +1,27 @@
 .form {
   & > :not(:first-child) {
     margin-top: rem(32px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-top: rem(24px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-top: rem(16px);
+    }
   }
 
   .input-group {
     & > :nth-child(2) {
       margin-top: rem(12px);
+
+      @include smaller-than($mantine-breakpoint-sm) {
+        margin-top: rem(8px);
+      }
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        margin-top: rem(4px);
+      }
     }
 
     .label {
@@ -13,6 +29,14 @@
       font-weight: $mantine-font-semibold;
       color: $mantine-color-foreground-7;
       display: block;
+
+      @include smaller-than($mantine-breakpoint-sm) {
+        font-size: var(--mantine-font-size-base);
+      }
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        font-size: var(--mantine-font-size-sm);
+      }
 
       .asterisk {
         color: $mantine-color-danger;
@@ -22,6 +46,10 @@
     .root {
       .wrapper {
         margin-bottom: rem(12px);
+
+        @include smaller-than($mantine-breakpoint-xs) {
+          margin-bottom: 0;
+        }
 
         @include inputWrapperDefaultLight {
           .input--phone-number:focus,
@@ -58,6 +86,14 @@
     display: grid;
     gap: rem(24px);
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      gap: rem(16px);
+    }
   }
 }
 
@@ -80,6 +116,11 @@
       width: rem(24px);
       height: rem(24px);
       color: $mantine-color-foreground-5;
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        width: rem(18px);
+        height: rem(18px);
+      }
     }
   }
 }

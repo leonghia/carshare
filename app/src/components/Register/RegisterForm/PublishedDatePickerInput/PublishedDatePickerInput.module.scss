@@ -15,9 +15,14 @@
   .section {
     &[data-position='right'] {
       svg {
-        width: rem(22px);
-        height: rem(22px);
+        width: rem(24px);
+        height: rem(24px);
         color: $mantine-color-foreground-5;
+
+        @include smaller-than($mantine-breakpoint-xs) {
+          width: rem(18px);
+          height: rem(18px);
+        }
       }
     }
   }

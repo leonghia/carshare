@@ -80,7 +80,8 @@
     .logo {
       height: rem(40px);
       width: auto;
-      text-align: center;
+      background-color: var(--mantine-primary-color-5);
+      mask: url('../../assets/images/logo.svg') no-repeat center;
 
       @include smaller-than($mantine-breakpoint-lg) {
         height: rem(30px);
@@ -92,12 +93,6 @@
 
       @include smaller-than($mantine-breakpoint-xs) {
         height: rem(20px);
-      }
-
-      img {
-        height: 100%;
-        width: auto;
-        object-fit: contain;
       }
     }
   }

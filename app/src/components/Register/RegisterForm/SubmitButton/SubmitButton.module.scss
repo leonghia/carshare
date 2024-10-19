@@ -11,6 +11,16 @@
     overflow: visible;
     border: none;
 
+    @include smaller-than($mantine-breakpoint-sm) {
+      padding-bottom: rem(12px);
+      padding-top: rem(12px);
+      font-size: var(--mantine-font-size-base);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+
     @include gradientAnimation(#00ff87, #60efff, #00e67a, #4fdfef, 0.3s) {
       filter: blur(0);
       border-radius: 20px;
@@ -28,6 +38,10 @@
     line-height: var(--mantine-line-height-body);
     text-align: center;
 
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+
     span {
       font-weight: $mantine-font-normal;
       color: $mantine-color-foreground-5;
@@ -37,6 +51,10 @@
       font-weight: $mantine-font-semibold;
       color: var(--mantine-primary-color-6);
       transition: color 0.3s ease-out;
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        font-size: var(--mantine-font-size-sm);
+      }
 
       &:hover {
         color: var(--mantine-primary-color-7);

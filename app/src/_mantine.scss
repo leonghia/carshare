@@ -14,6 +14,12 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Carattere Regular';
+  src: url('/src/assets/fonts/Carattere-Regular.woff2') format('woff2');
+  font-weight: 400;
+}
+
 // Define variables for your breakpoints,
 // values must be the same as in your theme
 $mantine-breakpoint-xs: '23.375em'; // 374px
@@ -248,6 +254,10 @@ $mantine-font-black: 900;
   font-weight: $mantine-font-normal;
   line-height: var(--mantine-line-height-body);
 
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
+
   &[data-error='true'] {
     border: rem(2px) solid $mantine-color-danger-4;
     background-color: $mantine-color-danger-0;
@@ -277,6 +287,10 @@ $mantine-font-black: 900;
   line-height: var(--mantine-line-height-body);
   border: rem(2px) solid $mantine-color-background-1;
   background-color: $mantine-color-background-1;
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
 
   &[data-error='true'] {
     border: rem(2px) solid $mantine-color-danger-4;

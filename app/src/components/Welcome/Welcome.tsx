@@ -3,7 +3,6 @@ import classes from './Welcome.module.scss';
 import { useField } from '@mantine/form';
 import { useLocalStorage } from '@mantine/hooks';
 import helloIllustrator from '../../assets/images/hello_illustrator.webp';
-import logo from '../../assets/images/logo.svg';
 import leftSideIllustrators from '../../assets/images/side_illustrators_1.webp';
 import rightSideIllustrators from '../../assets/images/side_illustrators_2.webp';
 import EnterName from './EnterName/EnterName';
@@ -30,11 +29,7 @@ export default function Welcome() {
     setName(field.getValue());
   };
 
-  const logoMarkup = (
-    <figure className={classes.logo}>
-      <img src={logo} alt="CarShare logo" />
-    </figure>
-  );
+  const logoMarkup = <figure className={classes.logo}></figure>;
 
   return (
     // Container
