@@ -4,6 +4,7 @@ import { Eye, EyeSlash } from 'iconsax-react';
 import { PasswordInput, TextInput } from '@mantine/core';
 import registerSideImage784w from '../../assets/images/register_side_image_784w.webp';
 import AgreementCheckbox from './AgreementCheckbox/AgreementCheckbox';
+import PasswordInputWithStrength from './PasswordInputWithStrength/PasswordInputWithStrength';
 import PublishedDatePickerInput from './PublishedDatePickerInput/PublishedDatePickerInput';
 import SubmitButton from './SubmitButton/SubmitButton';
 
@@ -102,17 +103,7 @@ export default function Register() {
               <label htmlFor="password" className={classes.label}>
                 Mật khẩu <span className={classes.asterisk}>*</span>
               </label>
-              <PasswordInput
-                placeholder="Nhập mật khẩu bạn muốn đặt..."
-                id="password"
-                classNames={{
-                  wrapper: classes['wrapper--password'],
-                  input: classes['input--password'],
-                  innerInput: classes['inner-input--password'],
-                  visibilityToggle: classes['visibility-toggle'],
-                }}
-                visibilityToggleIcon={VisibilityToggleIcon}
-              />
+              <PasswordInputWithStrength />
             </div>
             {/* Retype password */}
             <div className={classes['input-group']}>
