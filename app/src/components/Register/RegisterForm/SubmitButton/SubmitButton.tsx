@@ -1,17 +1,18 @@
 import classes from './SubmitButton.module.scss';
-import { Anchor, Button } from '@mantine/core';
+import { Anchor, Button, Loader } from '@mantine/core';
 
-export default function SubmitButton() {
+export default function SubmitButton({ isLoading }: { isLoading: boolean }) {
   return (
     <div className={classes.container}>
       <Button
+        disabled={isLoading}
         type="submit"
         classNames={{
-          root: classes.root,
-          label: classes.label,
+          root: classes.buttonRoot,
+          label: classes.buttonLabel,
         }}
       >
-        Đăng ký
+        {isLoading ? <Loader className={classes.loaderRoot} /> : 'Đăng ký'}
       </Button>
       <div className={classes.lower}>
         <span>Bạn đã có tài khoản? </span>

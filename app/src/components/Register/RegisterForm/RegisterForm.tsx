@@ -4,6 +4,7 @@ import { Eye, EyeSlash } from 'iconsax-react';
 import { PasswordInput, TextInput } from '@mantine/core';
 import { DateValue } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import { useTimeout } from '@mantine/hooks';
 import AgreementCheckbox from './AgreementCheckbox/AgreementCheckbox';
 import PasswordInputWithStrength, {
   getPasswordStrength,
@@ -18,8 +19,18 @@ function VisibilityToggleIcon({ reveal }: { reveal: boolean }) {
   return reveal ? <EyeSlash variant="Bold" /> : <Eye variant="Bold" />;
 }
 
-export default function RegisterForm() {
+export default function RegisterForm({
+  onSuccessfulSubmit,
+}: {
+  onSuccessfulSubmit: (email: string) => void;
+}) {
   const [nationalIdPublishedDate, setNationalIdPublishedDate] = useState<DateValue | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { start: startSubmitting, clear } = useTimeout(() => {
+    // Upon successful submit
+    setIsSubmitting(false);
+    onSuccessfulSubmit(form.getValues().email);
+  }, 1000);
 
   // console.log(nationalIdPublishedDate);
 
@@ -56,7 +67,6 @@ export default function RegisterForm() {
       },
       publishedDate: (value: string) => {
         if (!value) {
-          console.log(value);
           return 'Ngày cấp CCCD không được để trống';
         }
         return null;
@@ -78,8 +88,14 @@ export default function RegisterForm() {
     },
   });
 
+  const handleSubmit = (values: typeof form.values) => {
+    console.log(values);
+    setIsSubmitting(true);
+    startSubmitting();
+  };
+
   return (
-    <form className={classes.form} onSubmit={form.onSubmit(console.log)}>
+    <form className={classes.form} onSubmit={form.onSubmit(handleSubmit)}>
       {/* Full name */}
       <div className={classes['input-group']}>
         <label htmlFor="full_name" className={classes.label}>
@@ -210,7 +226,7 @@ export default function RegisterForm() {
       {/* Agreement checkbox */}
       <AgreementCheckbox keyVal={form.key('agreement')} {...form.getInputProps('agreement')} />
       {/* Submit button */}
-      <SubmitButton />
+      <SubmitButton isLoading={isSubmitting} />
     </form>
   );
 }

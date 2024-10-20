@@ -7,9 +7,14 @@
   }
 
   .input {
+    background-color: $mantine-color-background-1;
     border-radius: 8px;
     border-color: transparent;
     transition: background-color 0.3s ease-out;
+
+    @include dark {
+      background-color: $mantine-color-background-7;
+    }
 
     &:checked {
       background-color: var(--mantine-primary-color-5);
@@ -27,6 +32,10 @@
     font-weight: $mantine-font-medium;
     line-height: var(--mantine-line-height-body);
     color: $mantine-color-foreground-6;
+
+    @include dark {
+      color: $mantine-color-foreground-3;
+    }
 
     @include smaller-than($mantine-breakpoint-xs) {
       font-size: var(--mantine-font-size-sm);
@@ -46,8 +55,8 @@
   }
 }
 
-:where([data-mantine-color-scheme='light']) {
-  .input {
-    background-color: $mantine-color-background-1;
-  }
-}
+// :where([data-mantine-color-scheme='light']) {
+//   .input {
+//     background-color: $mantine-color-background-1;
+//   }
+// }

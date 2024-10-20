@@ -1,15 +1,10 @@
 .container {
-  .root {
-    border-radius: 20px;
-    padding-top: rem(16px);
-    padding-bottom: rem(16px);
-    font-weight: $mantine-font-semibold;
-    line-height: var(--mantine-line-height-body);
-    font-size: var(--mantine-font-size-lg);
-    width: 100%;
-    --button-height: min-content;
-    overflow: visible;
-    border: none;
+  .buttonRoot {
+    @include primaryButton;
+
+    & {
+      padding: rem(16px) 0;
+    }
 
     @include smaller-than($mantine-breakpoint-sm) {
       padding-bottom: rem(12px);
@@ -21,14 +16,8 @@
       font-size: var(--mantine-font-size-sm);
     }
 
-    @include gradientAnimation(#00ff87, #60efff, #00e67a, #4fdfef, 0.3s) {
-      filter: blur(0);
-      border-radius: 20px;
-      top: 100%;
-    }
-
-    .label {
-      color: $mantine-color-foreground-8;
+    .buttonLabel {
+      font-size: var(--mantine-font-size-lg);
     }
   }
 
@@ -45,6 +34,10 @@
     span {
       font-weight: $mantine-font-normal;
       color: $mantine-color-foreground-5;
+
+      @include dark {
+        color: $mantine-color-foreground-4;
+      }
     }
 
     .rootAnchor {
@@ -60,5 +53,18 @@
         color: var(--mantine-primary-color-7);
       }
     }
+  }
+}
+
+.loaderRoot {
+  --loader-color: #{$mantine-color-foreground-7};
+  --loader-size: calc(var(--mantine-font-size-lg) * 1.5);
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    --loader-size: calc(var(--mantine-font-size-base) * 1.5);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    --loader-size: calc(var(--mantine-font-size-sm) * 1.5);
   }
 }

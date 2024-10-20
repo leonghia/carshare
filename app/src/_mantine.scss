@@ -110,6 +110,7 @@ $mantine-color-danger-flat: $mantine-color-red-flat;
 
 // Layout colors
 $mantine-color-overlay: rgba(0, 0, 0, 0.3);
+$mantine-color-overlay-dark: rgba(0, 0, 0, 0.4);
 $mantine-color-divider: rgba(17, 17, 17, 0.15);
 
 // Font weights
@@ -136,24 +137,46 @@ $mantine-font-black: 900;
   background-image: linear-gradient(to right, $startBase, $endBase);
   position: relative;
   z-index: 100;
-  &:before {
-    background-image: linear-gradient(to right, $startEffect, $endEffect);
+
+  &::after {
     content: '';
+    background-image: linear-gradient(to right, $startEffect, $endEffect);
+    position: absolute;
     display: block;
     height: 100%;
-    position: absolute;
+    width: 100%;
     top: 0;
     left: 0;
     opacity: 0;
-    width: 100%;
     z-index: -100;
-    transition: opacity $transTime ease-out;
+    transition: opacity $transTime ease-in;
+    border-radius: inherit;
     @content;
   }
-  &:hover {
-    &:before {
-      opacity: 1;
+
+  &:not(:disabled),
+  &:not([data-disabled]) {
+    &:hover {
+      &::after {
+        opacity: 1;
+      }
     }
+  }
+}
+
+@mixin primaryButton {
+  border-radius: 20px;
+  height: min-content;
+  width: 100%;
+  border: none;
+  @include gradientAnimation(#00ff87, #60efff, #00e67a, #4fdfef, 0.3s);
+  @content;
+
+  .buttonLabel {
+    font-size: var(--mantine-font-size-base);
+    line-height: var(--mantine-line-height-body);
+    font-weight: $mantine-font-semibold;
+    color: $mantine-color-foreground-8;
   }
 }
 
@@ -254,6 +277,12 @@ $mantine-font-black: 900;
   font-weight: $mantine-font-normal;
   line-height: var(--mantine-line-height-body);
 
+  @include dark {
+    background-color: $mantine-color-background-7;
+    border-color: $mantine-color-background-7;
+    color: $mantine-color-foreground-3;
+  }
+
   @include smaller-than($mantine-breakpoint-xs) {
     font-size: var(--mantine-font-size-sm);
   }
@@ -261,12 +290,20 @@ $mantine-font-black: 900;
   &[data-error='true'] {
     border: rem(2px) solid $mantine-color-danger-4;
     background-color: $mantine-color-danger-0;
+
+    @include dark {
+      background-color: $mantine-color-background-8;
+    }
   }
 
   &:focus,
   &:focus-within {
     border-color: var(--mantine-primary-color-6);
     background-color: var(--mantine-color-white);
+
+    @include dark {
+      background-color: $mantine-color-background-9;
+    }
   }
 }
 
@@ -274,6 +311,10 @@ $mantine-font-black: 900;
   &::placeholder {
     font-weight: $mantine-font-light;
     color: $mantine-color-foreground-5;
+
+    @include dark {
+      color: $mantine-color-foreground-4;
+    }
   }
 }
 
@@ -288,6 +329,12 @@ $mantine-font-black: 900;
   border: rem(2px) solid $mantine-color-background-1;
   background-color: $mantine-color-background-1;
 
+  @include dark {
+    background-color: $mantine-color-background-7;
+    border-color: $mantine-color-background-7;
+    color: $mantine-color-foreground-3;
+  }
+
   @include smaller-than($mantine-breakpoint-xs) {
     font-size: var(--mantine-font-size-sm);
   }
@@ -295,17 +342,29 @@ $mantine-font-black: 900;
   &[data-error='true'] {
     border: rem(2px) solid $mantine-color-danger-4;
     background-color: $mantine-color-danger-0;
+
+    @include dark {
+      background-color: $mantine-color-background-8;
+    }
   }
 
   &:focus,
   &:focus-within {
     border: rem(2px) solid var(--mantine-primary-color-6);
     background-color: var(--mantine-color-white);
+
+    @include dark {
+      background-color: $mantine-color-background-9;
+    }
   }
 
   &::placeholder {
     font-weight: $mantine-font-light;
     color: $mantine-color-foreground-5;
+
+    @include dark {
+      color: $mantine-color-foreground-4;
+    }
   }
 }
 
@@ -314,6 +373,10 @@ $mantine-font-black: 900;
   font-size: var(--mantine-font-size-sm);
   line-height: var(--mantine-line-height-body);
   font-weight: $mantine-font-normal;
+
+  @include dark {
+    color: $mantine-color-danger-4;
+  }
 }
 
 // CSS reset

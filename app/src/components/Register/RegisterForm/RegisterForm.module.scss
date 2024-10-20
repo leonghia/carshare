@@ -30,6 +30,10 @@
       color: $mantine-color-foreground-7;
       display: block;
 
+      @include dark {
+        color: $mantine-color-foreground-3;
+      }
+
       @include smaller-than($mantine-breakpoint-sm) {
         font-size: var(--mantine-font-size-base);
       }
@@ -64,6 +68,14 @@
           font-size: var(--mantine-font-size-base);
           left: rem(20px);
           line-height: var(--mantine-line-height-body);
+
+          @include dark {
+            color: $mantine-color-foreground-3;
+          }
+
+          @include smaller-than($mantine-breakpoint-xs) {
+            font-size: var(--mantine-font-size-sm);
+          }
         }
 
         .input {
@@ -71,7 +83,10 @@
 
           &--phone-number {
             @include inputInput;
-            padding-left: rem(64px);
+
+            & {
+              padding-left: rem(64px);
+            }
           }
         }
       }
@@ -116,6 +131,10 @@
       width: rem(24px);
       height: rem(24px);
       color: $mantine-color-foreground-5;
+
+      @include dark {
+        color: $mantine-color-foreground-4;
+      }
 
       @include smaller-than($mantine-breakpoint-xs) {
         width: rem(18px);
