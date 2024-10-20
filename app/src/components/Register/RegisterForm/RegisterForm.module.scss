@@ -64,6 +64,10 @@
           font-size: var(--mantine-font-size-base);
           left: rem(20px);
           line-height: var(--mantine-line-height-body);
+
+          @include smaller-than($mantine-breakpoint-xs) {
+            font-size: var(--mantine-font-size-sm);
+          }
         }
 
         .input {
@@ -71,7 +75,10 @@
 
           &--phone-number {
             @include inputInput;
-            padding-left: rem(64px);
+
+            & {
+              padding-left: rem(64px);
+            }
           }
         }
       }

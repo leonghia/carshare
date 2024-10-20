@@ -150,9 +150,13 @@ $mantine-font-black: 900;
     transition: opacity $transTime ease-out;
     @content;
   }
-  &:hover {
-    &:before {
-      opacity: 1;
+
+  &:not(:disabled),
+  &:not([data-disabled]) {
+    &:hover {
+      &:before {
+        opacity: 1;
+      }
     }
   }
 }

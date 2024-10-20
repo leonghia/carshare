@@ -20,6 +20,7 @@ function VisibilityToggleIcon({ reveal }: { reveal: boolean }) {
 
 export default function RegisterForm() {
   const [nationalIdPublishedDate, setNationalIdPublishedDate] = useState<DateValue | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // console.log(nationalIdPublishedDate);
 
@@ -56,7 +57,6 @@ export default function RegisterForm() {
       },
       publishedDate: (value: string) => {
         if (!value) {
-          console.log(value);
           return 'Ngày cấp CCCD không được để trống';
         }
         return null;
@@ -78,8 +78,13 @@ export default function RegisterForm() {
     },
   });
 
+  const handleSubmit = (values: typeof form.values) => {
+    console.log(values);
+    setIsSubmitting(true);
+  };
+
   return (
-    <form className={classes.form} onSubmit={form.onSubmit(console.log)}>
+    <form className={classes.form} onSubmit={form.onSubmit(handleSubmit)}>
       {/* Full name */}
       <div className={classes['input-group']}>
         <label htmlFor="full_name" className={classes.label}>
@@ -210,7 +215,7 @@ export default function RegisterForm() {
       {/* Agreement checkbox */}
       <AgreementCheckbox keyVal={form.key('agreement')} {...form.getInputProps('agreement')} />
       {/* Submit button */}
-      <SubmitButton />
+      <SubmitButton isLoading={isSubmitting} />
     </form>
   );
 }
