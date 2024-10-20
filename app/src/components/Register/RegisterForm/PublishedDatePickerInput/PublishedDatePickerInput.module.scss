@@ -6,6 +6,10 @@
   .placeholder {
     font-weight: $mantine-font-light;
     color: $mantine-color-foreground-5;
+
+    @include dark {
+      color: $mantine-color-foreground-4;
+    }
   }
 
   .wrapper {
@@ -18,6 +22,10 @@
         width: rem(24px);
         height: rem(24px);
         color: $mantine-color-foreground-5;
+
+        @include dark {
+          color: $mantine-color-foreground-4;
+        }
 
         @include smaller-than($mantine-breakpoint-xs) {
           width: rem(18px);

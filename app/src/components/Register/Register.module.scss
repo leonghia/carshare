@@ -1,6 +1,11 @@
 .container {
   padding: rem(80px) rem(64px);
   background-color: var(--mantine-color-white);
+  position: relative;
+
+  @include dark {
+    background-color: $mantine-color-background-8;
+  }
 
   @include smaller-than($mantine-breakpoint-2xl) {
     padding-left: rem(48px);
@@ -140,6 +145,10 @@
         font-size: var(--mantine-font-size-4xl);
         font-weight: 700;
         color: $mantine-color-foreground-9;
+
+        @include dark {
+          color: var(--mantine-color-white);
+        }
 
         @include smaller-than($mantine-breakpoint-sm) {
           font-size: var(--mantine-font-size-2xl);
@@ -321,4 +330,10 @@
       display: none;
     }
   }
+}
+
+.headingNToggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: center;
 }

@@ -8,8 +8,8 @@ export default function SubmitButton({ isLoading }: { isLoading: boolean }) {
         disabled={isLoading}
         type="submit"
         classNames={{
-          root: classes.root,
-          label: classes.label,
+          root: classes.buttonRoot,
+          label: classes.buttonLabel,
         }}
       >
         {isLoading ? <Loader className={classes.loaderRoot} /> : 'Đăng ký'}

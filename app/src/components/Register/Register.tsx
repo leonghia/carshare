@@ -1,8 +1,14 @@
+import { useState } from 'react';
 import classes from './Register.module.scss';
 import logo from '../../assets/images/logo_2.svg';
+import ColorSchemeToggle from '../ColorSchemeToggle/ColorSchemeToggle';
 import RegisterForm from './RegisterForm/RegisterForm';
+import SuccessModal from './SuccessModal/SuccessModal';
 
 export default function Register() {
+  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
+
   return (
     <div className={classes.container}>
       <header className={classes.header}>
@@ -22,9 +28,17 @@ export default function Register() {
         {/* Left col */}
         <section className={classes['left-col']}>
           {/* Page heading */}
-          <h1 className={classes.heading}>Đăng ký tài khoản</h1>
+          <div className={classes.headingNToggle}>
+            <h1 className={classes.heading}>Đăng ký tài khoản</h1>
+            <ColorSchemeToggle />
+          </div>
           {/* Form */}
-          <RegisterForm />
+          <RegisterForm
+            onSuccessfulSubmit={(email: string) => {
+              setIsModalOpened(true);
+              setEmail(email);
+            }}
+          />
         </section>
         {/* Side image */}
         <div className={classes.sideImage}>
@@ -42,6 +56,13 @@ export default function Register() {
           </div>
         </div>
       </main>
+      {isModalOpened && (
+        <SuccessModal
+          email={email}
+          isOpened={isModalOpened}
+          onClose={() => setIsModalOpened(false)}
+        />
+      )}
     </div>
   );
 }
