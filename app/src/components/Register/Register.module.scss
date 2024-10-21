@@ -1,7 +1,10 @@
 .container {
-  padding: rem(80px) rem(64px);
-  background-color: var(--mantine-color-white);
-  position: relative;
+  @include container;
+
+  & {
+    padding: rem(80px) rem(64px);
+    position: relative;
+  }
 
   @include dark {
     background-color: $mantine-color-background-8;

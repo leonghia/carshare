@@ -147,3 +147,7 @@
 .passwordInputError {
   @include inputError;
 }
+
+.textInputRoot {
+  @include textInputRoot;
+}
