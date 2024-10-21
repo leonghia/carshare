@@ -105,10 +105,10 @@ export default function RegisterForm({
           placeholder="Nhập họ tên đầy đủ của bạn..."
           id="full_name"
           classNames={{
-            root: classes.root,
-            wrapper: classes.wrapper,
-            input: classes.input,
-            error: classes.error,
+            root: classes.textInputRoot,
+            wrapper: classes.textInputWrapper,
+            input: classes.textInputInput,
+            error: classes.textInputError,
           }}
           key={form.key('fullName')}
           {...form.getInputProps('fullName')}
@@ -124,10 +124,10 @@ export default function RegisterForm({
           id="email"
           type="email"
           classNames={{
-            root: classes.root,
-            wrapper: classes.wrapper,
-            input: classes.input,
-            error: classes.error,
+            root: classes.textInputRoot,
+            wrapper: classes.textInputWrapper,
+            input: classes.textInputInput,
+            error: classes.textInputError,
           }}
           key={form.key('email')}
           {...form.getInputProps('email')}
