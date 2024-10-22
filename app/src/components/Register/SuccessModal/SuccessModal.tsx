@@ -35,14 +35,12 @@ export default function SuccessModal({
       overlayProps={{
         className: classes.overlayRoot,
       }}
-      classNames={
-        {
-          // root: classes.modalRoot,
-          // inner: classes.modalInner,
-          // content: classes.modalContent + ' ' + isClosing ? classes.closing : classes.opening,
-          // body: classes.modalBody,
-        }
-      }
+      classNames={{
+        root: classes.modalRoot,
+        inner: classes.modalInner,
+        content: classes.modalContent + ' ' + isClosing ? classes.closing : classes.opening,
+        body: classes.modalBody,
+      }}
       transitionProps={{
         transition: {
           in: {},

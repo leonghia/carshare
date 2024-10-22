@@ -3,13 +3,13 @@ import { Anchor, Button, Loader } from '@mantine/core';
 
 export default function SubmitButton({ isLoading }: { isLoading: boolean }) {
   return (
-    <div className={classes.container}>
+    <div>
       <Button
         disabled={isLoading}
         type="submit"
         classNames={{
-          root: classes.buttonRoot + ' ' + classes.primaryButtonRoot,
-          label: classes.buttonLabel + ' ' + classes.primaryButtonLabel,
+          root: classes.buttonRoot,
+          label: classes.buttonLabel,
         }}
       >
         {isLoading ? <Loader className={classes.loaderRoot} /> : 'Đăng ký'}

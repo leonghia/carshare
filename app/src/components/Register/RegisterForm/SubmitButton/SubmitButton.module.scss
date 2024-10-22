@@ -1,35 +1,19 @@
-.container {
-  .lower {
-    margin-top: rem(12px);
-    font-size: var(--mantine-font-size-base);
-    line-height: var(--mantine-line-height-body);
-    text-align: center;
+.lower {
+  margin-top: rem(12px);
+  font-size: var(--mantine-font-size-base);
+  line-height: var(--mantine-line-height-body);
+  text-align: center;
 
-    @include smaller-than($mantine-breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
-    }
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
 
-    span {
-      font-weight: $mantine-font-normal;
-      color: $mantine-color-foreground-5;
+  span {
+    font-weight: $mantine-font-normal;
+    color: $mantine-color-foreground-5;
 
-      @include dark {
-        color: $mantine-color-foreground-4;
-      }
-    }
-
-    .rootAnchor {
-      font-weight: $mantine-font-semibold;
-      color: var(--mantine-primary-color-6);
-      transition: color 0.3s ease-out;
-
-      @include smaller-than($mantine-breakpoint-xs) {
-        font-size: var(--mantine-font-size-sm);
-      }
-
-      &:hover {
-        color: var(--mantine-primary-color-7);
-      }
+    @include dark {
+      color: $mantine-color-foreground-4;
     }
   }
 }
@@ -39,10 +23,6 @@
 }
 
 .buttonRoot {
-  @include buttonRoot;
-}
-
-.primaryButtonRoot {
   @include primaryButtonRoot;
 }
 
