@@ -7,9 +7,8 @@ export default function NextButton({ onClick }: { onClick: MouseEventHandler<HTM
     <Button
       onClick={onClick}
       classNames={{
-        root: classes.root,
-        label: classes.label,
-        section: classes.section,
+        root: classes.buttonRoot,
+        label: classes.buttonLabel,
       }}
     >
       Tiếp theo

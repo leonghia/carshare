@@ -2,7 +2,7 @@ import { createTheme, rem } from '@mantine/core';
 
 export const theme = createTheme({
   /** Put your mantine theme override here */
-  primaryColor: 'teal',
+  primaryColor: 'indigo',
   colors: {
     teal: [
       '#EAFEF9',

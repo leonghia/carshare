@@ -7,8 +7,8 @@ export default function GetStartedButton() {
       component="a"
       href="/"
       classNames={{
-        root: classes.root,
-        label: classes.label,
+        root: classes.buttonRoot,
+        label: classes.buttonLabel,
       }}
     >
       Bắt đầu

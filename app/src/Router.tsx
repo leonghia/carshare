@@ -8,10 +8,10 @@ const router = createBrowserRouter([
     path: '/',
     element: <HomePage />,
   },
-  {
-    path: '/welcome',
-    element: <WelcomePage />,
-  },
+  // {
+  //   path: '/welcome',
+  //   element: <WelcomePage />,
+  // },
   {
     path: '/register',
     element: <RegisterPage />,

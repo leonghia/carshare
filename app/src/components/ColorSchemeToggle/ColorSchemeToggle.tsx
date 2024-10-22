@@ -3,8 +3,8 @@ import { Moon, Sun1 } from 'iconsax-react';
 import { Button, MantineColorScheme, useMantineColorScheme } from '@mantine/core';
 
 function Markup({ colorScheme }: { colorScheme: MantineColorScheme }) {
-  if (colorScheme === 'light') return <Moon variant="Bold" className={classes.icon} />;
-  else if (colorScheme === 'dark') return <Sun1 variant="Bold" className={classes.icon} />;
+  if (colorScheme === 'light') return <Moon variant="Outline" className={classes.icon} />;
+  else if (colorScheme === 'dark') return <Sun1 variant="Outline" className={classes.icon} />;
   return <Moon variant="Bold" className={classes.icon} />;
 }
 
@@ -15,7 +15,7 @@ export default function ColorSchemeToggle() {
     <Button
       onClick={toggleColorScheme}
       classNames={{
-        root: classes.buttonRoot,
+        root: classes.secondaryButtonRoot,
       }}
     >
       <Markup colorScheme={colorScheme} />

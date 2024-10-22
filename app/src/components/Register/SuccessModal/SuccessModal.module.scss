@@ -1,43 +1,9 @@
 .overlayRoot {
-  background-color: $mantine-color-overlay;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(rem(8px));
-
-  @include dark {
-    background-color: $mantine-color-overlay-dark;
-  }
+  @include overlayRoot;
 }
 
 .modalRoot {
-  --modal-size: rem(500px);
-}
-
-.modalInner {
-  align-items: center;
-}
-
-.modalContent {
-  width: rem(500px);
-  border-radius: rem(32px);
-  background-color: var(--mantine-color-white);
-  box-shadow: var(--mantine-shadow-2xl);
-
-  @include dark {
-    background-color: $mantine-color-background-8;
-  }
-
-  &.opening {
-    animation: modalOpening 0.3s ease-in;
-  }
-
-  &.closing {
-    animation: modalClosing 0.2s ease-in forwards;
-  }
-}
-
-.modalBody {
-  padding: 0;
+  @include modalRoot;
 }
 
 .imageContainer {
@@ -55,13 +21,31 @@
   object-fit: contain;
   display: block;
   margin: 0 auto;
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    width: rem(120px);
+    height: rem(120px);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    width: rem(100px);
+    height: rem(100px);
+  }
 }
 
 .lower {
   padding: rem(24px) rem(40px);
 
+  @include smaller-than($mantine-breakpoint-sm) {
+    padding: rem(16px) rem(24px);
+  }
+
   & > :not(:first-child) {
     margin-top: rem(32px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-top: rem(24px);
+    }
   }
 }
 
@@ -80,7 +64,11 @@
   color: $mantine-color-foreground-9;
 
   @include dark {
-    color: var(--mantine-color-white);
+    color: $mantine-color-foreground-0;
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-lg);
   }
 }
 
@@ -92,6 +80,10 @@
 
   @include dark {
     color: $mantine-color-foreground-4;
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-sm);
   }
 }
 
@@ -105,12 +97,16 @@
 }
 
 .buttonRoot {
-  @include primaryButton;
-  padding: rem(16px) 0;
+  @include buttonRoot;
 
-  .buttonLabel {
-    font-size: var(--mantine-font-size-lg);
+  @include smaller-than($mantine-breakpoint-sm) {
+    padding-top: rem(12px);
+    padding-bottom: rem(12px);
   }
+}
+
+.primaryButtonRoot {
+  @include primaryButtonRoot;
 }
 
 @keyframes modalOpening {

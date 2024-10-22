@@ -1,26 +1,4 @@
 .container {
-  .buttonRoot {
-    @include primaryButton;
-
-    & {
-      padding: rem(16px) 0;
-    }
-
-    @include smaller-than($mantine-breakpoint-sm) {
-      padding-bottom: rem(12px);
-      padding-top: rem(12px);
-      font-size: var(--mantine-font-size-base);
-    }
-
-    @include smaller-than($mantine-breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
-    }
-
-    .buttonLabel {
-      font-size: var(--mantine-font-size-lg);
-    }
-  }
-
   .lower {
     margin-top: rem(12px);
     font-size: var(--mantine-font-size-base);
@@ -57,14 +35,17 @@
 }
 
 .loaderRoot {
-  --loader-color: #{$mantine-color-foreground-7};
-  --loader-size: calc(var(--mantine-font-size-lg) * 1.5);
+  @include loaderRoot;
+}
 
-  @include smaller-than($mantine-breakpoint-sm) {
-    --loader-size: calc(var(--mantine-font-size-base) * 1.5);
-  }
+.buttonRoot {
+  @include buttonRoot;
+}
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    --loader-size: calc(var(--mantine-font-size-sm) * 1.5);
-  }
+.primaryButtonRoot {
+  @include primaryButtonRoot;
+}
+
+.anchorRoot {
+  @include anchorRoot;
 }

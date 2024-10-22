@@ -1,6 +1,6 @@
 import { Key } from 'react';
 import classes from './PublishedDatePickerInput.module.scss';
-import { Calendar } from 'iconsax-react';
+import { Calendar1 } from 'iconsax-react';
 import { DatePickerInput, DateValue } from '@mantine/dates';
 
 export default function PublishedDatePickerInput({
@@ -13,7 +13,7 @@ export default function PublishedDatePickerInput({
   onChange: (d: DateValue) => void;
   keyValue: Key;
 }) {
-  const icon = <Calendar variant="Bold" />;
+  const icon = <Calendar1 variant="Outline" />;
 
   // console.log(date);
 
@@ -26,22 +26,21 @@ export default function PublishedDatePickerInput({
       id="published_date"
       placeholder="Nhập ngày cấp CCCD..."
       classNames={{
-        root: classes.root,
-        input: classes.input,
-        wrapper: classes.wrapper,
-        error: classes.error,
-        placeholder: classes.placeholder,
-        section: classes.section,
-        day: classes.day,
+        root: classes.datePickerInputRoot,
+        input: classes.datePickerInputInput,
+        placeholder: classes.datePickerInputPlaceholder,
+        section: classes.datePickerInputSection,
+        day: classes.datePickerInputDay,
+        error: classes.datePickerInputError,
       }}
+      {...props}
+      onChange={onChange}
+      value={date}
       popoverProps={{
         classNames: {
           dropdown: classes.popoverDropdown,
         },
       }}
-      {...props}
-      onChange={onChange}
-      value={date}
     />
   );
 }

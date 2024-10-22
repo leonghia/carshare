@@ -147,7 +147,7 @@
         color: $mantine-color-foreground-9;
 
         @include dark {
-          color: var(--mantine-color-white);
+          color: $mantine-color-foreground-0;
         }
 
         @include smaller-than($mantine-breakpoint-sm) {

@@ -27,10 +27,6 @@ export default function SuccessModal({
     }, 200);
   };
 
-  let modalContentClassName = classes.modalContent;
-  if (isClosing) modalContentClassName += ` ${classes.closing}`;
-  else modalContentClassName += ` ${classes.opening}`;
-
   return (
     <Modal
       opened={isOpened}
@@ -39,12 +35,14 @@ export default function SuccessModal({
       overlayProps={{
         className: classes.overlayRoot,
       }}
-      classNames={{
-        root: classes.modalRoot,
-        inner: classes.modalInner,
-        content: modalContentClassName,
-        body: classes.modalBody,
-      }}
+      classNames={
+        {
+          // root: classes.modalRoot,
+          // inner: classes.modalInner,
+          // content: classes.modalContent + ' ' + isClosing ? classes.closing : classes.opening,
+          // body: classes.modalBody,
+        }
+      }
       transitionProps={{
         transition: {
           in: {},
@@ -81,8 +79,8 @@ export default function SuccessModal({
         <Button
           onClick={handleClose}
           classNames={{
-            root: classes.buttonRoot,
-            label: classes.buttonLabel,
+            root: classes.buttonRoot + ' ' + classes.primaryButtonRoot,
+            label: classes.buttonLabel + ' ' + classes.primaryButtonLabel,
           }}
         >
           OK

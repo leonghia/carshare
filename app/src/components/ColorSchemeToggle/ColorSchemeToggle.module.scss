@@ -1,31 +1,18 @@
-.buttonRoot {
-  border: none;
-  background-color: $mantine-color-background-1;
-  border-radius: 8px;
-  width: rem(42px);
-  height: rem(42px);
-  padding: 0;
-  transition: background-color 0.3s ease-in;
+.secondaryButtonRoot {
+  @include secondaryButtonRoot;
 
-  &:hover {
-    background-color: $mantine-color-background-2;
-  }
-
-  @include dark {
-    background-color: $mantine-color-background-7;
-
-    &:hover {
-      background-color: $mantine-color-background-9;
-    }
+  & {
+    padding: rem(8px);
+    border-radius: 8px;
   }
 }
 
 .icon {
   width: rem(24px);
   height: rem(24px);
-  color: $mantine-color-foreground-5;
+  color: $mantine-color-foreground-7;
 
   @include dark {
-    color: $mantine-color-foreground-4;
+    color: $mantine-color-foreground-2;
   }
 }

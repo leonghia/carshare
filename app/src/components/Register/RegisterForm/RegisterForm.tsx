@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classes from './RegisterForm.module.scss';
 import { Eye, EyeSlash } from 'iconsax-react';
-import { PasswordInput, TextInput } from '@mantine/core';
+import { NumberInput, PasswordInput, TextInput } from '@mantine/core';
 import { DateValue } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { useTimeout } from '@mantine/hooks';
@@ -15,8 +15,10 @@ import SubmitButton from './SubmitButton/SubmitButton';
 const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+const numberRegex = /^\d+$/;
+
 function VisibilityToggleIcon({ reveal }: { reveal: boolean }) {
-  return reveal ? <EyeSlash variant="Bold" /> : <Eye variant="Bold" />;
+  return reveal ? <EyeSlash variant="Outline" /> : <Eye variant="Outline" />;
 }
 
 export default function RegisterForm({
@@ -59,10 +61,12 @@ export default function RegisterForm({
       },
       phoneNumber: (value: string) => {
         if (value.trim().length == 0) return 'Số điện thoại không được để trống';
+        else if (!value.trim().match(numberRegex)) return 'Số điện thoại không hợp lệ';
         return null;
       },
       nationalId: (value: string) => {
         if (value.trim().length == 0) return 'Số CCCD không được để trống';
+        else if (!value.trim().match(numberRegex)) return 'Số CCCD không hợp lệ';
         return null;
       },
       publishedDate: (value: string) => {
@@ -105,10 +109,10 @@ export default function RegisterForm({
           placeholder="Nhập họ tên đầy đủ của bạn..."
           id="full_name"
           classNames={{
-            root: classes.root,
-            wrapper: classes.wrapper,
-            input: classes.input,
-            error: classes.error,
+            root: classes.textInputRoot,
+            wrapper: classes.textInputWrapper,
+            input: classes.textInputInput,
+            error: classes.textInputError,
           }}
           key={form.key('fullName')}
           {...form.getInputProps('fullName')}
@@ -124,10 +128,10 @@ export default function RegisterForm({
           id="email"
           type="email"
           classNames={{
-            root: classes.root,
-            wrapper: classes.wrapper,
-            input: classes.input,
-            error: classes.error,
+            root: classes.textInputRoot,
+            wrapper: classes.textInputWrapper,
+            input: classes.textInputInput,
+            error: classes.textInputError,
           }}
           key={form.key('email')}
           {...form.getInputProps('email')}
@@ -139,19 +143,17 @@ export default function RegisterForm({
           Số điện thoại <span className={classes.asterisk}>*</span>
         </label>
         <TextInput
-          leftSection={'(+84)'}
-          placeholder="Nhập số điện thoại của bạn..."
           id="phone_number"
-          type="number"
-          classNames={{
-            root: classes.root,
-            wrapper: classes.wrapper,
-            input: classes['input--phone-number'],
-            section: classes['section--phone-number'],
-            error: classes.error,
-          }}
+          placeholder="Nhập số điện thoại của bạn"
+          leftSection={<span>(+84)</span>}
           key={form.key('phoneNumber')}
           {...form.getInputProps('phoneNumber')}
+          classNames={{
+            root: classes.textInputRoot,
+            input: classes.textInputInput + ' ' + classes.phoneNumberInputInput,
+            section: classes.textInputSection,
+            error: classes.textInputError,
+          }}
         />
       </div>
       {/* National ID & Published date */}
@@ -162,17 +164,15 @@ export default function RegisterForm({
             Căn cước công dân <span className={classes.asterisk}>*</span>
           </label>
           <TextInput
-            placeholder="Nhập số CCCD của bạn..."
             id="national_id"
-            type="number"
-            classNames={{
-              root: classes.root,
-              wrapper: classes.wrapper,
-              input: classes.input,
-              error: classes.error,
-            }}
+            placeholder="Nhập số CCCD của bạn..."
             key={form.key('nationalId')}
             {...form.getInputProps('nationalId')}
+            classNames={{
+              root: classes.textInputRoot,
+              input: classes.textInputInput,
+              error: classes.textInputError,
+            }}
           />
         </div>
         {/* Published date */}
@@ -212,10 +212,11 @@ export default function RegisterForm({
           placeholder="Nhập lại mật khẩu đã điền ở trên..."
           id="retype_password"
           classNames={{
-            wrapper: classes.passwordInputWrapper,
+            root: classes.passwordInputRoot,
             input: classes.passwordInputInput,
             innerInput: classes.passwordInputInnerInput,
-            visibilityToggle: classes['visibility-toggle'],
+            section: classes.passwordInputSection,
+            visibilityToggle: classes.passwordInputVisibilityToggle,
             error: classes.passwordInputError,
           }}
           visibilityToggleIcon={VisibilityToggleIcon}

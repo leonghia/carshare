@@ -31,7 +31,7 @@
       display: block;
 
       @include dark {
-        color: $mantine-color-foreground-3;
+        color: $mantine-color-foreground-2;
       }
 
       @include smaller-than($mantine-breakpoint-sm) {
@@ -44,55 +44,6 @@
 
       .asterisk {
         color: $mantine-color-danger;
-      }
-    }
-
-    .root {
-      .wrapper {
-        margin-bottom: rem(12px);
-
-        @include smaller-than($mantine-breakpoint-xs) {
-          margin-bottom: 0;
-        }
-
-        @include inputWrapperDefaultLight {
-          .input--phone-number:focus,
-          .input--phone-number:focus-within {
-            background-color: var(--mantine-color-white);
-          }
-        }
-
-        .section--phone-number {
-          color: $mantine-color-foreground-7;
-          font-weight: $mantine-font-normal;
-          font-size: var(--mantine-font-size-base);
-          left: rem(20px);
-          line-height: var(--mantine-line-height-body);
-
-          @include dark {
-            color: $mantine-color-foreground-3;
-          }
-
-          @include smaller-than($mantine-breakpoint-xs) {
-            font-size: var(--mantine-font-size-sm);
-          }
-        }
-
-        .input {
-          @include inputInput;
-
-          &--phone-number {
-            @include inputInput;
-
-            & {
-              padding-left: rem(64px);
-            }
-          }
-        }
-      }
-
-      .error {
-        @include inputError;
       }
     }
   }
@@ -112,38 +63,18 @@
   }
 }
 
-.passwordInputWrapper {
-  --input-radius: 20px;
-  --input-height: rem(52px);
-  --input-padding-inline-start: rem(16px);
-  @include passwordInputWrapper;
-
-  .passwordInputInput {
-    @include passwordInputInput;
-
-    .passwordInputInnerInput {
-      @include passwordInputInnerInput;
-    }
-  }
-
-  .visibility-toggle {
-    svg {
-      width: rem(24px);
-      height: rem(24px);
-      color: $mantine-color-foreground-5;
-
-      @include dark {
-        color: $mantine-color-foreground-4;
-      }
-
-      @include smaller-than($mantine-breakpoint-xs) {
-        width: rem(18px);
-        height: rem(18px);
-      }
-    }
-  }
+.textInputRoot {
+  @include textInputRoot;
 }
 
-.passwordInputError {
-  @include inputError;
+.numberInputRoot {
+  @include numberInputRoot;
+}
+
+.passwordInputRoot {
+  @include passwordInputRoot;
+}
+
+.phoneNumberInputInput {
+  padding-inline-start: 4rem !important;
 }
