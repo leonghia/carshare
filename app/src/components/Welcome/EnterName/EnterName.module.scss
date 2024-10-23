@@ -1,0 +1,27 @@
+.buttonRoot {
+  @include primaryButtonRoot;
+
+  & {
+    padding: rem(16px) rem(40px);
+    display: block;
+    margin-inline: auto;
+  }
+}
+
+.titleAndInput {
+  & > :not(:last-child) {
+    margin-bottom: rem(24px);
+  }
+}
+
+.title {
+  font-size: var(--mantine-font-size-3xl);
+  line-height: var(--mantine-line-height-heading);
+  font-weight: $mantine-font-semibold;
+  color: $mantine-color-foreground-9;
+  margin-bottom: rem(24px);
+}
+
+.textInputRoot {
+  @include textInputRoot;
+}

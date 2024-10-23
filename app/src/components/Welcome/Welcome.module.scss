@@ -1,0 +1,162 @@
+.container {
+  background-color: var(--mantine-color-white);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.nameSection {
+  & > :not(:last-child) {
+    margin-bottom: rem(40px);
+  }
+}
+
+.logo {
+  text-align: center;
+
+  img {
+    height: rem(30px);
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+.sideIllustrator {
+  position: absolute;
+  top: 50%;
+
+  img {
+    height: 50vh;
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+.sideIllustratorLeft {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.sideIllustratorRight {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.welcomeSection {
+  & > :not(:last-child) {
+    margin-bottom: rem(40px);
+  }
+}
+
+.centerIllustrator {
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+
+  img {
+    width: rem(240px);
+    height: rem(240px);
+    object-fit: contain;
+  }
+}
+
+.helloAndWelcomeText {
+  & > :not(:last-child) {
+    margin-bottom: rem(8px);
+  }
+  text-align: center;
+}
+
+.helloText {
+  font-size: var(--mantine-font-size-2xl);
+  font-weight: $mantine-font-light;
+  line-height: var(--mantine-line-height-heading);
+  color: $mantine-color-foreground-5;
+}
+
+.welcomeText {
+  font-size: var(--mantine-font-size-3xl);
+  font-weight: $mantine-font-semibold;
+  line-height: var(--mantine-line-height-heading);
+  color: $mantine-color-foreground-9;
+}
+
+.startButtonRoot {
+  @include primaryButtonRoot;
+
+  & {
+    padding: rem(16px) rem(40px);
+    display: block;
+    margin-inline: auto;
+  }
+}
+
+.slideOut {
+  animation: slideOut 0.3s ease-out forwards;
+}
+
+.slideIn {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.falling {
+  animation: falling 1s ease-out 0.4s forwards;
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+}
+
+@keyframes falling {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+  }
+
+  50% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(20%);
+  }
+
+  75% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-10%);
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}

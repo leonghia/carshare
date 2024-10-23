@@ -29,6 +29,11 @@ $mantine-breakpoint-lg: '64em'; // 1024px
 $mantine-breakpoint-xl: '80em'; // 1280px
 $mantine-breakpoint-2xl: '96em'; // 1536px
 
+// Gradients
+$mantine-color-background-gradient-primary: linear-gradient(90deg, #00ff87, #60efff);
+// $mantine-color-background-gradient-dimmed: linear-gradient(90deg, #00e67a, #56d7e6);
+$mantine-color-background-gradient-dimmed: linear-gradient(90deg, #02f483, #1ae6fd);
+
 // Background shades
 $mantine-color-background-0: var(--mantine-color-zinc-0);
 $mantine-color-background-1: var(--mantine-color-zinc-1);
@@ -94,7 +99,7 @@ $mantine-color-danger-9: var(--mantine-color-red-9);
 
 // Flat colors
 $mantine-color-amber-flat: rgba(245, 158, 11, 0.2);
-$mantine-color-teal-flat: rgba(41, 222, 174, 0.2);
+$mantine-color-teal-flat: rgba(43, 222, 176, 0.2);
 $mantine-color-slate-flat-300: rgba(203, 213, 225, 0.4);
 $mantine-color-slate-flat-700: rgba(51, 65, 85, 0.4);
 $mantine-color-green-flat: rgba(34, 197, 94, 0.2);
@@ -103,7 +108,7 @@ $mantine-color-yellow-flat: rgba(234, 179, 8, 0.2);
 $mantine-color-indigo-flat: rgba(99, 102, 241, 0.2);
 $mantine-color-zinc-flat-300: rgba(212, 212, 216, 0.4);
 $mantine-color-zinc-flat-700: rgba(63, 63, 70, 0.4);
-$mantine-color-primary-flat: $mantine-color-amber-flat;
+$mantine-color-primary-flat: $mantine-color-teal-flat;
 $mantine-color-background-flat: $mantine-color-zinc-flat-300;
 $mantine-color-success-flat: $mantine-color-green-flat;
 $mantine-color-warning-flat: $mantine-color-yellow-flat;
@@ -194,13 +199,13 @@ $mantine-font-black: 900;
 
 @mixin textInputRoot {
   .textInputSection {
-    color: $mantine-color-foreground-7;
+    color: $mantine-color-foreground-5;
     font-size: var(--mantine-font-size-base);
     font-weight: $mantine-font-normal;
     line-height: var(--mantine-line-height-body);
 
     @include dark {
-      color: $mantine-color-foreground-2;
+      color: $mantine-color-foreground-4;
     }
 
     @include smaller-than($mantine-breakpoint-xs) {
@@ -213,8 +218,8 @@ $mantine-font-black: 900;
   }
 
   .textInputInput {
-    background-color: $mantine-color-background-1;
-    border: rem(2px) solid transparent;
+    background-color: transparent;
+    border: 1px solid $mantine-color-foreground-3;
     border-radius: 20px;
     padding-top: rem(12px);
     padding-bottom: rem(12px);
@@ -224,11 +229,20 @@ $mantine-font-black: 900;
     font-size: var(--mantine-font-size-base);
     line-height: var(--mantine-line-height-body);
     font-weight: $mantine-font-normal;
-    color: $mantine-color-foreground-7;
+    color: $mantine-color-foreground-6;
+
+    &:focus,
+    &:focus-within {
+      border: rem(2px) solid var(--mantine-primary-color-5);
+    }
+
+    &[data-error='true'] {
+      border: rem(2px) solid $mantine-color-danger;
+    }
 
     @include dark {
-      background-color: $mantine-color-background-7;
-      color: $mantine-color-foreground-2;
+      color: $mantine-color-foreground-3;
+      border: 1px solid $mantine-color-foreground-6;
     }
 
     @include smaller-than($mantine-breakpoint-xs) {
@@ -236,8 +250,11 @@ $mantine-font-black: 900;
     }
 
     &::placeholder {
-      font-weight: $mantine-font-light;
       color: $mantine-color-foreground-4;
+
+      @include dark {
+        color: $mantine-color-foreground-5;
+      }
     }
   }
 
@@ -458,9 +475,9 @@ $mantine-font-black: 900;
 @mixin buttonRoot {
   border-radius: 20px;
   width: auto;
-  height: auto;
-  padding: rem(16px) rem(24px);
+  height: min-content;
   transition: background-color 0.3s ease-out;
+  border: none;
 
   .buttonLabel {
     font-size: var(--mantine-font-size-base);
@@ -470,19 +487,35 @@ $mantine-font-black: 900;
 }
 
 @mixin primaryButtonRoot {
-  @include primaryButtonRoot;
+  @include buttonRoot;
 
   & {
-    background-color: var(--mantine-primary-color-5);
-    width: 100%;
+    position: relative;
+    background: $mantine-color-background-gradient-primary;
+    z-index: 1;
   }
 
-  &:hover {
-    background-color: var(--mantine-primary-color-6);
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    inset: 0;
+    background-image: $mantine-color-background-gradient-dimmed;
+    z-index: -1;
+    transition: opacity 0.3s ease-out;
+    opacity: 0;
+    filter: blur(0);
+    border-radius: inherit;
+    transform: translateY(0);
   }
 
   .buttonLabel {
-    color: var(--mantine-color-white);
+    color: $mantine-color-foreground-8;
   }
 }
 
@@ -490,20 +523,10 @@ $mantine-font-black: 900;
   @include buttonRoot;
 
   & {
+    background-color: $mantine-color-background-1;
+
     @include dark {
-      background-color: $mantine-color-background-6;
-    }
-
-    & {
-      background-color: $mantine-color-background-1;
-    }
-
-    &:hover {
-      background-color: $mantine-color-background-2;
-
-      @include dark {
-        background-color: $mantine-color-background-7;
-      }
+      background-color: $mantine-color-background-7;
     }
   }
 
