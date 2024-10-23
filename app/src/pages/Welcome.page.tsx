@@ -1,7 +1,3 @@
-import Welcome from "@/components/Welcome/Welcome";
-
 export default function WelcomePage() {
-    return (
-        <Welcome />
-    );
+  return <div>Welcome component</div>;
 }

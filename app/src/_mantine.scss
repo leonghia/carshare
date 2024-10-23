@@ -93,6 +93,7 @@ $mantine-color-danger-8: var(--mantine-color-red-8);
 $mantine-color-danger-9: var(--mantine-color-red-9);
 
 // Flat colors
+$mantine-color-amber-flat: rgba(245, 158, 11, 0.2);
 $mantine-color-teal-flat: rgba(41, 222, 174, 0.2);
 $mantine-color-slate-flat-300: rgba(203, 213, 225, 0.4);
 $mantine-color-slate-flat-700: rgba(51, 65, 85, 0.4);
@@ -102,7 +103,7 @@ $mantine-color-yellow-flat: rgba(234, 179, 8, 0.2);
 $mantine-color-indigo-flat: rgba(99, 102, 241, 0.2);
 $mantine-color-zinc-flat-300: rgba(212, 212, 216, 0.4);
 $mantine-color-zinc-flat-700: rgba(63, 63, 70, 0.4);
-$mantine-color-primary-flat: $mantine-color-teal-flat;
+$mantine-color-primary-flat: $mantine-color-amber-flat;
 $mantine-color-background-flat: $mantine-color-zinc-flat-300;
 $mantine-color-success-flat: $mantine-color-green-flat;
 $mantine-color-warning-flat: $mantine-color-yellow-flat;
@@ -110,7 +111,6 @@ $mantine-color-danger-flat: $mantine-color-red-flat;
 
 // Layout colors
 $mantine-color-overlay: rgba(0, 0, 0, 0.3);
-$mantine-color-overlay-dark: rgba(0, 0, 0, 0.3);
 $mantine-color-divider: rgba(17, 17, 17, 0.15);
 
 // Font weights
@@ -575,8 +575,4 @@ $mantine-font-black: 900;
   width: 100%;
   height: 100%;
   backdrop-filter: blur(rem(8px));
-
-  @include dark {
-    background-color: $mantine-color-overlay-dark;
-  }
 }
