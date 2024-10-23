@@ -22,12 +22,12 @@
 
 // Define variables for your breakpoints,
 // values must be the same as in your theme
-$mantine-breakpoint-xs: '23.375em'; // 374px
-$mantine-breakpoint-sm: '39.9375em'; // 639px
-$mantine-breakpoint-md: '47.9375em'; // 767px
-$mantine-breakpoint-lg: '63.9375em'; // 1023px
-$mantine-breakpoint-xl: '79.9375em'; // 1279px
-$mantine-breakpoint-2xl: '95.9375em'; // 1535px
+$mantine-breakpoint-xs: '24em'; // 384px
+$mantine-breakpoint-sm: '40em'; // 640px
+$mantine-breakpoint-md: '48em'; // 768px
+$mantine-breakpoint-lg: '64em'; // 1024px
+$mantine-breakpoint-xl: '80em'; // 1280px
+$mantine-breakpoint-2xl: '96em'; // 1536px
 
 // Background shades
 $mantine-color-background-0: var(--mantine-color-zinc-0);
@@ -93,6 +93,7 @@ $mantine-color-danger-8: var(--mantine-color-red-8);
 $mantine-color-danger-9: var(--mantine-color-red-9);
 
 // Flat colors
+$mantine-color-amber-flat: rgba(245, 158, 11, 0.2);
 $mantine-color-teal-flat: rgba(41, 222, 174, 0.2);
 $mantine-color-slate-flat-300: rgba(203, 213, 225, 0.4);
 $mantine-color-slate-flat-700: rgba(51, 65, 85, 0.4);
@@ -102,7 +103,7 @@ $mantine-color-yellow-flat: rgba(234, 179, 8, 0.2);
 $mantine-color-indigo-flat: rgba(99, 102, 241, 0.2);
 $mantine-color-zinc-flat-300: rgba(212, 212, 216, 0.4);
 $mantine-color-zinc-flat-700: rgba(63, 63, 70, 0.4);
-$mantine-color-primary-flat: $mantine-color-teal-flat;
+$mantine-color-primary-flat: $mantine-color-amber-flat;
 $mantine-color-background-flat: $mantine-color-zinc-flat-300;
 $mantine-color-success-flat: $mantine-color-green-flat;
 $mantine-color-warning-flat: $mantine-color-yellow-flat;
@@ -110,7 +111,6 @@ $mantine-color-danger-flat: $mantine-color-red-flat;
 
 // Layout colors
 $mantine-color-overlay: rgba(0, 0, 0, 0.3);
-$mantine-color-overlay-dark: rgba(0, 0, 0, 0.4);
 $mantine-color-divider: rgba(17, 17, 17, 0.15);
 
 // Font weights
@@ -122,63 +122,6 @@ $mantine-font-semibold: 600;
 $mantine-font-bold: 700;
 $mantine-font-extrabold: 800;
 $mantine-font-black: 900;
-
-// Gradients
-@mixin gradient-primary-background {
-  background-image: linear-gradient(to right, #00ff87, #60efff);
-}
-
-@mixin gradient-primary-dimmed {
-  background-image: linear-gradient(to right, #00e67a, #4fdfef);
-}
-
-@mixin gradientAnimation($startBase, $endBase, $startEffect, $endEffect, $transTime) {
-  background-size: 100%;
-  background-image: linear-gradient(to right, $startBase, $endBase);
-  position: relative;
-  z-index: 100;
-
-  &::after {
-    content: '';
-    background-image: linear-gradient(to right, $startEffect, $endEffect);
-    position: absolute;
-    display: block;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    z-index: -100;
-    transition: opacity $transTime ease-in;
-    border-radius: inherit;
-    @content;
-  }
-
-  &:not(:disabled),
-  &:not([data-disabled]) {
-    &:hover {
-      &::after {
-        opacity: 1;
-      }
-    }
-  }
-}
-
-@mixin primaryButton {
-  border-radius: 20px;
-  height: min-content;
-  width: 100%;
-  border: none;
-  @include gradientAnimation(#00ff87, #60efff, #00e67a, #4fdfef, 0.3s);
-  @content;
-
-  .buttonLabel {
-    font-size: var(--mantine-font-size-base);
-    line-height: var(--mantine-line-height-body);
-    font-weight: $mantine-font-semibold;
-    color: $mantine-color-foreground-8;
-  }
-}
 
 @function rem($value) {
   @return #{math.div(math.div($value, $value * 0 + 1), 16)}rem;
@@ -235,151 +178,401 @@ $mantine-font-black: 900;
   }
 }
 
-// Input border
-@mixin border-input-light($color, $isDark: false) {
-  &[data-variant='default'] {
-    @if $isDark {
-      @include dark {
-        --input-bd: #{$color};
-      }
-    } @else {
-      @include light {
-        --input-bd: #{$color};
-      }
-    }
-  }
-}
-
-@mixin inputWrapperDefaultLight {
-  &[data-variant='default'] {
-    @include light {
-      .input:focus,
-      .input:focus-within {
-        background-color: var(--mantine-color-white);
-      }
-
-      @content;
-    }
-  }
-}
-
-@mixin passwordInputWrapper {
-  margin-bottom: rem(12px);
-}
-
-@mixin passwordInputInput {
-  border: rem(2px) solid $mantine-color-background-1;
-  background-color: $mantine-color-background-1;
-  border-radius: 20px;
-  padding: rem(12px) rem(16px);
-  font-size: var(--mantine-font-size-base);
-  color: $mantine-color-foreground-7;
-  font-weight: $mantine-font-normal;
-  line-height: var(--mantine-line-height-body);
-
-  @include dark {
-    background-color: $mantine-color-background-7;
-    border-color: $mantine-color-background-7;
-    color: $mantine-color-foreground-3;
-  }
-
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
-  }
-
-  &[data-error='true'] {
-    border: rem(2px) solid $mantine-color-danger-4;
-    background-color: $mantine-color-danger-0;
-
-    @include dark {
-      background-color: $mantine-color-background-8;
-    }
-  }
-
-  &:focus,
-  &:focus-within {
-    border-color: var(--mantine-primary-color-6);
-    background-color: var(--mantine-color-white);
-
-    @include dark {
-      background-color: $mantine-color-background-9;
-    }
-  }
-}
-
-@mixin passwordInputInnerInput {
-  &::placeholder {
-    font-weight: $mantine-font-light;
-    color: $mantine-color-foreground-5;
-
-    @include dark {
-      color: $mantine-color-foreground-4;
-    }
-  }
-}
-
-@mixin inputInput {
-  border-radius: 20px;
-  padding: rem(12px) rem(16px);
-  font-size: var(--mantine-font-size-base);
-  color: $mantine-color-foreground-7;
-  font-weight: $mantine-font-normal;
-  height: min-content;
-  line-height: var(--mantine-line-height-body);
-  border: rem(2px) solid $mantine-color-background-1;
-  background-color: $mantine-color-background-1;
-
-  @include dark {
-    background-color: $mantine-color-background-7;
-    border-color: $mantine-color-background-7;
-    color: $mantine-color-foreground-3;
-  }
-
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
-  }
-
-  &[data-error='true'] {
-    border: rem(2px) solid $mantine-color-danger-4;
-    background-color: $mantine-color-danger-0;
-
-    @include dark {
-      background-color: $mantine-color-background-8;
-    }
-  }
-
-  &:focus,
-  &:focus-within {
-    border: rem(2px) solid var(--mantine-primary-color-6);
-    background-color: var(--mantine-color-white);
-
-    @include dark {
-      background-color: $mantine-color-background-9;
-    }
-  }
-
-  &::placeholder {
-    font-weight: $mantine-font-light;
-    color: $mantine-color-foreground-5;
-
-    @include dark {
-      color: $mantine-color-foreground-4;
-    }
-  }
-}
-
-@mixin inputError {
-  color: $mantine-color-danger;
-  font-size: var(--mantine-font-size-sm);
-  line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-normal;
-
-  @include dark {
-    color: $mantine-color-danger-4;
-  }
-}
-
 // CSS reset
 * {
   margin: 0;
+}
+
+// Custom stylings
+@mixin inputError {
+  font-size: var(--mantine-font-size-sm);
+  font-weight: $mantine-font-normal;
+  color: $mantine-color-danger-5;
+  line-height: var(--mantine-line-height-body);
+  margin-top: rem(8px);
+}
+
+@mixin textInputRoot {
+  .textInputSection {
+    color: $mantine-color-foreground-7;
+    font-size: var(--mantine-font-size-base);
+    font-weight: $mantine-font-normal;
+    line-height: var(--mantine-line-height-body);
+
+    @include dark {
+      color: $mantine-color-foreground-2;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+
+    &[data-position='left'] {
+      inset-inline-start: rem(20px);
+    }
+  }
+
+  .textInputInput {
+    background-color: $mantine-color-background-1;
+    border: rem(2px) solid transparent;
+    border-radius: 20px;
+    padding-top: rem(12px);
+    padding-bottom: rem(12px);
+    padding-inline-start: rem(16px);
+    padding-inline-end: rem(16px);
+    height: min-content;
+    font-size: var(--mantine-font-size-base);
+    line-height: var(--mantine-line-height-body);
+    font-weight: $mantine-font-normal;
+    color: $mantine-color-foreground-7;
+
+    @include dark {
+      background-color: $mantine-color-background-7;
+      color: $mantine-color-foreground-2;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+
+    &::placeholder {
+      font-weight: $mantine-font-light;
+      color: $mantine-color-foreground-4;
+    }
+  }
+
+  .textInputError {
+    @include inputError;
+  }
+}
+
+@mixin numberInputRoot {
+  .numberInputInput {
+    background-color: $mantine-color-background-1;
+    border: rem(2px) solid transparent;
+    border-radius: 20px;
+    padding-top: rem(12px);
+    padding-bottom: rem(12px);
+    padding-inline-start: rem(16px);
+    padding-inline-end: rem(16px);
+    height: min-content;
+    font-size: var(--mantine-font-size-base);
+    line-height: var(--mantine-line-height-body);
+    font-weight: $mantine-font-normal;
+    color: $mantine-color-foreground-7;
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+
+    &::placeholder {
+      font-weight: $mantine-font-light;
+      color: $mantine-color-foreground-4;
+    }
+  }
+
+  .numberInputSection {
+    color: $mantine-color-foreground-7;
+    font-size: var(--mantine-font-size-base);
+    font-weight: $mantine-font-normal;
+    line-height: var(--mantine-line-height-body);
+
+    &[data-position='left'] {
+      inset-inline-start: rem(20px);
+    }
+  }
+}
+
+@mixin passwordInputRoot {
+  .passwordInputInput {
+    background-color: $mantine-color-background-1;
+    border: rem(2px) solid transparent;
+    height: rem(52px);
+    color: $mantine-color-foreground-7;
+    line-height: var(--mantine-line-height-body);
+    font-size: var(--mantine-font-size-base);
+    border-radius: 20px;
+    padding-inline-start: rem(16px);
+    padding-inline-end: rem(48px);
+
+    @include dark {
+      background-color: $mantine-color-background-7;
+      color: $mantine-color-foreground-2;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+  }
+
+  .passwordInputInnerInput {
+    padding-inline-start: inherit;
+    padding-inline-end: inherit;
+    line-height: inherit;
+
+    &::placeholder {
+      font-weight: $mantine-font-light;
+      color: $mantine-color-foreground-4;
+    }
+  }
+
+  .passwordInputSection {
+    width: max-content;
+    inset-inline-end: rem(16px);
+
+    .passwordInputVisibilityToggle {
+      color: $mantine-color-foreground-7;
+
+      @include dark {
+        color: $mantine-color-foreground-2;
+      }
+
+      svg {
+        width: rem(24px);
+        height: rem(24px);
+      }
+    }
+  }
+
+  .passwordInputError {
+    @include inputError;
+  }
+}
+
+@mixin datePickerInputRoot {
+  .datePickerInputSection {
+    width: max-content;
+    inset-inline-end: rem(16px);
+
+    svg {
+      width: rem(24px);
+      height: rem(24px);
+      color: $mantine-color-foreground-7;
+
+      @include dark {
+        color: $mantine-color-foreground-2;
+      }
+    }
+  }
+
+  .datePickerInputInput {
+    padding-top: rem(12px);
+    padding-bottom: rem(12px);
+    padding-inline-start: rem(16px);
+    padding-inline-end: rem(16px);
+    font-size: var(--mantine-font-size-base);
+    line-height: var(--mantine-line-height-body);
+    font-weight: $mantine-font-normal;
+    color: $mantine-color-foreground-7;
+    border-radius: 20px;
+    height: min-content;
+    border: rem(2px) solid transparent;
+    background-color: $mantine-color-background-1;
+
+    @include dark {
+      background-color: $mantine-color-background-7;
+      color: $mantine-color-foreground-2;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+  }
+
+  .datePickerInputPlaceholder {
+    font-weight: $mantine-font-light;
+    color: $mantine-color-foreground-4;
+  }
+
+  .datePickerInputError {
+    @include inputError;
+  }
+}
+
+@mixin popoverDropdown {
+  border: 1px solid transparent;
+  border-radius: 16px;
+  box-shadow: var(--mantine-shadow-xl);
+}
+
+@mixin datePickerInputDay {
+  border-radius: 9999px;
+
+  &:where([data-selected]) {
+    background-color: var(--mantine-primary-color-5);
+  }
+}
+
+@mixin checkboxRoot {
+  .checkboxInner {
+    width: rem(24px);
+    height: rem(24px);
+    flex-shrink: 0;
+  }
+
+  .checkboxInput {
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.3s ease-out;
+
+    @include light {
+      border-color: transparent;
+      background-color: $mantine-color-background-1;
+
+      &:checked {
+        background-color: var(--mantine-primary-color-5);
+      }
+    }
+
+    @include dark {
+      border-color: transparent;
+      background-color: $mantine-color-background-7;
+
+      &:checked {
+        background-color: var(--mantine-primary-color-5);
+      }
+    }
+  }
+
+  .checkboxLabel {
+    font-size: var(--mantine-font-size-base);
+    color: $mantine-color-foreground-7;
+    font-weight: $mantine-font-normal;
+    line-height: var(--mantine-line-height-body);
+
+    @include dark {
+      color: $mantine-color-foreground-2;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+  }
+
+  .checkboxError {
+    @include inputError;
+  }
+}
+
+@mixin buttonRoot {
+  border-radius: 20px;
+  width: auto;
+  height: auto;
+  padding: rem(16px) rem(24px);
+  transition: background-color 0.3s ease-out;
+
+  .buttonLabel {
+    font-size: var(--mantine-font-size-base);
+    font-weight: $mantine-font-semibold;
+    line-height: var(--mantine-line-height-body);
+  }
+}
+
+@mixin primaryButtonRoot {
+  @include primaryButtonRoot;
+
+  & {
+    background-color: var(--mantine-primary-color-5);
+    width: 100%;
+  }
+
+  &:hover {
+    background-color: var(--mantine-primary-color-6);
+  }
+
+  .buttonLabel {
+    color: var(--mantine-color-white);
+  }
+}
+
+@mixin secondaryButtonRoot {
+  @include buttonRoot;
+
+  & {
+    @include dark {
+      background-color: $mantine-color-background-6;
+    }
+
+    & {
+      background-color: $mantine-color-background-1;
+    }
+
+    &:hover {
+      background-color: $mantine-color-background-2;
+
+      @include dark {
+        background-color: $mantine-color-background-7;
+      }
+    }
+  }
+
+  .buttonLabel {
+    color: $mantine-color-foreground-7;
+
+    @include dark {
+      color: $mantine-color-foreground-2;
+    }
+  }
+}
+
+@mixin anchorRoot {
+  color: var(--mantine-primary-color-5);
+  font-weight: $mantine-font-semibold;
+
+  &:hover {
+    color: var(--mantine-primary-color-6);
+  }
+}
+
+@mixin loaderRoot {
+  --loader-color: var(--mantine-color-white);
+  --loader-size: calc(var(--mantine-font-size-lg) * 1.5);
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    --loader-size: calc(var(--mantine-font-size-base) * 1.5);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    --loader-size: calc(var(--mantine-font-size-sm) * 1.5);
+  }
+}
+
+@mixin modalRoot {
+  --modal-size: rem(500px);
+
+  .modalInner {
+    align-items: center;
+    padding-inline: rem(16px);
+  }
+
+  .modalContent {
+    width: rem(500px);
+    border-radius: rem(32px);
+    background-color: var(--mantine-color-white);
+    box-shadow: var(--mantine-shadow-2xl);
+
+    @include dark {
+      background-color: $mantine-color-background-8;
+    }
+
+    &.opening {
+      animation: modalOpening 0.3s ease-in;
+    }
+
+    &.closing {
+      animation: modalClosing 0.2s ease-in forwards;
+    }
+  }
+
+  .modalBody {
+    padding: 0;
+  }
+}
+
+@mixin overlayRoot {
+  background-color: $mantine-color-overlay;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(rem(8px));
 }
