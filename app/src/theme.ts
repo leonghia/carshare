@@ -4,6 +4,19 @@ export const theme = createTheme({
   /** Put your mantine theme override here */
   primaryColor: 'indigo',
   colors: {
+    amber: [
+      '#FFFBEB',
+      '#FEF3C7',
+      '#FDE68A',
+      '#FCD34D',
+      '#FBBF24',
+      '#F59E0B',
+      '#D97706',
+      '#B45309',
+      '#92400E',
+      '#78350F',
+      '#451A03',
+    ],
     teal: [
       '#EAFEF9',
       '#D5FDF3',
@@ -111,11 +124,6 @@ export const theme = createTheme({
   lineHeights: {
     body: '1.5',
     heading: '1.3',
-  },
-  defaultGradient: {
-    from: '#00ff87',
-    to: '#60efff',
-    deg: 90,
   },
   breakpoints: {
     xs: '23.375em', // 374px
