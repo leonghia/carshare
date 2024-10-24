@@ -1,0 +1,19 @@
+.buttonRoot {
+  @include secondaryButtonRoot;
+
+  & {
+    border-radius: rem(8px);
+    width: rem(48px);
+    height: rem(48px);
+  }
+
+  .buttonLabel {
+    width: 50%;
+    height: 50%;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

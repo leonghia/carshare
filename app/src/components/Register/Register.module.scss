@@ -1,0 +1,99 @@
+.container {
+  padding: rem(80px) rem(64px);
+}
+
+.main {
+  width: 100%;
+  max-width: rem(1390px);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) rem(784px);
+  gap: rem(48px);
+}
+
+.leftCol {
+}
+
+.headingAndToggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: rem(40px);
+}
+
+.heading {
+  font-size: var(--mantine-font-size-4xl);
+  line-height: var(--mantine-line-height-heading);
+  font-weight: $mantine-font-bold;
+  color: $mantine-color-foreground-9;
+
+  @include dark {
+    color: $mantine-color-foreground-0;
+  }
+}
+
+.rightCol {
+  position: relative;
+  height: rem(1060px);
+  background-image: url('../../assets/images/register_side_image_784w.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  align-self: center;
+}
+
+.logo {
+  position: absolute;
+  top: rem(40px);
+  right: rem(64px);
+  width: max-content;
+  height: min-content;
+
+  img {
+    height: rem(30px);
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+.titleAndSubtitle {
+  position: absolute;
+  width: rem(620px);
+  height: fit-content;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: rem(100px);
+  z-index: 1;
+  text-align: center;
+
+  & > :not(:last-child) {
+    margin-bottom: rem(24px);
+  }
+}
+
+.title {
+  font-family: 'Carattere Regular', sans-serif;
+  font-weight: $mantine-font-normal;
+  font-size: rem(64px);
+  line-height: 1;
+  color: var(--mantine-color-white);
+}
+
+.subtitle {
+  font-size: var(--mantine-font-size-xl);
+  font-weight: $mantine-font-normal;
+  color: $mantine-color-foreground-3;
+  line-height: var(--mantine-line-height-heading);
+}
+
+.overlaySideImg {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 1) 80%);
+  opacity: 0.8;
+  mask-image: url('../../assets/images/register_side_image_mask_784w.webp');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
