@@ -38,3 +38,7 @@
 .datePickerInputDay {
   @include datePickerInputDay();
 }
+
+.passwordInputRoot {
+  @include passwordInputRoot;
+}

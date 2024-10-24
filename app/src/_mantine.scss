@@ -364,6 +364,58 @@ $mantine-font-black: 900;
 }
 
 @mixin passwordInputRoot {
+  .passwordInputLabel {
+    @include inputLabel();
+  }
+
+  .passwordInputRequired {
+    @include inputRequired();
+  }
+
+  .passwordInputWrapper {
+    margin-top: rem(12px);
+  }
+
+  .passwordInputInput {
+    background-color: $mantine-color-input-bg-light;
+    border: rem(2px) solid transparent;
+    height: rem(52px);
+    border-radius: rem(20px);
+    padding-inline-start: rem(16px);
+    padding-inline-end: rem(48px);
+
+    &:focus,
+    &:focus-within {
+      border-color: var(--mantine-primary-color-5);
+    }
+
+    @include dark() {
+      background-color: $mantine-color-input-bg-dark;
+    }
+  }
+
+  .passwordInputInnerInput {
+    padding-inline-end: inherit;
+    padding-inline-start: inherit;
+
+    &::placeholder {
+      @include inputPlaceholder();
+    }
+
+    @include inputContent();
+  }
+
+  .passwordInputSection {
+    @include inputSection();
+  }
+
+  .passwordInputVisibilityToggle {
+    color: $mantine-color-foreground-5;
+
+    @include dark {
+      color: $mantine-color-foreground-4;
+    }
+  }
 }
 
 @mixin datePickerInputRoot {

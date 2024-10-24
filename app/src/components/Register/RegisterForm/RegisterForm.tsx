@@ -164,6 +164,16 @@ export default function RegisterForm() {
         placeholder="Nhập mật khẩu bạn muốn đặt..."
         defaultValue=""
         visibilityToggleIcon={VisibilityToggleIcon}
+        classNames={{
+          root: classes.passwordInputRoot,
+          input: classes.passwordInputInput,
+          innerInput: classes.passwordInputInnerInput,
+          section: classes.passwordInputSection,
+          visibilityToggle: classes.passwordInputVisibilityToggle,
+          wrapper: classes.passwordInputWrapper,
+          label: classes.passwordInputLabel,
+          required: classes.passwordInputRequired,
+        }}
       />
     </form>
   );
