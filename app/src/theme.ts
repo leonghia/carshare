@@ -2,7 +2,7 @@ import { createTheme, rem } from '@mantine/core';
 
 export const theme = createTheme({
   /** Put your mantine theme override here */
-  primaryColor: 'amber',
+  primaryColor: 'teal',
   colors: {
     amber: [
       '#FFFBEB',
@@ -19,15 +19,15 @@ export const theme = createTheme({
     ],
     teal: [
       '#EAFEF9',
-      '#D5FDF3',
-      '#ABFCE6',
-      '#82FADA',
-      '#58F9CD',
-      '#2EF7C1',
-      '#29DEAE',
-      '#25C69A',
-      '#1C9474',
-      '#0E4A3A',
+      '#ACFCE7',
+      '#83FADB',
+      '#59F9CF',
+      '#30F7C3',
+      '#2BDEB0',
+      '#26C69C',
+      '#1D9475',
+      '#13634E',
+      '#0A3127',
       '#051913',
     ],
     slate: [
@@ -124,14 +124,6 @@ export const theme = createTheme({
   lineHeights: {
     body: '1.5',
     heading: '1.3',
-  },
-  breakpoints: {
-    xs: '23.375em', // 374px
-    sm: '39.9375em', // 639px
-    md: '47.9375em', // 767px
-    lg: '63.9375em', // 1023px
-    xl: '79.9375em', // 1279px
-    '2xl': '95.9375em', // 1535px
   },
   shadows: {
     sm: '0 0.0625rem 2rem 0 rgb(70 76 136 / 0.05)',

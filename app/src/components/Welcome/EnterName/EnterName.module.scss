@@ -1,0 +1,47 @@
+.buttonRoot {
+  @include primaryButtonRoot;
+
+  & {
+    padding: rem(16px) rem(40px);
+    display: block;
+    margin-inline: auto;
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      padding: rem(12px) rem(32px);
+    }
+  }
+}
+
+.titleAndInput {
+  & > :not(:last-child) {
+    margin-bottom: rem(24px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-bottom: rem(16px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-bottom: rem(12px);
+    }
+  }
+}
+
+.title {
+  font-size: var(--mantine-font-size-3xl);
+  line-height: var(--mantine-line-height-heading);
+  font-weight: $mantine-font-semibold;
+  color: $mantine-color-foreground-9;
+  margin-bottom: rem(24px);
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-2xl);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-xl);
+  }
+}
+
+.textInputRoot {
+  @include textInputRoot;
+}

@@ -1,3 +1,3 @@
 export default function RegisterPage() {
-  return <div>Register component</div>;
+  return <h1>Register Page</h1>;
 }

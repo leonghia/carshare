@@ -1,0 +1,267 @@
+.container {
+  background-color: var(--mantine-color-white);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    padding-inline: rem(16px);
+  }
+}
+
+.nameSection {
+  & > :not(:last-child) {
+    margin-bottom: rem(40px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-bottom: rem(32px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-bottom: rem(24px);
+    }
+  }
+}
+
+.logo {
+  text-align: center;
+
+  img {
+    height: rem(30px);
+    width: auto;
+    object-fit: contain;
+
+    @include smaller-than($mantine-breakpoint-md) {
+      height: rem(24px);
+    }
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      height: rem(20px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      height: rem(16px);
+    }
+  }
+}
+
+.sideIllustrator {
+  position: absolute;
+  top: 50%;
+
+  img {
+    height: 45vh;
+    width: auto;
+    object-fit: contain;
+
+    @include smaller-than($mantine-breakpoint-lg) {
+      height: 40vh;
+    }
+
+    @include smaller-than($mantine-breakpoint-md) {
+      height: 35vh;
+    }
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      height: 30vh;
+    }
+  }
+}
+
+.sideIllustratorLeft {
+  left: 0;
+  transform: translate(-50%, -50%);
+
+  @include smaller-than($mantine-breakpoint-lg) {
+    top: unset;
+    transform: translate(-50%, 0);
+    bottom: 0;
+  }
+}
+
+.sideIllustratorRight {
+  right: 0;
+  transform: translate(50%, -50%);
+
+  @include smaller-than($mantine-breakpoint-lg) {
+    top: 0;
+    transform: translate(50%, 0);
+  }
+}
+
+.welcomeSection {
+  & > :not(:last-child) {
+    margin-bottom: rem(40px);
+
+    @include smaller-than($mantine-breakpoint-md) {
+      margin-bottom: rem(32px);
+    }
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-bottom: rem(24px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-bottom: rem(16px);
+    }
+  }
+}
+
+.centerIllustrator {
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+
+  img {
+    width: rem(240px);
+    height: rem(240px);
+    object-fit: contain;
+
+    @include smaller-than($mantine-breakpoint-md) {
+      width: rem(200px);
+      height: rem(200px);
+    }
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      width: rem(160px);
+      height: rem(160px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      width: rem(140px);
+      height: rem(140px);
+    }
+  }
+}
+
+.helloAndWelcomeText {
+  & > :not(:last-child) {
+    margin-bottom: rem(8px);
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-bottom: rem(4px);
+    }
+  }
+
+  & {
+    text-align: center;
+  }
+}
+
+.helloText {
+  font-size: var(--mantine-font-size-2xl);
+  font-weight: $mantine-font-light;
+  line-height: var(--mantine-line-height-heading);
+  color: $mantine-color-foreground-5;
+
+  @include smaller-than($mantine-breakpoint-md) {
+    font-size: var(--mantine-font-size-xl);
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-lg);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-base);
+  }
+}
+
+.welcomeText {
+  font-size: var(--mantine-font-size-3xl);
+  font-weight: $mantine-font-semibold;
+  line-height: var(--mantine-line-height-heading);
+  color: $mantine-color-foreground-9;
+
+  @include smaller-than($mantine-breakpoint-md) {
+    font-size: var(--mantine-font-size-2xl);
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-xl);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-lg);
+  }
+}
+
+.startButtonRoot {
+  @include primaryButtonRoot;
+
+  & {
+    padding: rem(16px) rem(40px);
+    display: block;
+    margin-inline: auto;
+  }
+}
+
+.slideOut {
+  animation: slideOut 0.3s ease-out forwards;
+}
+
+.slideIn {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.falling {
+  animation: falling 1s ease-out 0.4s forwards;
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+}
+
+@keyframes falling {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+  }
+
+  50% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(20%);
+  }
+
+  75% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-10%);
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
