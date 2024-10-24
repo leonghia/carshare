@@ -195,6 +195,11 @@ $mantine-font-black: 900;
   color: $mantine-color-danger-5;
   line-height: var(--mantine-line-height-body);
   margin-top: rem(8px);
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-xs);
+    margin-top: rem(4px);
+  }
 }
 
 @mixin textInputRoot {
@@ -483,6 +488,10 @@ $mantine-font-black: 900;
     font-size: var(--mantine-font-size-base);
     font-weight: $mantine-font-semibold;
     line-height: var(--mantine-line-height-body);
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
   }
 }
 
