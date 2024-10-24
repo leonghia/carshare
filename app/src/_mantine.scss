@@ -478,11 +478,11 @@ $mantine-font-black: 900;
 }
 
 @mixin buttonRoot {
-  border-radius: 20px;
   width: auto;
   height: min-content;
   transition: background-color 0.3s ease-out;
   border: none;
+  padding: 0;
 
   .buttonLabel {
     font-size: var(--mantine-font-size-base);
@@ -533,9 +533,19 @@ $mantine-font-black: 900;
 
   & {
     background-color: $mantine-color-background-1;
+    color: $mantine-color-foreground-6;
 
     @include dark {
       background-color: $mantine-color-background-7;
+      color: $mantine-color-foreground-3;
+    }
+  }
+
+  &:hover {
+    background-color: $mantine-color-background-2;
+
+    @include dark {
+      background-color: $mantine-color-background-6;
     }
   }
 
