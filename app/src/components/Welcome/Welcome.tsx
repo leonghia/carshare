@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import classes from './Welcome.module.scss';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@mantine/core';
-import { useTimeout } from '@mantine/hooks';
+import { useLocalStorage, useTimeout } from '@mantine/hooks';
 import centerIllustrator from '../../assets/images/hello_illustrator.webp';
 import logo from '../../assets/images/logo_1.svg';
 import leftSideIllustrator from '../../assets/images/side_illustrators_1.webp';
@@ -9,15 +10,26 @@ import rightSideIllustrator from '../../assets/images/side_illustrators_2.webp';
 import EnterName from './EnterName/EnterName';
 
 export default function Welcome() {
+  const navigate = useNavigate();
   const [isWelcomeVisible, setIsWelcomeVisible] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
+  const [userName, setUserName] = useLocalStorage<string>({
+    key: 'user_name',
+  });
   const { start, clear } = useTimeout(() => setIsWelcomeVisible(true), 350);
   const [isAnimated, setIsAnimated] = useState<boolean>(false);
 
   const handleNext = (value: string) => {
     setName(value);
+    // Save name to localStorage
+    setUserName(value);
+
     setIsAnimated(true);
     start();
+  };
+
+  const handleStart = () => {
+    navigate('/');
   };
 
   return (
@@ -28,7 +40,7 @@ export default function Welcome() {
       </figure>
       {/* Section */}
       {isWelcomeVisible ? (
-        <WelcomeSection name={name} />
+        <WelcomeSection onClick={handleStart} name={name} />
       ) : (
         <NameSection isSlideOut={isAnimated} onNext={handleNext} />
       )}
@@ -61,7 +73,7 @@ function NameSection({
   );
 }
 
-function WelcomeSection({ name }: { name: string }) {
+function WelcomeSection({ name, onClick }: { name: string; onClick: () => void }) {
   return (
     <section className={classes.welcomeSection + ' ' + classes.slideIn}>
       {/* Logo */}
@@ -78,7 +90,10 @@ function WelcomeSection({ name }: { name: string }) {
         <h1 className={classes.welcomeText}>Chào mừng bạn đến với CarShare</h1>
       </div>
       {/* Start button */}
-      <Button classNames={{ root: classes.startButtonRoot, label: classes.buttonLabel }}>
+      <Button
+        classNames={{ root: classes.startButtonRoot, label: classes.buttonLabel }}
+        onClick={onClick}
+      >
         Bắt đầu
       </Button>
     </section>
