@@ -35,6 +35,15 @@
   @include popoverDropdown();
 }
 
+.passwordPopoverDropdown {
+  @include popoverDropdown();
+
+  & {
+    padding-top: rem(16px);
+    padding-bottom: rem(16px);
+  }
+}
+
 .datePickerInputDay {
   @include datePickerInputDay();
 }
@@ -77,5 +86,57 @@
     padding-top: rem(16px);
     padding-bottom: rem(16px);
     width: 100%;
+  }
+}
+
+.passwordRequirement {
+  display: flex;
+  align-items: center;
+  gap: rem(8px);
+
+
+  &[data-meets='true'] {
+    color: $mantine-color-success-5;
+  }
+  
+  &[data-meets='false'] {
+    color: $mantine-color-danger-5;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: rem(8px);
+  }
+
+  svg {
+    width: rem(18px);
+    height: rem(18px);
+  }
+}
+
+.passwordRequirementLabel {
+  font-size: var(--mantine-font-size-sm);
+  line-height: var(--mantine-line-height-body);
+  font-weight: $mantine-font-normal;
+}
+
+.passwordStrengthProgressRoot {
+  @include progressRoot;
+
+  &[data-strength='weak'] {
+    .progressSection {
+      background-color: $mantine-color-danger-5;
+    }
+  }
+
+  &[data-strength='average'] {
+    .progressSection {
+      background-color: $mantine-color-warning-4;
+    }
+  }
+
+  &[data-strength='strong'] {
+    .progressSection {
+      background-color: $mantine-color-success-5;
+    }
   }
 }

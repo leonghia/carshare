@@ -693,6 +693,21 @@ $mantine-font-black: 900;
   backdrop-filter: blur(rem(8px));
 }
 
+@mixin progressRoot {
+  background-color: $mantine-color-background-1;
+  margin-bottom: rem(16px);
+  border-radius: rem(8px);
+
+  @include dark {
+    background-color: $mantine-color-background-7;
+  }
+
+  .progressSection {
+    border-radius: rem(8px);
+    background-color: var(--mantine-primary-color-5);
+  }
+}
+
 // Stylings
 * {
   margin: 0;

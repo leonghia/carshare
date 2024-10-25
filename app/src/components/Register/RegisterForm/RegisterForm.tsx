@@ -1,7 +1,17 @@
+import { useState } from 'react';
 import classes from './RegisterForm.module.scss';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { Calendar1, Eye, EyeSlash } from 'iconsax-react';
-import { Anchor, Button, Checkbox, CheckboxProps, PasswordInput, TextInput } from '@mantine/core';
+import {
+  Anchor,
+  Button,
+  Checkbox,
+  CheckboxProps,
+  PasswordInput,
+  Popover,
+  Progress,
+  TextInput,
+} from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 
@@ -10,7 +20,47 @@ const emailRegex =
 
 const numberRegex = /^\d+$/;
 
+const PasswordRequirement = ({ meets, label }: { meets: boolean; label: string }) => {
+  return (
+    <div className={classes.passwordRequirement} data-meets={meets}>
+      {meets ? <IconCheck /> : <IconX />}{' '}
+      <span className={classes.passwordRequirementLabel}>{label}</span>
+    </div>
+  );
+};
+
+const passwordRequirements = [
+  { re: /[0-9]/, label: 'Bao gồm một chữ số (0-9)' },
+  { re: /[a-z]/, label: 'Bao gồm một chữ cái viết thường' },
+  { re: /[A-Z]/, label: 'Bao gồm một chữ cái viết hoa' },
+  { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: 'Bao gồm một ký tự đặc biệt' },
+];
+
+const getPasswordStrength = (password: string) => {
+  let multiplier = password.length > 5 ? 0 : 1;
+
+  passwordRequirements.forEach((requirement) => {
+    if (!requirement.re.test(password)) {
+      multiplier += 1;
+    }
+  });
+
+  return Math.max(100 - (100 / (passwordRequirements.length + 1)) * multiplier, 10);
+};
+
 export default function RegisterForm() {
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const [passwordValue, setPasswordValue] = useState('');
+  const checks = passwordRequirements.map((requirement, index) => (
+    <PasswordRequirement
+      key={index}
+      label={requirement.label}
+      meets={requirement.re.test(passwordValue)}
+    />
+  ));
+
+  const strength = getPasswordStrength(passwordValue);
+
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
@@ -161,26 +211,57 @@ export default function RegisterForm() {
           }}
         />
       </div>
-      <PasswordInput
-        withAsterisk
-        label="Mật khẩu"
-        placeholder="Nhập mật khẩu bạn muốn đặt..."
-        defaultValue=""
-        visibilityToggleIcon={VisibilityToggleIcon}
-        key={form.key('password')}
-        {...form.getInputProps('password')}
-        classNames={{
-          root: classes.passwordInputRoot,
-          input: classes.passwordInputInput,
-          innerInput: classes.passwordInputInnerInput,
-          section: classes.passwordInputSection,
-          visibilityToggle: classes.passwordInputVisibilityToggle,
-          wrapper: classes.passwordInputWrapper,
-          label: classes.passwordInputLabel,
-          required: classes.passwordInputRequired,
-          error: classes.passwordInputError,
-        }}
-      />
+      <Popover
+        opened={popoverOpened}
+        // opened={true}
+        position="bottom"
+        width="target"
+        transitionProps={{ transition: 'pop' }}
+        classNames={{ dropdown: classes.passwordPopoverDropdown }}
+      >
+        <Popover.Target>
+          <div
+            onFocusCapture={() => setPopoverOpened(true)}
+            onBlurCapture={() => setPopoverOpened(false)}
+          >
+            <PasswordInput
+              withAsterisk
+              label="Mật khẩu"
+              placeholder="Nhập mật khẩu bạn muốn đặt..."
+              // value={passwordValue}
+              defaultValue=""
+              visibilityToggleIcon={VisibilityToggleIcon}
+              key={form.key('password')}
+              {...form.getInputProps('password')}
+              classNames={{
+                root: classes.passwordInputRoot,
+                input: classes.passwordInputInput,
+                innerInput: classes.passwordInputInnerInput,
+                section: classes.passwordInputSection,
+                visibilityToggle: classes.passwordInputVisibilityToggle,
+                wrapper: classes.passwordInputWrapper,
+                label: classes.passwordInputLabel,
+                required: classes.passwordInputRequired,
+                error: classes.passwordInputError,
+              }}
+              onChange={(event) => setPasswordValue(event.currentTarget.value)}
+            />
+          </div>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <Progress
+            value={strength}
+            size={5}
+            classNames={{
+              root: classes.passwordStrengthProgressRoot,
+              section: classes.progressSection,
+            }}
+            data-strength={strength === 100 ? 'strong' : strength > 50 ? 'average' : 'weak'}
+          />
+          <PasswordRequirement label="Độ dài tối thiểu 6 ký tự" meets={passwordValue.length > 5} />
+          {checks}
+        </Popover.Dropdown>
+      </Popover>
       <PasswordInput
         withAsterisk
         label="Nhập lại mật khẩu"
