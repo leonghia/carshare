@@ -1,6 +1,7 @@
 import classes from './RegisterForm.module.scss';
+import { IconCheck } from '@tabler/icons-react';
 import { Calendar1, Eye, EyeSlash } from 'iconsax-react';
-import { PasswordInput, TextInput } from '@mantine/core';
+import { Anchor, Button, Checkbox, CheckboxProps, PasswordInput, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 
@@ -175,9 +176,55 @@ export default function RegisterForm() {
           required: classes.passwordInputRequired,
         }}
       />
+      <PasswordInput
+        withAsterisk
+        label="Nhập lại mật khẩu"
+        placeholder="Nhập lại mật khẩu mà bạn đã điền ở trên..."
+        defaultValue=""
+        visibilityToggleIcon={VisibilityToggleIcon}
+        classNames={{
+          root: classes.passwordInputRoot,
+          input: classes.passwordInputInput,
+          innerInput: classes.passwordInputInnerInput,
+          section: classes.passwordInputSection,
+          visibilityToggle: classes.passwordInputVisibilityToggle,
+          wrapper: classes.passwordInputWrapper,
+          label: classes.passwordInputLabel,
+          required: classes.passwordInputRequired,
+        }}
+      />
+      <Checkbox
+        icon={CheckboxIcon}
+        label="Tôi cam đoan những thông tin được kê khai ở trên là đúng sự thật. Nếu sai, tôi sẵn sàng chịu mọi trách nhiệm liên quan."
+        classNames={{
+          root: classes.checkboxRoot,
+          inner: classes.checkboxInner,
+          input: classes.checkboxInput,
+          label: classes.checkboxLabel,
+          error: classes.checkboxError,
+          icon: classes.checkboxIcon,
+        }}
+      />
+      <div className={classes.submitAndLogin}>
+        <Button
+          classNames={{
+            root: classes.submitButtonRoot,
+            label: classes.buttonLabel,
+          }}
+        >
+          Đăng ký
+        </Button>
+        <p className={classes.login}>
+          Bạn đã có tài khoản? <Anchor href="/login" underline='never' classNames={{root: classes.anchorRoot}}>Đăng nhập ngay</Anchor>
+        </p>
+      </div>
     </form>
   );
 }
+
+const CheckboxIcon: CheckboxProps['icon'] = ({ indeterminate, ...others }) => (
+  <IconCheck {...others} />
+);
 
 const VisibilityToggleIcon = ({ reveal }: { reveal: boolean }) => {
   return reveal ? <EyeSlash variant="Outline" /> : <Eye variant="Outline" />;

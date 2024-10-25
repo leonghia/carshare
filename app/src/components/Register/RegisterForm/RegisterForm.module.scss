@@ -42,3 +42,40 @@
 .passwordInputRoot {
   @include passwordInputRoot;
 }
+
+.checkboxRoot {
+  @include checkboxRoot;
+}
+
+.submitAndLogin {
+  & > :not(:last-child) {
+    margin-bottom: rem(12px);
+  }
+}
+
+.login {
+  text-align: center;
+  font-size: var(--mantine-font-size-base);
+  line-height: var(--mantine-line-height-body);
+  font-weight: $mantine-font-normal;
+  color: $mantine-color-foreground-4;
+
+  @include dark {
+    color: $mantine-color-foreground-6;
+  }
+}
+
+.anchorRoot {
+  @include anchorRoot;
+}
+
+.submitButtonRoot {
+  @include primaryButtonRoot;
+
+  & {
+    border-radius: rem(20px);
+    padding-top: rem(16px);
+    padding-bottom: rem(16px);
+    width: 100%;
+  }
+}

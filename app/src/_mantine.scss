@@ -210,7 +210,7 @@ $mantine-font-black: 900;
   color: $mantine-color-foreground-7;
 
   @include dark {
-    color: $mantine-color-foreground-2;
+    color: $mantine-color-foreground-3;
   }
 }
 
@@ -221,7 +221,7 @@ $mantine-font-black: 900;
   color: $mantine-color-foreground-6;
 
   @include dark {
-    color: $mantine-color-foreground-3;
+    color: $mantine-color-foreground-4;
   }
 }
 
@@ -229,7 +229,7 @@ $mantine-font-black: 900;
   color: $mantine-color-foreground-4;
 
   @include dark {
-    color: $mantine-color-foreground-5;
+    color: $mantine-color-foreground-6;
   }
 }
 
@@ -250,7 +250,7 @@ $mantine-font-black: 900;
   }
 
   @include dark {
-    color: $mantine-color-foreground-4;
+    color: $mantine-color-foreground-5;
   }
 }
 
@@ -262,7 +262,7 @@ $mantine-font-black: 900;
     color: $mantine-color-foreground-6;
 
     @include dark {
-      color: $mantine-color-foreground-3;
+      color: $mantine-color-foreground-4;
     }
 
     @include smaller-than($mantine-breakpoint-xs) {
@@ -308,12 +308,7 @@ $mantine-font-black: 900;
     }
 
     @include dark {
-      color: $mantine-color-foreground-3;
       background-color: $mantine-color-input-bg-dark;
-    }
-
-    @include smaller-than($mantine-breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
     }
 
     &::placeholder {
@@ -413,7 +408,7 @@ $mantine-font-black: 900;
     color: $mantine-color-foreground-5;
 
     @include dark {
-      color: $mantine-color-foreground-4;
+      color: $mantine-color-foreground-5;
     }
   }
 }
@@ -464,6 +459,10 @@ $mantine-font-black: 900;
   border: 1px solid transparent;
   border-radius: rem(16px);
   box-shadow: var(--mantine-shadow-xl);
+
+  @include dark {
+    background-color: $mantine-color-input-bg-dark;
+  }
 }
 
 @mixin datePickerInputDay {
@@ -492,10 +491,14 @@ $mantine-font-black: 900;
     width: 100%;
     height: 100%;
     transition: background-color 0.3s ease-out;
+    border-color: transparent;
+
+    &:focus-visible {
+      outline-color: var(--mantine-primary-color-5);
+    }
 
     @include light {
-      border-color: transparent;
-      background-color: $mantine-color-background-1;
+      background-color: $mantine-color-nd-btn-bg-light;
 
       &:checked {
         background-color: var(--mantine-primary-color-5);
@@ -503,8 +506,7 @@ $mantine-font-black: 900;
     }
 
     @include dark {
-      border-color: transparent;
-      background-color: $mantine-color-background-7;
+      background-color: $mantine-color-nd-btn-bg-dark;
 
       &:checked {
         background-color: var(--mantine-primary-color-5);
@@ -513,22 +515,26 @@ $mantine-font-black: 900;
   }
 
   .checkboxLabel {
-    font-size: var(--mantine-font-size-base);
-    color: $mantine-color-foreground-7;
-    font-weight: $mantine-font-normal;
-    line-height: var(--mantine-line-height-body);
+    @include inputLabel();
 
-    @include dark {
-      color: $mantine-color-foreground-2;
+    & {
+      font-weight: $mantine-font-normal;
+      color: $mantine-color-foreground-6;
+      font-size: var(--mantine-font-size-base);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
+    @include dark {
+      color: $mantine-color-foreground-4;
     }
   }
 
   .checkboxError {
     @include inputError;
+  }
+
+  .checkboxIcon {
+    width: 65%;
+    color: $mantine-color-foreground-8;
   }
 }
 
@@ -605,10 +611,10 @@ $mantine-font-black: 900;
   }
 
   .buttonLabel {
-    color: $mantine-color-foreground-7;
+    color: $mantine-color-foreground-6;
 
     @include dark {
-      color: $mantine-color-foreground-2;
+      color: $mantine-color-foreground-4;
     }
   }
 }
