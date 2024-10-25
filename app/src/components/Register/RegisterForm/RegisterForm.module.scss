@@ -14,11 +14,6 @@
   .textInputInput {
     padding-inline-start: rem(64px);
   }
-
-  .textInputSection {
-    inset-inline-start: rem(16px);
-    color: $mantine-color-foreground-6;
-  }
 }
 
 .nationalIDAndPublishedDate {
@@ -70,7 +65,7 @@
   color: $mantine-color-foreground-4;
 
   @include dark {
-    color: $mantine-color-foreground-6;
+    color: $mantine-color-foreground-5;
   }
 }
 
@@ -94,11 +89,10 @@
   align-items: center;
   gap: rem(8px);
 
-
   &[data-meets='true'] {
     color: $mantine-color-success-5;
   }
-  
+
   &[data-meets='false'] {
     color: $mantine-color-danger-5;
   }

@@ -121,8 +121,11 @@ $mantine-color-nd-btn-bg-dark-hover: #39393f;
 $mantine-color-nd-btn-bg-light: #f4f4f5;
 $mantine-color-nd-btn-bg-light-hover: #ececee;
 
-$mantine-color-background-gradient-primary: linear-gradient(90deg, #00ff87, #60efff);
-$mantine-color-background-gradient-dimmed: linear-gradient(90deg, #02f483, #1ae6fd);
+$mantine-color-bg-gradient-primary: linear-gradient(90deg, #00ff87, transparent) #60efff;
+// $mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #02f483, #1ae6fd);
+$mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #60efff, #00ff87);
+// $mantine-color-bg-gradient-primary-lighten: linear-gradient(90deg, #33ff9f, #80f2ff);
+$mantine-color-bg-gradient-primary-lighten: linear-gradient(90deg, #60efff, #00ff87);
 
 // Font weights
 $mantine-font-extralight: 200;
@@ -223,7 +226,7 @@ $mantine-font-black: 900;
   color: $mantine-color-foreground-7;
 
   @include dark {
-    color: $mantine-color-foreground-3;
+    color: $mantine-color-foreground-2;
   }
 }
 
@@ -234,7 +237,7 @@ $mantine-font-black: 900;
   color: $mantine-color-foreground-6;
 
   @include dark {
-    color: $mantine-color-foreground-4;
+    color: $mantine-color-foreground-3;
   }
 }
 
@@ -242,7 +245,7 @@ $mantine-font-black: 900;
   color: $mantine-color-foreground-4;
 
   @include dark {
-    color: $mantine-color-foreground-6;
+    color: $mantine-color-foreground-5;
   }
 }
 
@@ -252,7 +255,7 @@ $mantine-font-black: 900;
 
 @mixin inputSection {
   width: max-content;
-  color: $mantine-color-foreground-5;
+  @include inputContent();
 
   &[data-position='right'] {
     inset-inline-end: rem(16px);
@@ -262,29 +265,17 @@ $mantine-font-black: 900;
     inset-inline-start: rem(16px);
   }
 
-  @include dark {
+  svg {
     color: $mantine-color-foreground-5;
+    @include dark {
+      color: $mantine-color-foreground-4;
+    }
   }
 }
 
 @mixin textInputRoot {
   .textInputSection {
-    font-size: var(--mantine-font-size-base);
-    font-weight: $mantine-font-normal;
-    line-height: var(--mantine-line-height-body);
-    color: $mantine-color-foreground-6;
-
-    @include dark {
-      color: $mantine-color-foreground-4;
-    }
-
-    @include smaller-than($mantine-breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
-    }
-
-    &[data-position='left'] {
-      inset-inline-start: rem(20px);
-    }
+    @include inputSection();
   }
 
   .textInputWrapper {
@@ -397,7 +388,6 @@ $mantine-font-black: 900;
     &::placeholder {
       @include inputPlaceholder();
     }
-
   }
 
   .passwordInputSection {
@@ -408,7 +398,7 @@ $mantine-font-black: 900;
     color: $mantine-color-foreground-5;
 
     @include dark {
-      color: $mantine-color-foreground-5;
+      color: $mantine-color-foreground-4;
     }
   }
 
@@ -506,6 +496,11 @@ $mantine-font-black: 900;
     border-color: transparent;
     @include inputBorder();
 
+    &:focus,
+    &:focus-within {
+      border-color: transparent;
+    }
+
     &:focus-visible {
       outline-color: var(--mantine-primary-color-5);
     }
@@ -537,7 +532,7 @@ $mantine-font-black: 900;
     }
 
     @include dark {
-      color: $mantine-color-foreground-4;
+      color: $mantine-color-foreground-3;
     }
   }
 
@@ -554,7 +549,7 @@ $mantine-font-black: 900;
 @mixin buttonRoot {
   width: auto;
   height: min-content;
-  transition: background-color 0.3s ease-out;
+  transition: all 0.5s ease-out;
   border: none;
   padding: 0;
 
@@ -573,28 +568,36 @@ $mantine-font-black: 900;
   @include buttonRoot;
 
   & {
-    position: relative;
-    background: $mantine-color-background-gradient-primary;
-    z-index: 1;
+    background: $mantine-color-bg-gradient-primary;
+    transition: background-color 0.3s ease-out;
   }
 
-  &:hover::before {
-    opacity: 1;
-  }
+  // &:hover::before {
+  //   opacity: 1;
+  // }
 
-  &::before {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    inset: 0;
-    background-image: $mantine-color-background-gradient-dimmed;
-    z-index: -1;
-    transition: opacity 0.3s ease-out;
-    opacity: 0;
-    filter: blur(0);
-    border-radius: inherit;
-    transform: translateY(0);
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   height: 100%;
+  //   width: 100%;
+  //   inset: 0;
+  //   background: $mantine-color-bg-gradient-primary-dimmed;
+  //   z-index: -1;
+  //   transition: opacity 0.3s ease-out;
+  //   opacity: 0;
+  //   filter: blur(0);
+  //   border-radius: inherit;
+  //   transform: translateY(0);
+
+  //   @include dark {
+  //     background: $mantine-color-bg-gradient-primary-lighten;
+  //   }
+  // }
+
+  &:hover,
+  &:focus {
+    background-color: #78ffd6;
   }
 
   .buttonLabel {
@@ -607,11 +610,9 @@ $mantine-font-black: 900;
 
   & {
     background-color: $mantine-color-nd-btn-bg-light;
-    color: $mantine-color-foreground-6;
 
     @include dark {
       background-color: $mantine-color-nd-btn-bg-dark;
-      color: $mantine-color-foreground-3;
     }
   }
 
@@ -627,7 +628,7 @@ $mantine-font-black: 900;
     color: $mantine-color-foreground-6;
 
     @include dark {
-      color: $mantine-color-foreground-4;
+      color: $mantine-color-foreground-3;
     }
   }
 }
@@ -635,6 +636,7 @@ $mantine-font-black: 900;
 @mixin anchorRoot {
   color: var(--mantine-primary-color-5);
   font-weight: $mantine-font-semibold;
+  transition: color 0.3s ease-out;
 
   &:hover {
     color: var(--mantine-primary-color-6);

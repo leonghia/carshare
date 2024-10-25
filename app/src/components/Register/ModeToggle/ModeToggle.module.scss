@@ -3,17 +3,18 @@
 
   & {
     border-radius: rem(8px);
-    width: rem(48px);
-    height: rem(48px);
+    width: rem(40px);
+    height: rem(40px);
   }
 
   .buttonLabel {
-    width: 50%;
-    height: 50%;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
 
     svg {
-      width: 100%;
-      height: 100%;
+      width: 50%;
+      height: 50%;
     }
   }
 }
