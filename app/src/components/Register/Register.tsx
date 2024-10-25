@@ -7,6 +7,23 @@ export default function Register() {
   return (
     // Container
     <div className={classes.container}>
+      {/* Hero */}
+      <div className={classes.hero}>
+        {/* Logo */}
+        <figure className={classes.logo}>
+          <img src={logo} alt="logo" />
+        </figure>
+        {/* Title & Subtitle */}
+        <div className={classes.titleAndSubtitle}>
+          {/* Title */}
+          <h6 className={classes.title}>Bắt đầu hành trình của bạn với chúng mình!</h6>
+          {/* Subtitle */}
+          <p className={classes.subtitle}>
+            CarShare là ứng dụng giúp mọi người chia sẻ cuốc xe chung để tận hưởng những chuyến đi
+            vui vẻ và tiết kiệm chi phí
+          </p>
+        </div>
+      </div>
       {/* Main */}
       <main className={classes.main}>
         {/* Left col */}

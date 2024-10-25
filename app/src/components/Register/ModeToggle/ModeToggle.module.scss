@@ -5,6 +5,11 @@
     border-radius: rem(8px);
     width: rem(40px);
     height: rem(40px);
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      width: rem(34px);
+      height: rem(34px);
+    }
   }
 
   .buttonLabel {

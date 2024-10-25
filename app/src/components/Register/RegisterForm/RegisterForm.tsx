@@ -50,19 +50,10 @@ const getPasswordStrength = (password: string) => {
 
 export default function RegisterForm() {
   const [popoverOpened, setPopoverOpened] = useState(false);
-  const [passwordValue, setPasswordValue] = useState('');
-  const checks = passwordRequirements.map((requirement, index) => (
-    <PasswordRequirement
-      key={index}
-      label={requirement.label}
-      meets={requirement.re.test(passwordValue)}
-    />
-  ));
-
-  const strength = getPasswordStrength(passwordValue);
+  // const [passwordValue, setPasswordValue] = useState('');
 
   const form = useForm({
-    mode: 'uncontrolled',
+    mode: 'controlled',
     initialValues: {
       fullName: '',
       email: '',
@@ -99,11 +90,12 @@ export default function RegisterForm() {
       },
       password: (value: string) => {
         if (value.trim().length === 0) return 'Mật khẩu không được để trống';
+        if (getPasswordStrength(value) <= 50) return 'Mật khẩu của bạn quá yếu';
         return null;
       },
       retypePassword: (value: string) => {
         if (value.trim().length === 0) return 'Mật khẩu nhập lại không được để trống';
-        if (value.trim() !== form.getValues().password) return 'Mật khẩu nhập lại phải trùng khớp';
+        if (value.trim() !== form.values.password) return 'Mật khẩu nhập lại phải trùng khớp';
         return null;
       },
       assurance: (value: boolean) => {
@@ -113,8 +105,21 @@ export default function RegisterForm() {
     },
   });
 
+  const [submittedValues, setSubmittedValues] = useState<typeof form.values | null>(null);
+
+  const strength = getPasswordStrength(form.values.password);
+
+  const checkMarkups = passwordRequirements.map((requirement, index) => (
+    <PasswordRequirement
+      key={index}
+      label={requirement.label}
+      meets={requirement.re.test(form.values.password)}
+    />
+  ));
+
   const handleSubmit = (values: typeof form.values) => {
     console.log(values);
+    setSubmittedValues(values);
   };
 
   return (
@@ -123,7 +128,6 @@ export default function RegisterForm() {
         withAsterisk
         label="Họ tên"
         placeholder="Nhập họ tên đầy đủ của bạn..."
-        key={form.key('fullName')}
         {...form.getInputProps('fullName')}
         classNames={{
           root: classes.textInputRoot,
@@ -138,7 +142,6 @@ export default function RegisterForm() {
         withAsterisk
         label="Email"
         placeholder="Nhập địa chỉ email của bạn..."
-        key={form.key('email')}
         {...form.getInputProps('email')}
         classNames={{
           root: classes.textInputRoot,
@@ -155,7 +158,6 @@ export default function RegisterForm() {
         withAsterisk
         label="Số điện thoại"
         placeholder="Nhập số điện thoại của bạn..."
-        key={form.key('phoneNumber')}
         {...form.getInputProps('phoneNumber')}
         classNames={{
           root: classes.phoneNumberInputRoot,
@@ -173,7 +175,6 @@ export default function RegisterForm() {
           withAsterisk
           label="Căn cước công dân"
           placeholder="Nhập số CCCD của bạn..."
-          key={form.key('nationalID')}
           {...form.getInputProps('nationalID')}
           classNames={{
             root: classes.textInputRoot,
@@ -191,7 +192,6 @@ export default function RegisterForm() {
           withAsterisk
           placeholder="Nhập ngày cấp CCCD..."
           valueFormat="DD/MM/YYYY"
-          key={form.key('publishedDate')}
           {...form.getInputProps('publishedDate')}
           classNames={{
             root: classes.datePickerInputRoot,
@@ -206,7 +206,7 @@ export default function RegisterForm() {
           }}
           popoverProps={{
             classNames: {
-              dropdown: classes.popoverDropdown,
+              dropdown: classes.datePickerPopoverDropdown,
             },
           }}
         />
@@ -229,9 +229,7 @@ export default function RegisterForm() {
               label="Mật khẩu"
               placeholder="Nhập mật khẩu bạn muốn đặt..."
               // value={passwordValue}
-              defaultValue=""
               visibilityToggleIcon={VisibilityToggleIcon}
-              key={form.key('password')}
               {...form.getInputProps('password')}
               classNames={{
                 root: classes.passwordInputRoot,
@@ -244,7 +242,6 @@ export default function RegisterForm() {
                 required: classes.passwordInputRequired,
                 error: classes.passwordInputError,
               }}
-              onChange={(event) => setPasswordValue(event.currentTarget.value)}
             />
           </div>
         </Popover.Target>
@@ -258,17 +255,18 @@ export default function RegisterForm() {
             }}
             data-strength={strength === 100 ? 'strong' : strength > 50 ? 'average' : 'weak'}
           />
-          <PasswordRequirement label="Độ dài tối thiểu 6 ký tự" meets={passwordValue.length > 5} />
-          {checks}
+          <PasswordRequirement
+            label="Độ dài tối thiểu 6 ký tự"
+            meets={form.values.password.length > 5}
+          />
+          {checkMarkups}
         </Popover.Dropdown>
       </Popover>
       <PasswordInput
         withAsterisk
         label="Nhập lại mật khẩu"
-        placeholder="Nhập lại mật khẩu mà bạn đã điền ở trên..."
-        defaultValue=""
+        placeholder="Nhập lại mật khẩu đã điền ở trên..."
         visibilityToggleIcon={VisibilityToggleIcon}
-        key={form.key('retypePassword')}
         {...form.getInputProps('retypePassword')}
         classNames={{
           root: classes.passwordInputRoot,
@@ -285,7 +283,6 @@ export default function RegisterForm() {
       <Checkbox
         icon={CheckboxIcon}
         label="Tôi cam đoan những thông tin được kê khai ở trên là đúng sự thật. Nếu sai, tôi sẵn sàng chịu mọi trách nhiệm liên quan."
-        key={form.key('assurance')}
         {...form.getInputProps('assurance')}
         classNames={{
           root: classes.checkboxRoot,

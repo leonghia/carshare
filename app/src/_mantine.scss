@@ -122,10 +122,6 @@ $mantine-color-nd-btn-bg-light: #f4f4f5;
 $mantine-color-nd-btn-bg-light-hover: #ececee;
 
 $mantine-color-bg-gradient-primary: linear-gradient(90deg, #00ff87, transparent) #60efff;
-// $mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #02f483, #1ae6fd);
-$mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #60efff, #00ff87);
-// $mantine-color-bg-gradient-primary-lighten: linear-gradient(90deg, #33ff9f, #80f2ff);
-$mantine-color-bg-gradient-primary-lighten: linear-gradient(90deg, #60efff, #00ff87);
 
 // Font weights
 $mantine-font-extralight: 200;
@@ -228,6 +224,14 @@ $mantine-font-black: 900;
   @include dark {
     color: $mantine-color-foreground-2;
   }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-base);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
 }
 
 @mixin inputContent {
@@ -238,6 +242,10 @@ $mantine-font-black: 900;
 
   @include dark {
     color: $mantine-color-foreground-3;
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
   }
 }
 
@@ -259,16 +267,32 @@ $mantine-font-black: 900;
 
   &[data-position='right'] {
     inset-inline-end: rem(16px);
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      inset-inline-end: rem(12px);
+    }
   }
 
   &[data-position='left'] {
     inset-inline-start: rem(16px);
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      inset-inline-start: rem(12px);
+    }
   }
 
   svg {
     color: $mantine-color-foreground-5;
+    width: rem(24px);
+    height: rem(24px);
+
     @include dark {
       color: $mantine-color-foreground-4;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      width: rem(20px);
+      height: rem(20px);
     }
   }
 }
@@ -280,6 +304,14 @@ $mantine-font-black: 900;
 
   .textInputWrapper {
     margin-top: rem(12px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-top: rem(8px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-top: rem(4px);
+    }
   }
 
   .textInputLabel {
@@ -305,6 +337,10 @@ $mantine-font-black: 900;
       background-color: $mantine-color-input-bg-dark;
     }
 
+    @include smaller-than($mantine-breakpoint-xs) {
+      padding-inline: rem(12px);
+    }
+
     &::placeholder {
       @include inputPlaceholder();
     }
@@ -328,7 +364,7 @@ $mantine-font-black: 900;
     @include inputContent();
 
     @include smaller-than($mantine-breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
+      padding-inline: rem(12px);
     }
 
     &::placeholder {
@@ -360,6 +396,14 @@ $mantine-font-black: 900;
 
   .passwordInputWrapper {
     margin-top: rem(12px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-top: rem(8px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-top: rem(4px);
+    }
   }
 
   .passwordInputInput {
@@ -369,6 +413,11 @@ $mantine-font-black: 900;
     padding-inline-start: rem(16px);
     padding-inline-end: rem(48px);
     @include inputBorder();
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      padding-inline-start: rem(12px);
+      padding-inline-end: rem(40px);
+    }
 
     &:focus,
     &:focus-within {
@@ -422,6 +471,10 @@ $mantine-font-black: 900;
     @include inputBorder();
     @include inputContent();
 
+    @include smaller-than($mantine-breakpoint-xs) {
+      padding-inline: rem(12px);
+    }
+
     @include dark {
       background-color: $mantine-color-input-bg-dark;
     }
@@ -438,6 +491,14 @@ $mantine-font-black: 900;
 
   .datePickerInputWrapper {
     margin-top: rem(12px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-top: rem(8px);
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-top: rem(4px);
+    }
   }
 
   .datePickerInputPlaceholder {
@@ -486,6 +547,11 @@ $mantine-font-black: 900;
     width: rem(24px);
     height: rem(24px);
     flex-shrink: 0;
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      width: rem(20px);
+      height: rem(20px);
+    }
   }
 
   .checkboxInput {
@@ -509,7 +575,7 @@ $mantine-font-black: 900;
       background-color: $mantine-color-nd-btn-bg-light;
 
       &:checked {
-        background-color: var(--mantine-primary-color-5);
+        background-color: var(--mantine-primary-color-4);
       }
     }
 
@@ -517,7 +583,7 @@ $mantine-font-black: 900;
       background-color: $mantine-color-nd-btn-bg-dark;
 
       &:checked {
-        background-color: var(--mantine-primary-color-5);
+        background-color: var(--mantine-primary-color-4);
       }
     }
   }
@@ -529,6 +595,10 @@ $mantine-font-black: 900;
       font-weight: $mantine-font-normal;
       color: $mantine-color-foreground-6;
       font-size: var(--mantine-font-size-base);
+
+      @include smaller-than($mantine-breakpoint-xs) {
+        font-size: var(--mantine-font-size-sm);
+      }
     }
 
     @include dark {
@@ -634,6 +704,8 @@ $mantine-font-black: 900;
 }
 
 @mixin anchorRoot {
+  font-size: inherit;
+  line-height: inherit;
   color: var(--mantine-primary-color-5);
   font-weight: $mantine-font-semibold;
   transition: color 0.3s ease-out;
