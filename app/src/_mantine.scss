@@ -190,6 +190,19 @@ $mantine-font-black: 900;
 }
 
 // Custom mixins
+@mixin inputBorder {
+  border: rem(2px) solid transparent;
+
+  &:focus,
+  &:focus-within {
+    border-color: var(--mantine-primary-color-5);
+  }
+
+  &[data-error='true'] {
+    border-color: $mantine-color-danger-5;
+  }
+}
+
 @mixin inputError {
   font-size: var(--mantine-font-size-sm);
   font-weight: $mantine-font-normal;
@@ -288,24 +301,14 @@ $mantine-font-black: 900;
 
   .textInputInput {
     background-color: $mantine-color-input-bg-light;
-    border: rem(2px) solid transparent;
     border-radius: 20px;
     padding-top: rem(12px);
     padding-bottom: rem(12px);
     padding-inline-start: rem(16px);
     padding-inline-end: rem(16px);
     height: min-content;
-
+    @include inputBorder();
     @include inputContent();
-
-    &:focus,
-    &:focus-within {
-      border: rem(2px) solid var(--mantine-primary-color-5);
-    }
-
-    &[data-error='true'] {
-      border: rem(2px) solid $mantine-color-danger;
-    }
 
     @include dark {
       background-color: $mantine-color-input-bg-dark;
@@ -324,17 +327,14 @@ $mantine-font-black: 900;
 @mixin numberInputRoot {
   .numberInputInput {
     background-color: $mantine-color-background-1;
-    border: rem(2px) solid transparent;
     border-radius: 20px;
     padding-top: rem(12px);
     padding-bottom: rem(12px);
     padding-inline-start: rem(16px);
     padding-inline-end: rem(16px);
     height: min-content;
-    font-size: var(--mantine-font-size-base);
-    line-height: var(--mantine-line-height-body);
-    font-weight: $mantine-font-normal;
-    color: $mantine-color-foreground-7;
+    @include inputBorder();
+    @include inputContent();
 
     @include smaller-than($mantine-breakpoint-xs) {
       font-size: var(--mantine-font-size-sm);
@@ -373,11 +373,11 @@ $mantine-font-black: 900;
 
   .passwordInputInput {
     background-color: $mantine-color-input-bg-light;
-    border: rem(2px) solid transparent;
     height: rem(52px);
     border-radius: rem(20px);
     padding-inline-start: rem(16px);
     padding-inline-end: rem(48px);
+    @include inputBorder();
 
     &:focus,
     &:focus-within {
@@ -392,12 +392,12 @@ $mantine-font-black: 900;
   .passwordInputInnerInput {
     padding-inline-end: inherit;
     padding-inline-start: inherit;
+    @include inputContent();
 
     &::placeholder {
       @include inputPlaceholder();
     }
 
-    @include inputContent();
   }
 
   .passwordInputSection {
@@ -411,6 +411,10 @@ $mantine-font-black: 900;
       color: $mantine-color-foreground-5;
     }
   }
+
+  .passwordInputError {
+    @include inputError();
+  }
 }
 
 @mixin datePickerInputRoot {
@@ -420,12 +424,12 @@ $mantine-font-black: 900;
 
   .datePickerInputInput {
     background-color: $mantine-color-input-bg-light;
-    border: rem(2px) solid transparent;
     border-radius: rem(20px);
     padding-inline-start: rem(16px);
     padding-inline-start: rem(16px);
     padding-top: rem(12px);
     padding-bottom: rem(12px);
+    @include inputBorder();
     @include inputContent();
 
     @include dark {
@@ -435,6 +439,10 @@ $mantine-font-black: 900;
     &:focus,
     &:focus-within {
       border: rem(2px) solid var(--mantine-primary-color-5);
+    }
+
+    &[data-error='true'] {
+      border: rem(2px) solid $mantine-color-danger;
     }
   }
 
@@ -452,6 +460,10 @@ $mantine-font-black: 900;
 
   .datePickerInputSection {
     @include inputSection();
+  }
+
+  .datePickerInputError {
+    @include inputError();
   }
 }
 
@@ -492,6 +504,7 @@ $mantine-font-black: 900;
     height: 100%;
     transition: background-color 0.3s ease-out;
     border-color: transparent;
+    @include inputBorder();
 
     &:focus-visible {
       outline-color: var(--mantine-primary-color-5);

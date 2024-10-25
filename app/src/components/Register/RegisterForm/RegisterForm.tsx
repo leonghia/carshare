@@ -141,6 +141,8 @@ export default function RegisterForm() {
           withAsterisk
           placeholder="Nhập ngày cấp CCCD..."
           valueFormat="DD/MM/YYYY"
+          key={form.key('publishedDate')}
+          {...form.getInputProps('publishedDate')}
           classNames={{
             root: classes.datePickerInputRoot,
             section: classes.datePickerInputSection,
@@ -165,6 +167,8 @@ export default function RegisterForm() {
         placeholder="Nhập mật khẩu bạn muốn đặt..."
         defaultValue=""
         visibilityToggleIcon={VisibilityToggleIcon}
+        key={form.key('password')}
+        {...form.getInputProps('password')}
         classNames={{
           root: classes.passwordInputRoot,
           input: classes.passwordInputInput,
@@ -174,6 +178,7 @@ export default function RegisterForm() {
           wrapper: classes.passwordInputWrapper,
           label: classes.passwordInputLabel,
           required: classes.passwordInputRequired,
+          error: classes.passwordInputError,
         }}
       />
       <PasswordInput
@@ -182,6 +187,8 @@ export default function RegisterForm() {
         placeholder="Nhập lại mật khẩu mà bạn đã điền ở trên..."
         defaultValue=""
         visibilityToggleIcon={VisibilityToggleIcon}
+        key={form.key('retypePassword')}
+        {...form.getInputProps('retypePassword')}
         classNames={{
           root: classes.passwordInputRoot,
           input: classes.passwordInputInput,
@@ -191,11 +198,14 @@ export default function RegisterForm() {
           wrapper: classes.passwordInputWrapper,
           label: classes.passwordInputLabel,
           required: classes.passwordInputRequired,
+          error: classes.passwordInputError,
         }}
       />
       <Checkbox
         icon={CheckboxIcon}
         label="Tôi cam đoan những thông tin được kê khai ở trên là đúng sự thật. Nếu sai, tôi sẵn sàng chịu mọi trách nhiệm liên quan."
+        key={form.key('assurance')}
+        {...form.getInputProps('assurance')}
         classNames={{
           root: classes.checkboxRoot,
           inner: classes.checkboxInner,
@@ -207,6 +217,7 @@ export default function RegisterForm() {
       />
       <div className={classes.submitAndLogin}>
         <Button
+          type="submit"
           classNames={{
             root: classes.submitButtonRoot,
             label: classes.buttonLabel,
@@ -215,7 +226,10 @@ export default function RegisterForm() {
           Đăng ký
         </Button>
         <p className={classes.login}>
-          Bạn đã có tài khoản? <Anchor href="/login" underline='never' classNames={{root: classes.anchorRoot}}>Đăng nhập ngay</Anchor>
+          Bạn đã có tài khoản?{' '}
+          <Anchor href="/login" underline="never" classNames={{ root: classes.anchorRoot }}>
+            Đăng nhập ngay
+          </Anchor>
         </p>
       </div>
     </form>
