@@ -4,22 +4,25 @@ import { Checkbox } from '@mantine/core';
 import AnimatedTick from '@/components/AnimatedTick/AnimatedTick';
 import { AssuranceContext } from './AssuranceContext';
 
-export default function Assurance({ keyVal }: { keyVal: Key }) {
-  const [isChecked, setIsChecked] = useState<boolean>(false);
-
+export default function Assurance({
+  keyVal,
+  isChecked,
+  ...props
+}: {
+  keyVal: Key;
+  isChecked: boolean;
+}) {
   return (
     <AssuranceContext.Provider
       value={{
-        isChecked,
-        setIsChecked,
+        isChecked: isChecked,
       }}
     >
       <Checkbox
+        {...props}
         checked={isChecked}
-        onChange={(e) => setIsChecked(e.currentTarget.checked)}
         icon={CheckboxIcon}
         label="Tôi cam đoan những thông tin được kê khai ở trên là đúng sự thật. Nếu sai, tôi sẵn sàng chịu mọi trách nhiệm liên quan."
-        key={keyVal}
         classNames={{
           root: classes.checkboxRoot,
           inner: classes.checkboxInner,
@@ -28,6 +31,7 @@ export default function Assurance({ keyVal }: { keyVal: Key }) {
           error: classes.checkboxError,
           icon: classes.checkboxIcon,
         }}
+        key={keyVal}
       />
     </AssuranceContext.Provider>
   );

@@ -53,7 +53,7 @@ export default function RegisterForm() {
       publishedDate: null,
       password: '',
       retypePassword: '',
-      assurance: false,
+      assured: false,
     },
     validate: {
       fullName: (value: string) => {
@@ -86,10 +86,10 @@ export default function RegisterForm() {
       },
       retypePassword: (value: string) => {
         if (value.trim().length === 0) return 'Mật khẩu nhập lại không được để trống';
-        if (value.trim() !== form.values.password) return 'Mật khẩu nhập lại phải trùng khớp';
+        if (value.trim() !== form.getValues().password) return 'Mật khẩu nhập lại phải trùng khớp';
         return null;
       },
-      assurance: (value: boolean) => {
+      assured: (value: boolean) => {
         if (!value) return 'Bạn phải đồng ý cam đoan trước khi đăng ký';
         return null;
       },
@@ -112,8 +112,6 @@ export default function RegisterForm() {
     console.log(values);
     setSubmittedValues(values);
   };
-
-  console.log('form re-rendered');
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
@@ -280,7 +278,11 @@ export default function RegisterForm() {
           error: classes.passwordInputError,
         }}
       />
-      <Assurance keyVal={form.key('assurance')} />
+      <Assurance
+        isChecked={form.getValues().assured}
+        {...form.getInputProps('assured')}
+        keyVal={form.key('assured')}
+      />
       <div className={classes.submitAndLogin}>
         <Button
           type="submit"

@@ -651,11 +651,14 @@ $mantine-font-black: 900;
     background: $mantine-color-bg-gradient-primary;
     position: relative;
     z-index: 0;
-    transition: transform 0.3s ease-out;
+    transition:
+      transform 0.3s ease-out,
+      box-shadow 0.3s ease-out;
   }
 
   &:hover {
     transform: scale(1.01);
+    box-shadow: var(--mantine-shadow-xl);
 
     .buttonLabel {
       color: $mantine-color-foreground-7;
