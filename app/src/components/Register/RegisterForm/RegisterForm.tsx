@@ -113,6 +113,8 @@ export default function RegisterForm() {
     setSubmittedValues(values);
   };
 
+  console.log('form re rendered');
+
   return (
     <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
       <TextInput
@@ -254,7 +256,7 @@ export default function RegisterForm() {
           />
           <PasswordRequirement
             label="Độ dài tối thiểu 6 ký tự"
-            meets={form.values.password.length > 5}
+            meets={form.getValues().password.length > 5}
           />
           {checkMarkups}
         </Popover.Dropdown>

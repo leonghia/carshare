@@ -12,7 +12,8 @@ const tickVariants = {
     pathLength: 0,
     opacity: 0,
     transition: {
-      duration: 0.5,
+      pathLength: { duration: 0.3 },
+      opacity: { delay: 0.3 },
     },
   },
 };
