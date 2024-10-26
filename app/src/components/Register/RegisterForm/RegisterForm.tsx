@@ -4,7 +4,7 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { Calendar1, Eye, EyeSlash } from 'iconsax-react';
 import { Anchor, Button, PasswordInput, Popover, Progress, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
+import { useField, useForm } from '@mantine/form';
 import Assurance from './Assurance/Assurance';
 
 const emailRegex =
@@ -43,6 +43,15 @@ const getPasswordStrength = (password: string) => {
 export default function RegisterForm() {
   const [popoverOpened, setPopoverOpened] = useState(false);
 
+  const passwordField = useField({
+    initialValue: '',
+    validate: (value) => {
+      if (value.trim().length === 0) return 'Mật khẩu không được để trống';
+      if (getPasswordStrength(value) <= 50) return 'Mật khẩu của bạn quá yếu';
+      return null;
+    },
+  });
+
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
@@ -79,14 +88,9 @@ export default function RegisterForm() {
         if (!value) return 'Ngày cấp CCCD không được để trống';
         return null;
       },
-      password: (value: string) => {
-        if (value.trim().length === 0) return 'Mật khẩu không được để trống';
-        if (getPasswordStrength(value) <= 50) return 'Mật khẩu của bạn quá yếu';
-        return null;
-      },
       retypePassword: (value: string) => {
         if (value.trim().length === 0) return 'Mật khẩu nhập lại không được để trống';
-        if (value.trim() !== form.getValues().password) return 'Mật khẩu nhập lại phải trùng khớp';
+        if (value.trim() !== passwordField.getValue()) return 'Mật khẩu nhập lại phải trùng khớp';
         return null;
       },
       assured: (value: boolean) => {
@@ -98,25 +102,31 @@ export default function RegisterForm() {
 
   const [submittedValues, setSubmittedValues] = useState<typeof form.values | null>(null);
 
-  const strength = getPasswordStrength(form.values.password);
+  const strength = getPasswordStrength(passwordField.getValue());
 
   const checkMarkups = passwordRequirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
       label={requirement.label}
-      meets={requirement.re.test(form.values.password)}
+      meets={requirement.re.test(passwordField.getValue())}
     />
   ));
 
-  const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
-    setSubmittedValues(values);
+  const handleSubmit = async (values: typeof form.values) => {
+    const result = await passwordField.validate();
+    if (result) return;
+    // console.log(values);
+    // setSubmittedValues(values);
+  };
+
+  const handleError = async (error: typeof form.errors) => {
+    await passwordField.validate();
   };
 
   console.log('form re rendered');
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
+    <form onSubmit={form.onSubmit(handleSubmit, handleError)} className={classes.form}>
       <TextInput
         withAsterisk
         label="Họ tên"
@@ -226,10 +236,10 @@ export default function RegisterForm() {
               withAsterisk
               label="Mật khẩu"
               placeholder="Nhập mật khẩu bạn muốn đặt..."
-              // value={passwordValue}
               visibilityToggleIcon={VisibilityToggleIcon}
-              {...form.getInputProps('password')}
-              key={form.key('password')}
+              {...passwordField.getInputProps()}
+              // key={form.key('password')}
+              // value={passwordValue}
               classNames={{
                 root: classes.passwordInputRoot,
                 input: classes.passwordInputInput,
@@ -256,7 +266,7 @@ export default function RegisterForm() {
           />
           <PasswordRequirement
             label="Độ dài tối thiểu 6 ký tự"
-            meets={form.getValues().password.length > 5}
+            meets={passwordField.getValue().length > 5}
           />
           {checkMarkups}
         </Popover.Dropdown>
@@ -281,9 +291,9 @@ export default function RegisterForm() {
         }}
       />
       <Assurance
+        keyVal={form.key('assured')}
         isChecked={form.getValues().assured}
         {...form.getInputProps('assured')}
-        keyVal={form.key('assured')}
       />
       <div className={classes.submitAndLogin}>
         <Button

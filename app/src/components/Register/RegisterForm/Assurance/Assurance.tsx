@@ -20,6 +20,7 @@ export default function Assurance({
     >
       <Checkbox
         {...props}
+        key={keyVal}
         icon={CheckboxIcon}
         label="Tôi cam đoan những thông tin được kê khai ở trên là đúng sự thật. Nếu sai, tôi sẵn sàng chịu mọi trách nhiệm liên quan."
         classNames={{
@@ -30,7 +31,6 @@ export default function Assurance({
           error: classes.checkboxError,
           icon: classes.checkboxIcon,
         }}
-        key={keyVal}
       />
     </AssuranceContext.Provider>
   );
