@@ -261,6 +261,7 @@
 }
 
 .hero {
+  display: none;
   width: 100%;
   height: rem(350px);
   border-radius: 0 0 rem(62px) rem(62px);
@@ -269,7 +270,10 @@
   background-size: cover;
   background-position: center;
   padding: 0 rem(80px) rem(40px) rem(80px);
-  display: flex;
+
+  @include smaller-than($mantine-breakpoint-lg) {
+    display: flex;
+  }
 
   @include smaller-than($mantine-breakpoint-md) {
     padding-inline: rem(64px);

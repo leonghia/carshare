@@ -121,7 +121,8 @@ $mantine-color-nd-btn-bg-dark-hover: #39393f;
 $mantine-color-nd-btn-bg-light: #f4f4f5;
 $mantine-color-nd-btn-bg-light-hover: #ececee;
 
-$mantine-color-bg-gradient-primary: linear-gradient(90deg, #00ff87, transparent) #60efff;
+$mantine-color-bg-gradient-primary: linear-gradient(90deg, #00ff87, #60efff);
+$mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #5aeeff, #03f483);
 
 // Font weights
 $mantine-font-extralight: 200;
@@ -639,39 +640,46 @@ $mantine-font-black: 900;
 
   & {
     background: $mantine-color-bg-gradient-primary;
-    transition: background-color 0.3s ease-out;
+    position: relative;
+    z-index: 0;
+    transition: transform 0.3s ease-out;
   }
 
-  // &:hover::before {
-  //   opacity: 1;
-  // }
+  &:hover {
+    transform: scale(1.01);
 
-  // &::before {
-  //   content: '';
-  //   position: absolute;
-  //   height: 100%;
-  //   width: 100%;
-  //   inset: 0;
-  //   background: $mantine-color-bg-gradient-primary-dimmed;
-  //   z-index: -1;
-  //   transition: opacity 0.3s ease-out;
-  //   opacity: 0;
-  //   filter: blur(0);
-  //   border-radius: inherit;
-  //   transform: translateY(0);
+    .buttonLabel {
+      color: $mantine-color-foreground-7;
+    }
+  }
 
-  //   @include dark {
-  //     background: $mantine-color-bg-gradient-primary-lighten;
-  //   }
-  // }
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    inset: 0;
+    background: $mantine-color-bg-gradient-primary-dimmed;
+    z-index: -1;
+    transition: opacity 0.3s ease-out;
+    opacity: 0;
+    filter: blur(0);
+    border-radius: inherit;
+    transform: translateY(0);
 
-  &:hover,
-  &:focus {
-    background-color: #78ffd6;
+    @include dark {
+      // background: $mantine-color-bg-gradient-primary-lighten;
+    }
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 
   .buttonLabel {
     color: $mantine-color-foreground-8;
+    will-change: transform;
+    transition: color 0.4s ease-out;
   }
 }
 
