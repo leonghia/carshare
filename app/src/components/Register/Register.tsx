@@ -1,6 +1,6 @@
 import classes from './Register.module.scss';
 import logo from '../../assets/images/logo_2.svg';
-import ModeToggle from './ModeToggle/ModeToggle';
+import ModeToggle from '../ModeToggle/ModeToggle';
 import RegisterForm from './RegisterForm/RegisterForm';
 
 export default function Register() {

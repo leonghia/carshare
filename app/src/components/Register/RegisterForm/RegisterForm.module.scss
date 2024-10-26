@@ -76,10 +76,6 @@
   @include passwordInputRoot;
 }
 
-.checkboxRoot {
-  @include checkboxRoot;
-}
-
 .submitAndLogin {
   & > :not(:last-child) {
     margin-bottom: rem(12px);

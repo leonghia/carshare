@@ -572,6 +572,11 @@ $mantine-font-black: 900;
       outline-color: var(--mantine-primary-color-5);
     }
 
+    &:checked + .checkboxIcon {
+      opacity: unset;
+      transform: unset;
+    }
+
     @include light {
       background-color: $mantine-color-nd-btn-bg-light;
 
@@ -614,6 +619,10 @@ $mantine-font-black: 900;
   .checkboxIcon {
     width: 65%;
     color: $mantine-color-foreground-8;
+    transform: unset;
+    opacity: unset;
+    transition: unset;
+    // pointer-events: auto;
   }
 }
 

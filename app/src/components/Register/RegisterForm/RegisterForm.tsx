@@ -2,18 +2,10 @@ import { useState } from 'react';
 import classes from './RegisterForm.module.scss';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Calendar1, Eye, EyeSlash } from 'iconsax-react';
-import {
-  Anchor,
-  Button,
-  Checkbox,
-  CheckboxProps,
-  PasswordInput,
-  Popover,
-  Progress,
-  TextInput,
-} from '@mantine/core';
+import { Anchor, Button, PasswordInput, Popover, Progress, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import Assurance from './Assurance/Assurance';
 
 const emailRegex =
   /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -50,10 +42,9 @@ const getPasswordStrength = (password: string) => {
 
 export default function RegisterForm() {
   const [popoverOpened, setPopoverOpened] = useState(false);
-  // const [passwordValue, setPasswordValue] = useState('');
 
   const form = useForm({
-    mode: 'controlled',
+    mode: 'uncontrolled',
     initialValues: {
       fullName: '',
       email: '',
@@ -122,6 +113,8 @@ export default function RegisterForm() {
     setSubmittedValues(values);
   };
 
+  console.log('form re-rendered');
+
   return (
     <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
       <TextInput
@@ -129,6 +122,7 @@ export default function RegisterForm() {
         label="Họ tên"
         placeholder="Nhập họ tên đầy đủ của bạn..."
         {...form.getInputProps('fullName')}
+        key={form.key('fullName')}
         classNames={{
           root: classes.textInputRoot,
           wrapper: classes.textInputWrapper,
@@ -143,6 +137,7 @@ export default function RegisterForm() {
         label="Email"
         placeholder="Nhập địa chỉ email của bạn..."
         {...form.getInputProps('email')}
+        key={form.key('email')}
         classNames={{
           root: classes.textInputRoot,
           wrapper: classes.textInputWrapper,
@@ -159,6 +154,7 @@ export default function RegisterForm() {
         label="Số điện thoại"
         placeholder="Nhập số điện thoại của bạn..."
         {...form.getInputProps('phoneNumber')}
+        key={form.key('phoneNumber')}
         classNames={{
           root: classes.phoneNumberInputRoot,
           wrapper: classes.textInputWrapper,
@@ -176,6 +172,7 @@ export default function RegisterForm() {
           label="Căn cước công dân"
           placeholder="Nhập số CCCD của bạn..."
           {...form.getInputProps('nationalID')}
+          key={form.key('nationalID')}
           classNames={{
             root: classes.textInputRoot,
             wrapper: classes.textInputWrapper,
@@ -193,6 +190,7 @@ export default function RegisterForm() {
           placeholder="Nhập ngày cấp CCCD..."
           valueFormat="DD/MM/YYYY"
           {...form.getInputProps('publishedDate')}
+          key={form.key('publishedDate')}
           classNames={{
             root: classes.datePickerInputRoot,
             section: classes.datePickerInputSection,
@@ -231,6 +229,7 @@ export default function RegisterForm() {
               // value={passwordValue}
               visibilityToggleIcon={VisibilityToggleIcon}
               {...form.getInputProps('password')}
+              key={form.key('password')}
               classNames={{
                 root: classes.passwordInputRoot,
                 input: classes.passwordInputInput,
@@ -268,6 +267,7 @@ export default function RegisterForm() {
         placeholder="Nhập lại mật khẩu đã điền ở trên..."
         visibilityToggleIcon={VisibilityToggleIcon}
         {...form.getInputProps('retypePassword')}
+        key={form.key('retypePassword')}
         classNames={{
           root: classes.passwordInputRoot,
           input: classes.passwordInputInput,
@@ -280,19 +280,7 @@ export default function RegisterForm() {
           error: classes.passwordInputError,
         }}
       />
-      <Checkbox
-        icon={CheckboxIcon}
-        label="Tôi cam đoan những thông tin được kê khai ở trên là đúng sự thật. Nếu sai, tôi sẵn sàng chịu mọi trách nhiệm liên quan."
-        {...form.getInputProps('assurance')}
-        classNames={{
-          root: classes.checkboxRoot,
-          inner: classes.checkboxInner,
-          input: classes.checkboxInput,
-          label: classes.checkboxLabel,
-          error: classes.checkboxError,
-          icon: classes.checkboxIcon,
-        }}
-      />
+      <Assurance keyVal={form.key('assurance')} />
       <div className={classes.submitAndLogin}>
         <Button
           type="submit"
@@ -313,10 +301,6 @@ export default function RegisterForm() {
     </form>
   );
 }
-
-const CheckboxIcon: CheckboxProps['icon'] = ({ indeterminate, ...others }) => (
-  <IconCheck {...others} />
-);
 
 const VisibilityToggleIcon = ({ reveal }: { reveal: boolean }) => {
   return reveal ? <EyeSlash variant="Outline" /> : <Eye variant="Outline" />;
