@@ -103,7 +103,7 @@ $mantine-color-yellow-flat: rgba(234, 179, 8, 0.2);
 $mantine-color-indigo-flat: rgba(99, 102, 241, 0.2);
 $mantine-color-zinc-flat-300: rgba(212, 212, 216, 0.4);
 $mantine-color-zinc-flat-700: rgba(63, 63, 70, 0.4);
-$mantine-color-primary-flat: $mantine-color-teal-flat;
+$mantine-color-primary-flat: $mantine-color-indigo-flat;
 $mantine-color-background-flat: $mantine-color-zinc-flat-300;
 $mantine-color-success-flat: $mantine-color-green-flat;
 $mantine-color-warning-flat: $mantine-color-yellow-flat;
@@ -121,8 +121,8 @@ $mantine-color-nd-btn-bg-dark-hover: #39393f;
 $mantine-color-nd-btn-bg-light: #f4f4f5;
 $mantine-color-nd-btn-bg-light-hover: #ececee;
 
-$mantine-color-bg-gradient-primary: linear-gradient(90deg, #00ff87, #60efff);
-$mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #5aeeff, #03f483);
+$mantine-color-bg-gradient-primary: linear-gradient(90deg, #4776e6, #8e54e9);
+$mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #396be0, #7e40e2);
 
 // Font weights
 $mantine-font-extralight: 200;
@@ -533,8 +533,8 @@ $mantine-font-black: 900;
   border-radius: 9999px;
 
   &:where([data-selected]) {
-    background-color: var(--mantine-primary-color-4);
-    color: $mantine-color-foreground-8;
+    background-color: var(--mantine-primary-color-5);
+    color: $mantine-color-foreground-0;
     font-weight: $mantine-font-semibold;
 
     @include hover {
@@ -581,7 +581,7 @@ $mantine-font-black: 900;
       background-color: $mantine-color-nd-btn-bg-light;
 
       &:checked {
-        background-color: var(--mantine-primary-color-4);
+        background-color: var(--mantine-primary-color-5);
       }
     }
 
@@ -589,7 +589,7 @@ $mantine-font-black: 900;
       background-color: $mantine-color-nd-btn-bg-dark;
 
       &:checked {
-        background-color: var(--mantine-primary-color-4);
+        background-color: var(--mantine-primary-color-5);
       }
     }
   }
@@ -618,7 +618,7 @@ $mantine-font-black: 900;
 
   .checkboxIcon {
     width: 65%;
-    color: $mantine-color-foreground-8;
+    color: $mantine-color-foreground-0;
     transform: unset;
     opacity: unset;
     transition: unset;
@@ -661,7 +661,7 @@ $mantine-font-black: 900;
     box-shadow: var(--mantine-shadow-xl);
 
     .buttonLabel {
-      color: $mantine-color-foreground-7;
+      color: var(--mantine-color-white);
     }
   }
 
@@ -689,7 +689,7 @@ $mantine-font-black: 900;
   }
 
   .buttonLabel {
-    color: $mantine-color-foreground-8;
+    color: $mantine-color-foreground-0;
     will-change: transform;
     transition: color 0.4s ease-out;
   }
