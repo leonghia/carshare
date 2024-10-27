@@ -40,6 +40,8 @@
 
 .image {
   text-align: center;
+  width: max-content;
+  margin-inline: auto;
 
   img {
     width: rem(148px);
