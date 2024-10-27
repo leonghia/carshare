@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import classes from './Register.module.scss';
 import { useDisclosure } from '@mantine/hooks';
 import logo from '../../assets/images/logo_2.svg';
@@ -9,7 +10,10 @@ export default function Register() {
   const [isCompleteModalOpened, { open: openCompleteModal, close: closeCompleteModal }] =
     useDisclosure(false);
 
-  const handleFormSubmitted = () => {
+  const [userEmail, setUserEmail] = useState<string>('');
+
+  const handleFormSubmitted = (email: string) => {
+    setUserEmail(email);
     openCompleteModal();
   };
 
@@ -68,7 +72,11 @@ export default function Register() {
         </div>
       </main>
       {/* Complete modal */}
-      <CompleteModal isOpened={isCompleteModalOpened} close={closeCompleteModal} />
+      <CompleteModal
+        email={userEmail}
+        isOpened={isCompleteModalOpened}
+        close={closeCompleteModal}
+      />
     </div>
   );
 }

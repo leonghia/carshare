@@ -1,17 +1,23 @@
 import classes from './CompleteModal.module.scss';
 import { motion } from 'framer-motion';
 import { Button, Modal } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import mailIllustrator from '../../../assets/images/check_email_illustrator.webp';
+
+const obscureEmail = (email: string) => {
+  const [name, domain] = email.split('@');
+  return `${name[0]}${new Array(name.length).join('*')}@${domain}`;
+};
 
 const MotionModal = motion.create(Modal);
 
 export default function CompleteModal({
   isOpened,
   close,
+  email,
 }: {
   isOpened: boolean;
   close: () => void;
+  email: string;
 }) {
   return (
     <MotionModal
@@ -42,7 +48,7 @@ export default function CompleteModal({
           <h6 className={classes.title}>Cảm ơn bạn đã đăng ký tài khoản CarShare!</h6>
           <p className={classes.content}>
             Một đường link xác nhận đang được gửi đến địa chỉ email{' '}
-            <span className={classes.highlight}>l*******cnn@gmail.com</span> của bạn. Bạn vui lòng
+            <span className={classes.highlight}>{obscureEmail(email)}</span> của bạn. Bạn vui lòng
             kiểm tra hòm thư để hoàn tất việc đăng ký nhé.
           </p>
         </div>

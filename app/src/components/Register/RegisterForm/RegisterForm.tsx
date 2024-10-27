@@ -41,13 +41,13 @@ const getPasswordStrength = (password: string) => {
   return Math.max(100 - (100 / (passwordRequirements.length + 1)) * multiplier, 10);
 };
 
-export default function RegisterForm({ onSubmitted }: { onSubmitted: () => void }) {
+export default function RegisterForm({ onSubmitted }: { onSubmitted: (email: string) => void }) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isSubmitting, { open: turnOnSubmitting, close: turnOffSubmitting }] = useDisclosure(false);
 
   const { start: startSubmitting, clear: clearSubmitting } = useTimeout(() => {
     turnOffSubmitting();
-    onSubmitted();
+    onSubmitted(form.getValues().email);
   }, 3000);
 
   const passwordField = useField({
@@ -107,7 +107,7 @@ export default function RegisterForm({ onSubmitted }: { onSubmitted: () => void 
     },
   });
 
-  const [submittedValues, setSubmittedValues] = useState<typeof form.values | null>(null);
+  // const [submittedValues, setSubmittedValues] = useState<typeof form.values | null>(null);
 
   const strength = getPasswordStrength(passwordField.getValue());
 
@@ -124,7 +124,8 @@ export default function RegisterForm({ onSubmitted }: { onSubmitted: () => void 
     if (result) return;
     // console.log(values);
     // setSubmittedValues(values);
-    // Posting the form to the server
+    // const finalValues = { ...values, password: passwordField.getValue() };
+    // console.log(finalValues);
     turnOnSubmitting();
     startSubmitting();
   };
@@ -132,8 +133,6 @@ export default function RegisterForm({ onSubmitted }: { onSubmitted: () => void 
   const handleError = async (error: typeof form.errors) => {
     await passwordField.validate();
   };
-
-  console.log('form re rendered with isSubmitting = ' + isSubmitting);
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit, handleError)} className={classes.form}>
