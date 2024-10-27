@@ -10,9 +10,9 @@ export default function WelcomePage() {
   const name = readLocalStorageValue({ key: 'user_name' });
 
   useEffect(() => {
-    if (name) {
-      navigate('/');
-    }
+    // if (name) {
+    //   navigate('/');
+    // }
   }, [name]);
 
   return <Welcome />;

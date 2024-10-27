@@ -1,0 +1,25 @@
+.buttonRoot {
+  @include secondaryButtonRoot;
+
+  & {
+    border-radius: rem(8px);
+    width: rem(40px);
+    height: rem(40px);
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      width: rem(34px);
+      height: rem(34px);
+    }
+  }
+
+  .buttonLabel {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+
+    svg {
+      width: 50%;
+      height: 50%;
+    }
+  }
+}
