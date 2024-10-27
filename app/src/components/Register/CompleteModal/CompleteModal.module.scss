@@ -10,6 +10,17 @@
   }
 }
 
+.modalContainer {
+  width: 100%;
+  border-radius: rem(32px);
+  overflow: hidden;
+  background-color: var(--mantine-color-white);
+
+  @include dark {
+    background-color: $mantine-color-background-8;
+  }
+}
+
 .illustratorContainer {
   width: 100%;
   height: min-content;

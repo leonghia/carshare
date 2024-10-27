@@ -750,12 +750,7 @@ $mantine-font-black: 900;
 
 @mixin modalRoot {
   .modalContent {
-    border-radius: rem(32px);
-    background-color: var(--mantine-color-white);
-
-    @include dark {
-      background-color: $mantine-color-background-8;
-    }
+    background-color: transparent;
   }
 
   .modalBody {

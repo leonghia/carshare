@@ -30,25 +30,6 @@ const MotionNameSection = motion.create(NameSection);
 type WelcomeSectionProps = { name: string; onClick: () => void };
 
 const WelcomeSection = React.forwardRef<HTMLElement, WelcomeSectionProps>((props, ref) => {
-  const variants = {
-    '0%': {
-      opacity: 0,
-      y: '-100%',
-    },
-    '50%': {
-      opacity: 1,
-      y: '20%',
-    },
-    '75%': {
-      opacity: 1,
-      y: '-10%',
-    },
-    '100%': {
-      opacity: 1,
-      y: 0,
-    },
-  };
-
   return (
     <section ref={ref} className={classes.welcomeSection}>
       {/* Logo */}
