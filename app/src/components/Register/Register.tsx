@@ -1,10 +1,18 @@
 import classes from './Register.module.scss';
+import { useDisclosure } from '@mantine/hooks';
 import logo from '../../assets/images/logo_2.svg';
 import ModeToggle from '../ModeToggle/ModeToggle';
 import CompleteModal from './CompleteModal/CompleteModal';
 import RegisterForm from './RegisterForm/RegisterForm';
 
 export default function Register() {
+  const [isCompleteModalOpened, { open: openCompleteModal, close: closeCompleteModal }] =
+    useDisclosure(false);
+
+  const handleFormSubmitted = () => {
+    openCompleteModal();
+  };
+
   return (
     // Container
     <div className={classes.container}>
@@ -37,7 +45,7 @@ export default function Register() {
             <ModeToggle />
           </div>
           {/* Form */}
-          <RegisterForm />
+          <RegisterForm onSubmitted={handleFormSubmitted} />
         </div>
         {/* Right col */}
         <div className={classes.rightCol}>
@@ -60,7 +68,7 @@ export default function Register() {
         </div>
       </main>
       {/* Complete modal */}
-      <CompleteModal />
+      <CompleteModal isOpened={isCompleteModalOpened} close={closeCompleteModal} />
     </div>
   );
 }

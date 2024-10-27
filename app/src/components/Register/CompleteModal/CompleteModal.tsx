@@ -6,12 +6,16 @@ import mailIllustrator from '../../../assets/images/check_email_illustrator.webp
 
 const MotionModal = motion.create(Modal);
 
-export default function CompleteModal() {
-  const [opened, { open, close }] = useDisclosure(false);
-
+export default function CompleteModal({
+  isOpened,
+  close,
+}: {
+  isOpened: boolean;
+  close: () => void;
+}) {
   return (
     <MotionModal
-      opened={true}
+      opened={isOpened}
       onClose={close}
       withCloseButton={false}
       centered
@@ -44,6 +48,7 @@ export default function CompleteModal() {
         </div>
         {/* Button */}
         <Button
+          onClick={close}
           classNames={{
             root: classes.buttonRoot,
             label: classes.buttonLabel,

@@ -5,6 +5,7 @@ import { Calendar1, Eye, EyeSlash } from 'iconsax-react';
 import { Anchor, Button, PasswordInput, Popover, Progress, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useField, useForm } from '@mantine/form';
+import { useDisclosure, useTimeout } from '@mantine/hooks';
 import Assurance from './Assurance/Assurance';
 
 const emailRegex =
@@ -40,8 +41,14 @@ const getPasswordStrength = (password: string) => {
   return Math.max(100 - (100 / (passwordRequirements.length + 1)) * multiplier, 10);
 };
 
-export default function RegisterForm() {
+export default function RegisterForm({ onSubmitted }: { onSubmitted: () => void }) {
   const [popoverOpened, setPopoverOpened] = useState(false);
+  const [isSubmitting, { open: turnOnSubmitting, close: turnOffSubmitting }] = useDisclosure(false);
+
+  const { start: startSubmitting, clear: clearSubmitting } = useTimeout(() => {
+    turnOffSubmitting();
+    onSubmitted();
+  }, 3000);
 
   const passwordField = useField({
     initialValue: '',
@@ -117,13 +124,16 @@ export default function RegisterForm() {
     if (result) return;
     // console.log(values);
     // setSubmittedValues(values);
+    // Posting the form to the server
+    turnOnSubmitting();
+    startSubmitting();
   };
 
   const handleError = async (error: typeof form.errors) => {
     await passwordField.validate();
   };
 
-  console.log('form re rendered');
+  console.log('form re rendered with isSubmitting = ' + isSubmitting);
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit, handleError)} className={classes.form}>
@@ -298,6 +308,7 @@ export default function RegisterForm() {
       <div className={classes.submitAndLogin}>
         <Button
           type="submit"
+          loading={isSubmitting}
           classNames={{
             root: classes.submitButtonRoot,
             label: classes.buttonLabel,
