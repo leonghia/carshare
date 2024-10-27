@@ -1,13 +1,14 @@
 import classes from './Register.module.scss';
 import logo from '../../assets/images/logo_2.svg';
 import ModeToggle from '../ModeToggle/ModeToggle';
+import CompleteModal from './CompleteModal/CompleteModal';
 import RegisterForm from './RegisterForm/RegisterForm';
 
 export default function Register() {
   return (
     // Container
     <div className={classes.container}>
-      {/* Hero */}
+      {/* Hero (tablet & mobile) */}
       <div className={classes.hero}>
         {/* Logo */}
         <figure className={classes.logo}>
@@ -58,6 +59,8 @@ export default function Register() {
           <div className={classes.overlaySideImg}></div>
         </div>
       </main>
+      {/* Complete modal */}
+      <CompleteModal />
     </div>
   );
 }

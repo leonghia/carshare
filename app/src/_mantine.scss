@@ -749,29 +749,12 @@ $mantine-font-black: 900;
 }
 
 @mixin modalRoot {
-  --modal-size: rem(500px);
-
-  .modalInner {
-    align-items: center;
-    padding-inline: rem(16px);
-  }
-
   .modalContent {
-    width: rem(500px);
     border-radius: rem(32px);
     background-color: var(--mantine-color-white);
-    box-shadow: var(--mantine-shadow-2xl);
 
     @include dark {
       background-color: $mantine-color-background-8;
-    }
-
-    &.opening {
-      animation: modalOpening 0.3s ease-in;
-    }
-
-    &.closing {
-      animation: modalClosing 0.2s ease-in forwards;
     }
   }
 
