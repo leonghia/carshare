@@ -629,9 +629,9 @@ $mantine-font-black: 900;
 @mixin buttonRoot {
   width: auto;
   height: min-content;
-  transition: all 0.5s ease-out;
   border: none;
   padding: 0;
+  transition: all 0.5s ease-out;
 
   .buttonLabel {
     font-size: var(--mantine-font-size-base);
@@ -651,9 +651,6 @@ $mantine-font-black: 900;
     background: $mantine-color-bg-gradient-primary;
     position: relative;
     z-index: 0;
-    transition:
-      transform 0.3s ease-out,
-      box-shadow 0.3s ease-out;
   }
 
   &:hover {

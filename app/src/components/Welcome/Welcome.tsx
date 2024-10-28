@@ -9,6 +9,7 @@ import logo from '../../assets/images/logo_1.svg';
 import leftSideIllustrator from '../../assets/images/side_illustrators_1.webp';
 import rightSideIllustrator from '../../assets/images/side_illustrators_2.webp';
 import EnterName from './EnterName/EnterName';
+import ModeToggle from '../ModeToggle/ModeToggle';
 
 type NameSectionProps = { onNext: (value: string) => void };
 
@@ -90,6 +91,10 @@ export default function Welcome() {
       <figure key="left" className={classes.sideIllustrator + ' ' + classes.sideIllustratorLeft}>
         <img src={leftSideIllustrator} alt="left side illustrator" />
       </figure>
+
+      {/* Mode toggle */}
+      <ModeToggle className={classes.modeToggle} />
+
       {/* Section */}
       <AnimatePresence mode="wait">
         {isWelcomeVisible && (
