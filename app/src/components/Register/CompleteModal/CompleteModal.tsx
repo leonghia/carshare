@@ -19,9 +19,9 @@ export default function CompleteModal({
 }) {
   const variants = {
     appear: {
-      opacity: [0, 1, 1, 1],
-      x: ['100%', '-30%', '10%', 0],
-      transition: { duration: 1, ease: 'easeOut', delay: 0.5 },
+      opacity: [0, 1],
+      x: ['100%', 0],
+      transition: { duration: 1, delay: 0.5, type: 'spring', bounce: 0.75 },
     },
     stable: {
       // rotate: ['-45deg', '-45deg', '-45deg'],
