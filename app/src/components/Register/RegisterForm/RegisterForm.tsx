@@ -6,6 +6,7 @@ import { Anchor, Button, PasswordInput, Popover, Progress, TextInput } from '@ma
 import { DatePickerInput } from '@mantine/dates';
 import { useField, useForm } from '@mantine/form';
 import { useDisclosure, useTimeout } from '@mantine/hooks';
+import { VisibilityToggleIcon } from '@/components/VisibilityToggleIcon/VisibilityToggleIcon';
 import Assurance from './Assurance/Assurance';
 
 const emailRegex =
@@ -325,7 +326,3 @@ export default function RegisterForm({ onSubmitted }: { onSubmitted: (email: str
     </form>
   );
 }
-
-const VisibilityToggleIcon = ({ reveal }: { reveal: boolean }) => {
-  return reveal ? <EyeSlash variant="Outline" /> : <Eye variant="Outline" />;
-};

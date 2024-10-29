@@ -1,0 +1,58 @@
+.container {
+  min-height: 100vh;
+  background-image: url('../../assets/images/login_page_light_background_1920w.webp');
+  background-size: cover;
+  background-position: center;
+
+  @include dark {
+    background-image: url('../../assets/images/login_page_dark_background_1920w.webp');
+  }
+
+  @include smaller-than($mantine-breakpoint-2xl) {
+    background-image: url('../../assets/images/login_page_light_background_1536w.webp');
+
+    @include dark {
+      background-image: url('../../assets/images/login_page_dark_background_1536w.webp');
+    }
+  }
+
+  @include smaller-than($mantine-breakpoint-xl) {
+    background-image: url('../../assets/images/login_page_light_background_1280w.webp');
+
+    @include dark {
+      background-image: url('../../assets/images/login_page_dark_background_1280w.webp');
+    }
+  }
+
+  @include smaller-than($mantine-breakpoint-lg) {
+    background-image: url('../../assets/images/login_page_light_background_1024w.webp');
+
+    @include dark {
+      background-image: url('../../assets/images/login_page_dark_background_1024w.webp');
+    }
+  }
+
+  @include smaller-than($mantine-breakpoint-md) {
+    background-image: url('../../assets/images/login_page_light_background_768w.webp');
+
+    @include dark {
+      background-image: url('../../assets/images/login_page_dark_background_768w.webp');
+    }
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    background-image: url('../../assets/images/login_page_light_background_640w.webp');
+
+    @include dark {
+      background-image: url('../../assets/images/login_page_dark_background_640w.webp');
+    }
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    background-image: url('../../assets/images/login_page_light_background_384w.webp');
+
+    @include dark {
+      background-image: url('../../assets/images/login_page_dark_background_384w.webp');
+    }
+  }
+}
