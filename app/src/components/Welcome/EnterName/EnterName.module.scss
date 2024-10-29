@@ -34,6 +34,10 @@
   color: $mantine-color-foreground-9;
   margin-bottom: rem(24px);
 
+  @include dark {
+    color: $mantine-color-foreground-0;
+  }
+
   @include smaller-than($mantine-breakpoint-sm) {
     font-size: var(--mantine-font-size-2xl);
   }

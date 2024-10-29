@@ -1,5 +1,4 @@
 .container {
-  background-color: var(--mantine-color-white);
   min-height: 100vh;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -158,6 +157,10 @@
   line-height: var(--mantine-line-height-heading);
   color: $mantine-color-foreground-5;
 
+  @include dark {
+    color: $mantine-color-foreground-4;
+  }
+
   @include smaller-than($mantine-breakpoint-md) {
     font-size: var(--mantine-font-size-xl);
   }
@@ -176,6 +179,10 @@
   font-weight: $mantine-font-semibold;
   line-height: var(--mantine-line-height-heading);
   color: $mantine-color-foreground-9;
+
+  @include dark {
+    color: $mantine-color-foreground-0;
+  }
 
   @include smaller-than($mantine-breakpoint-md) {
     font-size: var(--mantine-font-size-2xl);
@@ -201,68 +208,8 @@
   }
 }
 
-// .slideOut {
-//   animation: slideOut 0.3s ease-out forwards;
-// }
-
-// .slideIn {
-//   animation: slideIn 0.3s ease-out forwards;
-// }
-
-// .falling {
-//   animation: falling 1s ease-out 0.4s forwards;
-// }
-
-// @keyframes slideOut {
-//   0% {
-//     opacity: 1;
-//     visibility: visible;
-//     transform: translateX(0);
-//   }
-
-//   100% {
-//     opacity: 0;
-//     visibility: hidden;
-//     transform: translateX(-100%);
-//   }
-// }
-
-// @keyframes slideIn {
-//   0% {
-//     opacity: 0;
-//     visibility: hidden;
-//     transform: translateX(100%);
-//   }
-
-//   100% {
-//     opacity: 1;
-//     visibility: visible;
-//     transform: translateX(0);
-//   }
-// }
-
-// @keyframes falling {
-//   0% {
-//     opacity: 0;
-//     visibility: hidden;
-//     transform: translateY(-100%);
-//   }
-
-//   50% {
-//     opacity: 1;
-//     visibility: visible;
-//     transform: translateY(20%);
-//   }
-
-//   75% {
-//     opacity: 1;
-//     visibility: visible;
-//     transform: translateY(-10%);
-//   }
-
-//   100% {
-//     opacity: 1;
-//     visibility: visible;
-//     transform: translateY(0);
-//   }
-// }
+.modeToggle {
+  position: absolute;
+  top: 5vh;
+  // transform: translateY(100%);
+}

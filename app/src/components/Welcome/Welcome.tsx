@@ -8,6 +8,7 @@ import centerIllustrator from '../../assets/images/hello_illustrator.webp';
 import logo from '../../assets/images/logo_1.svg';
 import leftSideIllustrator from '../../assets/images/side_illustrators_1.webp';
 import rightSideIllustrator from '../../assets/images/side_illustrators_2.webp';
+import ModeToggle from '../ModeToggle/ModeToggle';
 import EnterName from './EnterName/EnterName';
 
 type NameSectionProps = { onNext: (value: string) => void };
@@ -38,11 +39,26 @@ const WelcomeSection = React.forwardRef<HTMLElement, WelcomeSectionProps>((props
       </figure>
       {/* Center illustrator */}
       <motion.figure
-        animate={{
-          opacity: [0, 1, 1, 1],
-          y: ['-100%', '20%', '-10%', 0],
+        // animate={{
+        //   opacity: [0, 1, 1, 1],
+        //   y: ['-100%', '20%', '-10%', 0],
+        // }}
+        // transition={{ duration: 1, ease: 'easeOut', delay: 0.4 }}
+        initial={{ y: '-100%', opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          delay: 0.4,
+          y: {
+            type: 'spring',
+            duration: 2,
+            bounce: 0.55,
+          },
+          opacity: {
+            type: 'tween',
+            duration: 1,
+            ease: 'easeOut',
+          },
         }}
-        transition={{ duration: 1, ease: 'easeOut', delay: 0.4 }}
         className={classes.centerIllustrator}
       >
         <img src={centerIllustrator} alt="center illustrator" />
@@ -90,6 +106,10 @@ export default function Welcome() {
       <figure key="left" className={classes.sideIllustrator + ' ' + classes.sideIllustratorLeft}>
         <img src={leftSideIllustrator} alt="left side illustrator" />
       </figure>
+
+      {/* Mode toggle */}
+      <ModeToggle className={classes.modeToggle} />
+
       {/* Section */}
       <AnimatePresence mode="wait">
         {isWelcomeVisible && (

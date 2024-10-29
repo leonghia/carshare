@@ -17,6 +17,19 @@ export default function CompleteModal({
   close: () => void;
   email: string;
 }) {
+  const variants = {
+    appear: {
+      opacity: [0, 1],
+      x: ['100%', 0],
+      transition: { duration: 1, delay: 0.5, type: 'spring', bounce: 0.75 },
+    },
+    stable: {
+      // rotate: ['-45deg', '-45deg', '-45deg'],
+      scale: [1.07, 1, 1.08],
+      transition: { duration: 1, ease: 'linear', delay: 1.5, repeat: Infinity },
+    },
+  };
+
   return (
     <Modal
       opened={isOpened}
@@ -54,9 +67,13 @@ export default function CompleteModal({
             {/* Illustrator container */}
             <div className={classes.illustratorContainer}>
               {/* Image */}
-              <figure className={classes.image}>
+              <motion.figure
+                className={classes.image}
+                animate={['appear', 'stable']}
+                variants={variants}
+              >
                 <img src={mailIllustrator} alt="check mail illustrator" />
-              </figure>
+              </motion.figure>
             </div>
             {/* Lower */}
             <div className={classes.lower}>

@@ -3,7 +3,7 @@ import classes from './ModeToggle.module.scss';
 import { Moon } from 'iconsax-react';
 import { Button, useMantineColorScheme } from '@mantine/core';
 
-export default function ModeToggle() {
+export default function ModeToggle({className}: {className?: string}) {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   const handleClick = () => {
@@ -19,6 +19,7 @@ export default function ModeToggle() {
         inner: classes.buttonInner,
         label: classes.buttonLabel,
       }}
+      className={className || ''}
     >
       <Moon variant="Outline" />
     </Button>
