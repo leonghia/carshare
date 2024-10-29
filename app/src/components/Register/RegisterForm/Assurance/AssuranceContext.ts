@@ -1,8 +1,8 @@
 import { createContext } from 'react';
 
-interface AssuranceContextProps {
+type AssuranceContextProps = {
   isChecked: boolean;
-}
+};
 
 export const AssuranceContext = createContext<AssuranceContextProps>({
   isChecked: false,

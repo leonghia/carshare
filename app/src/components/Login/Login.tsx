@@ -1,13 +1,13 @@
 import classes from './Login.module.scss';
-import { Button } from '@mantine/core';
 import logo from '../../assets/images/logo_1.svg';
 import ModeToggle from '../ModeToggle/ModeToggle';
+import LoginForm from './LoginForm/LoginForm';
 
 export default function Login() {
   return (
     <div className={classes.container}>
       {/* Mode toggle */}
-      <ModeToggle />
+      <ModeToggle className={classes.modeToggle} />
       {/* Login card */}
       <div className={classes.loginCard}>
         {/* Logo & Heading */}
@@ -20,6 +20,7 @@ export default function Login() {
           <h1 className={classes.heading}>Đăng nhập</h1>
         </div>
         {/* Form */}
+        <LoginForm />
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import classes from './RegisterForm.module.scss';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { Calendar1, Eye, EyeSlash } from 'iconsax-react';
+import { Calendar1 } from 'iconsax-react';
+import { Link } from 'react-router-dom';
 import { Anchor, Button, PasswordInput, Popover, Progress, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useField, useForm } from '@mantine/form';
@@ -300,11 +301,13 @@ export default function RegisterForm({ onSubmitted }: { onSubmitted: (email: str
           error: classes.passwordInputError,
         }}
       />
+
       <Assurance
-        keyVal={form.key('assured')}
         isChecked={form.getValues().assured}
+        keyVal={form.key('assured')}
         {...form.getInputProps('assured')}
       />
+
       <div className={classes.submitAndLogin}>
         <Button
           type="submit"
@@ -318,7 +321,12 @@ export default function RegisterForm({ onSubmitted }: { onSubmitted: (email: str
         </Button>
         <p className={classes.login}>
           Bạn đã có tài khoản?{' '}
-          <Anchor href="/login" underline="never" classNames={{ root: classes.anchorRoot }}>
+          <Anchor
+            component={Link}
+            to={'/login'}
+            underline="never"
+            classNames={{ root: classes.anchorRoot }}
+          >
             Đăng nhập ngay
           </Anchor>
         </p>

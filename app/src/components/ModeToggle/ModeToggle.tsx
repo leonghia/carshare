@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import classes from './ModeToggle.module.scss';
-import { Moon } from 'iconsax-react';
+import { Moon, Sun1 } from 'iconsax-react';
 import { Button, useMantineColorScheme } from '@mantine/core';
 
-export default function ModeToggle({className}: {className?: string}) {
+export default function ModeToggle({ className }: { className?: string }) {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   const handleClick = () => {
@@ -21,7 +21,7 @@ export default function ModeToggle({className}: {className?: string}) {
       }}
       className={className || ''}
     >
-      <Moon variant="Outline" />
+      {colorScheme === 'light' ? <Moon variant="Outline" /> : <Sun1 variant="Outline" />}
     </Button>
   );
 }

@@ -3,6 +3,10 @@
   background-image: url('../../assets/images/login_page_light_background_1920w.webp');
   background-size: cover;
   background-position: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  justify-items: center;
 
   @include dark {
     background-image: url('../../assets/images/login_page_dark_background_1920w.webp');
@@ -41,6 +45,7 @@
   }
 
   @include smaller-than($mantine-breakpoint-sm) {
+    padding-inline: 1rem;
     background-image: url('../../assets/images/login_page_light_background_640w.webp');
 
     @include dark {
@@ -54,5 +59,108 @@
     @include dark {
       background-image: url('../../assets/images/login_page_dark_background_384w.webp');
     }
+  }
+
+  .modeToggle {
+    position: absolute;
+    top: 5vh;
+    background-color: rgba(39, 39, 42, 0.1);
+
+    &:hover {
+      background-color: rgba(39, 39, 42, 0.15);
+    }
+
+    @include dark {
+      background-color: rgba(244, 244, 245, 0.2);
+
+      &:hover {
+        background-color: rgba(244, 244, 245, 0.25);
+      }
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      top: 4vh;
+    }
+  }
+}
+
+.loginCard {
+  width: 100%;
+  max-width: rem(500px);
+  background-color: var(--mantine-color-white);
+  border-radius: rem(32px);
+  padding: rem(40px) rem(32px);
+  box-shadow: var(--mantine-shadow-2xl);
+
+  @include dark {
+    background-color: $mantine-color-background-8;
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    padding: rem(32px) rem(24px) rem(24px);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    padding: rem(24px) rem(16px);
+  }
+
+  & > :not(:last-child) {
+    margin-bottom: rem(40px);
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-bottom: 2rem;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+.logoAndHeading {
+  & > :not(:last-child) {
+    margin-bottom: 1rem;
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.logo {
+  text-align: center;
+
+  img {
+    height: 1rem;
+    width: auto;
+    object-fit: contain;
+
+    @include smaller-than($mantine-breakpoint-sm) {
+      height: 0.75rem;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      height: rem(10px);
+    }
+  }
+}
+
+.heading {
+  font-size: var(--mantine-font-size-3xl);
+  line-height: var(--mantine-line-height-heading);
+  font-weight: $mantine-font-bold;
+  color: $mantine-color-foreground-9;
+  text-align: center;
+
+  @include dark {
+    color: $mantine-color-foreground-0;
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-2xl);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-xl);
   }
 }
