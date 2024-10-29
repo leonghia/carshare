@@ -1,27 +1,23 @@
-import { Key, useContext, useState } from 'react';
+import React, { Key, useContext } from 'react';
 import classes from './Assurance.module.scss';
 import { Checkbox } from '@mantine/core';
-import AnimatedTick from '@/components/AnimatedTick/AnimatedTick';
+import { CheckboxIcon } from '@/components/CheckboxIcon/CheckboxIcon';
 import { AssuranceContext } from './AssuranceContext';
 
 export default function Assurance({
-  keyVal,
   isChecked,
+  keyVal,
   ...props
 }: {
-  keyVal: Key;
   isChecked: boolean;
+  keyVal: Key;
 }) {
   return (
-    <AssuranceContext.Provider
-      value={{
-        isChecked: isChecked,
-      }}
-    >
+    <AssuranceContext.Provider value={{ isChecked: isChecked }}>
       <Checkbox
         {...props}
         key={keyVal}
-        icon={CheckboxIcon}
+        icon={SpecificCheckboxIcon}
         label="Tôi cam đoan những thông tin được kê khai ở trên là đúng sự thật. Nếu sai, tôi sẵn sàng chịu mọi trách nhiệm liên quan."
         classNames={{
           root: classes.checkboxRoot,
@@ -36,11 +32,10 @@ export default function Assurance({
   );
 }
 
-const CheckboxIcon: React.FC<{
-  indeterminate: boolean | undefined;
-  className: string;
-}> = ({ indeterminate, className }) => {
+const SpecificCheckboxIcon: React.FC<{ className: string; indeterminate: boolean | undefined }> = ({
+  className,
+  indeterminate,
+}) => {
   const { isChecked } = useContext(AssuranceContext);
-
-  return <AnimatedTick className={className} isChecked={isChecked} />;
+  return <CheckboxIcon className={className} isChecked={isChecked} indeterminate={indeterminate} />;
 };

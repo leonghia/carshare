@@ -1,0 +1,127 @@
+.form {
+  & > :not(:last-child) {
+    margin-bottom: 2rem;
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+.fields {
+  & > :not(:last-child) {
+    margin-bottom: 2rem;
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.emailInputRoot {
+  @include textInputRoot;
+}
+
+.passwordInputRoot {
+  @include passwordInputRoot;
+}
+
+.rememberMeAndForgotPassword {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.forgotPasswordAnchorRoot {
+  font-size: var(--mantine-font-size-base);
+  line-height: var(--mantine-line-height-body);
+  font-weight: $mantine-font-medium;
+  color: $mantine-color-foreground-5;
+  text-underline-offset: 0.25rem;
+
+  @include dark {
+    color: $mantine-color-foreground-4;
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
+}
+
+.cta {
+  & > :not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.loginButtonRoot {
+  @include primaryButtonRoot;
+
+  & {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    width: 100%;
+    border-radius: rem(20px);
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+  }
+}
+
+.notHaveAccount {
+  font-size: var(--mantine-font-size-base);
+  line-height: var(--mantine-line-height-body);
+  font-weight: $mantine-font-normal;
+  color: $mantine-color-foreground-4;
+  text-align: center;
+
+  @include dark {
+    color: $mantine-color-foreground-5;
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
+}
+
+.registerAnchorRoot {
+  @include anchorRoot;
+}
+
+.error {
+  width: 100%;
+  background-color: $mantine-color-danger-0;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+
+  @include dark {
+    background-color: $mantine-color-danger-flat;
+  }
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    padding: 0.75rem 1rem;
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+}
+
+.errorMessage {
+  font-size: var(--mantine-font-size-base);
+  line-height: var(--mantine-line-height-body);
+  font-weight: $mantine-font-normal;
+  color: $mantine-color-danger-5;
+
+  @include smaller-than($mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  @include smaller-than($mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-xs);
+  }
+}

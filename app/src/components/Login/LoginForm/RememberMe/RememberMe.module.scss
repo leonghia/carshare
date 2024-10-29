@@ -1,0 +1,19 @@
+.rememberMeChecboxRoot {
+  @include checkboxRoot;
+
+  .checkboxLabel {
+    padding-inline-start: 0.5rem;
+    font-size: var(--mantine-font-size-base);
+    line-height: var(--mantine-line-height-body);
+    font-weight: $mantine-font-medium;
+    color: $mantine-color-foreground-5;
+
+    @include dark {
+      color: $mantine-color-foreground-4;
+    }
+
+    @include smaller-than($mantine-breakpoint-xs) {
+      font-size: var(--mantine-font-size-sm);
+    }
+  }
+}
