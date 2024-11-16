@@ -3,17 +3,16 @@
 
   .checkboxLabel {
     padding-inline-start: 0.5rem;
-    font-size: var(--mantine-font-size-base);
-    line-height: var(--mantine-line-height-body);
-    font-weight: $mantine-font-medium;
-    color: $mantine-color-foreground-5;
+    font-weight: $font-medium;
+    color: $color-foreground-5;
+    @include text-base;
 
     @include dark {
-      color: $mantine-color-foreground-4;
+      color: $color-foreground-4;
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
+    @include smaller-than($breakpoint-xs) {
+      @include text-sm;
     }
   }
 }

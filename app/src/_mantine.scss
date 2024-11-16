@@ -85,6 +85,9 @@ $breakpoint-2xl: '96em'; // 1536px
 }
 
 /* Primitives */
+$color-white: #fff;
+$color-black: #000;
+
 // Slate
 $color-slate-0: #f8fafc;
 $color-slate-1: #f1f5f9;
@@ -185,6 +188,20 @@ $color-indigo-9: #312e81;
 $color-indigo-10: #1e1b4b;
 $color-indigo-flat: rgba(99, 102, 241, 0.2);
 
+// Teal
+$color-teal-0: #e8fcf7;
+$color-teal-1: #bbf5e6;
+$color-teal-2: #8deed6;
+$color-teal-3: #5fe7c5;
+$color-teal-4: #32e0b4;
+$color-teal-5: #1bddac;
+$color-teal-6: #18c79b;
+$color-teal-7: #139b78;
+$color-teal-8: #0e6f56;
+$color-teal-9: #084234;
+$color-teal-10: #031611;
+$color-teal-flat: rgba(27, 221, 172, 0.1);
+
 // Corner radius
 $rounded-sm: rem(2px);
 $rounded-base: rem(4px);
@@ -194,6 +211,18 @@ $rounded-xl: rem(12px);
 $rounded-2xl: rem(16px);
 $rounded-3xl: rem(24px);
 $rounded-full: 9999px;
+
+// Shadows
+$shadow-sm: '0 0.0625rem 2rem 0 rgb(70 76 136 / 0.05)';
+$shadow-sm-x: '0.0625rem 0 2rem 0 rgb(70 76 136 / 0.05)';
+$shadow-base: '0 0.0625rem 0.1875rem 0 rgba(70 76 136 / 0.1), 0 0.0625rem 0.125rem -0.0625rem rgba(70 76 136 / 0.1)';
+$shadow-md: '0 0.25rem 0.375rem -0.0625rem rgba(70 76 136 / 0.1), 0 0.125rem 0.25rem -0.125rem rgba(70 76 136 / 0.1)';
+$shadow-md-x: '0.25rem 0 0.375rem -0.0625rem rgb(70 76 136 / 0.1), 0.125rem 0 0.25rem -0.125rem rgb(70 76 136 / 0.1)';
+$shadow-lg: '0 0.625rem 0.9375rem -0.1875rem rgba(70 76 136 / 0.1), 0 0.25rem 0.375rem -0.25rem rgba(70 76 136 / 0.1)';
+$shadow-xl: '0 1.25rem 1.5625rem -0.3125rem rgb(70 76 136 / 0.1), 0 0.5rem 0.625rem -0.375rem rgb(70 76 136 / 0.1)';
+$shadow-2xl: '0 1.5625rem 3.125rem 0 rgb(70 76 136 / 0.25)';
+$shadow-xl-reverse: '0 -1.25rem 1.5625rem -0.3125rem rgb(70 76 136 / 0.1), 0 -0.5rem 0.625rem -0.375rem rgb(70 76 136 / 0.1)';
+$shadow-xl-x: '1.25rem 0 1.5625rem -2rem rgb(70 76 136 / 0.1), 0.5rem 0 0.625rem -0.375rem rgb(70 76 136 / 0.1)';
 
 /* Tokens */
 // Background
@@ -262,20 +291,20 @@ $color-danger-9: $color-red-9;
 $color-danger-10: $color-red-10;
 
 // Primary
-$color-primary-0: $color-indigo-0;
-$color-primary-1: $color-indigo-1;
-$color-primary-2: $color-indigo-2;
-$color-primary-3: $color-indigo-3;
-$color-primary-4: $color-indigo-4;
-$color-primary-5: $color-indigo-5;
-$color-primary-6: $color-indigo-6;
-$color-primary-7: $color-indigo-7;
-$color-primary-8: $color-indigo-8;
-$color-primary-9: $color-indigo-9;
-$color-primary-10: $color-indigo-10;
+$color-primary-0: $color-teal-0;
+$color-primary-1: $color-teal-1;
+$color-primary-2: $color-teal-2;
+$color-primary-3: $color-teal-3;
+$color-primary-4: $color-teal-4;
+$color-primary-5: $color-teal-5;
+$color-primary-6: $color-teal-6;
+$color-primary-7: $color-teal-7;
+$color-primary-8: $color-teal-8;
+$color-primary-9: $color-teal-9;
+$color-primary-10: $color-teal-10;
 
 // Flat
-$color-primary-flat: $color-indigo-flat;
+$color-primary-flat: $color-teal-flat;
 $color-background-flat: $color-zinc-flat-300;
 $color-success-flat: $color-green-flat;
 $color-warning-flat: $color-yellow-flat;
@@ -292,19 +321,21 @@ $color-secondary-button-background-hover: #ececee;
 $color-secondary-button-background-dark: #323238;
 $color-secondary-button-background-dark-hover: #39393f;
 
-$color-primary-button-background: $color-primary-5;
+$color-primary-button-background: linear-gradient(90deg, #00ff87, #60efff);
 $color-primary-button-background-hover: $color-primary-6;
 $color-primary-button-background-hover-dark: $color-primary-4;
 
-$color-primary-button-label: $color-foreground-0;
+$color-primary-button-label: $color-primary-9;
+
 $color-secondary-button-label: $color-foreground-7;
 $color-secondary-button-label-dark: $color-foreground-2;
 
 $color-link: $color-primary-5;
 $color-link-hover: $color-primary-6;
 $color-link-hover-dark: $color-primary-4;
-$color-outline: $color-foreground-6;
-$color-outline-dark: $color-foreground-3;
+
+$color-border: $color-foreground-6;
+$color-border-dark: $color-foreground-3;
 
 // Corner radius
 $rounded-input: $rounded-lg;
@@ -321,64 +352,137 @@ $font-bold: 700;
 $font-extrabold: 800;
 $font-black: 900;
 
+// Line height
+$line-height-heading: 1.3;
+$line-height-body: 1.5;
+
+// Typography
+@mixin text-xs {
+  font-size: rem(12px);
+  line-height: $line-height-body;
+}
+
+@mixin text-sm {
+  font-size: rem(14px);
+  line-height: $line-height-body;
+}
+
+@mixin text-base {
+  font-size: 1rem;
+  line-height: $line-height-body;
+}
+
+@mixin text-lg {
+  font-size: rem(18px);
+  line-height: $line-height-body;
+}
+
+@mixin text-xl {
+  font-size: rem(20px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-2xl {
+  font-size: rem(24px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-3xl {
+  font-size: rem(30px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-4xl {
+  font-size: rem(36px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-5xl {
+  font-size: rem(48px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-6xl {
+  font-size: rem(60px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-7xl {
+  font-size: rem(72px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-8xl {
+  font-size: rem(96px);
+  line-height: $line-height-heading;
+}
+
+@mixin text-9xl {
+  font-size: rem(128px);
+  line-height: $line-height-heading;
+}
+
 // Custom mixins
 @mixin inputBorder {
-  border: rem(2px) solid transparent;
+  border: 1px solid $color-border;
 
-  &:focus,
-  &:focus-within {
-    border-color: var(--mantine-primary-color-5);
+  &:not([type='checkbox']):focus,
+  &:not([type='checkbox']):focus-within {
+    border-color: transparent;
+    outline: 2px solid $color-primary-5;
+  }
+
+  @include dark {
+    border-color: $color-border-dark;
   }
 
   &[data-error='true'] {
-    border-color: $color-danger-5;
+    border-color: transparent;
+    outline: 2px solid $color-danger-5;
   }
 }
 
 @mixin inputError {
-  font-size: var(--mantine-font-size-sm);
   font-weight: $font-normal;
   color: $color-danger-5;
-  line-height: var(--mantine-line-height-body);
   margin-top: rem(8px);
+  @include text-sm();
 
   @include smaller-than($breakpoint-xs) {
-    font-size: var(--mantine-font-size-xs);
     margin-top: rem(4px);
+    @include text-xs();
   }
 }
 
 @mixin inputLabel {
-  font-size: var(--mantine-font-size-lg);
-  line-height: var(--mantine-line-height-body);
   font-weight: $font-semibold;
   color: $color-foreground-7;
+  @include text-lg();
 
   @include dark {
     color: $color-foreground-2;
   }
 
   @include smaller-than($breakpoint-sm) {
-    font-size: var(--mantine-font-size-base);
+    @include text-base();
   }
 
   @include smaller-than($breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
+    @include text-sm();
   }
 }
 
 @mixin inputContent {
-  font-size: var(--mantine-font-size-base);
-  line-height: var(--mantine-line-height-body);
   font-weight: $font-normal;
   color: $color-foreground-6;
+  @include text-base();
 
   @include dark {
     color: $color-foreground-3;
   }
 
   @include smaller-than($breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
+    @include text-sm();
   }
 }
 
@@ -456,8 +560,8 @@ $font-black: 900;
   }
 
   .textInputInput {
-    background-color: $mantine-color-input-bg-light;
-    border-radius: 20px;
+    background-color: transparent;
+    border-radius: $rounded-input;
     padding-top: rem(12px);
     padding-bottom: rem(12px);
     padding-inline-start: rem(16px);
@@ -465,10 +569,6 @@ $font-black: 900;
     height: min-content;
     @include inputBorder();
     @include inputContent();
-
-    @include dark {
-      background-color: $mantine-color-input-bg-dark;
-    }
 
     @include smaller-than($breakpoint-xs) {
       padding-inline: rem(12px);
@@ -508,9 +608,8 @@ $font-black: 900;
 
   .numberInputSection {
     color: $color-foreground-7;
-    font-size: var(--mantine-font-size-base);
     font-weight: $font-normal;
-    line-height: var(--mantine-line-height-body);
+    @include text-base();
 
     &[data-position='left'] {
       inset-inline-start: rem(20px);
@@ -540,9 +639,9 @@ $font-black: 900;
   }
 
   .passwordInputInput {
-    background-color: $mantine-color-input-bg-light;
+    background-color: transparent;
     height: rem(52px);
-    border-radius: rem(20px);
+    border-radius: $rounded-input;
     padding-inline-start: rem(16px);
     padding-inline-end: rem(48px);
     @include inputBorder();
@@ -554,11 +653,7 @@ $font-black: 900;
 
     &:focus,
     &:focus-within {
-      border-color: var(--mantine-primary-color-5);
-    }
-
-    @include dark() {
-      background-color: $mantine-color-input-bg-dark;
+      border-color: $color-primary-5;
     }
   }
 
@@ -595,8 +690,8 @@ $font-black: 900;
   }
 
   .datePickerInputInput {
-    background-color: $mantine-color-input-bg-light;
-    border-radius: rem(20px);
+    background-color: transparent;
+    border-radius: $rounded-input;
     padding-inline-start: rem(16px);
     padding-inline-start: rem(16px);
     padding-top: rem(12px);
@@ -608,13 +703,9 @@ $font-black: 900;
       padding-inline: rem(12px);
     }
 
-    @include dark {
-      background-color: $mantine-color-input-bg-dark;
-    }
-
     &:focus,
     &:focus-within {
-      border: rem(2px) solid var(--mantine-primary-color-5);
+      border: rem(2px) solid $color-primary-5;
     }
 
     &[data-error='true'] {
@@ -654,23 +745,19 @@ $font-black: 900;
 @mixin popoverDropdown {
   border: 1px solid transparent;
   border-radius: rem(16px);
-  box-shadow: var(--mantine-shadow-xl);
-
-  @include dark {
-    background-color: $mantine-color-input-bg-dark;
-  }
+  box-shadow: $shadow-xl;
 }
 
 @mixin datePickerInputDay {
   border-radius: 9999px;
 
   &:where([data-selected]) {
-    background-color: var(--mantine-primary-color-5);
-    color: $color-foreground-0;
+    background-color: $color-primary-3;
+    color: $color-primary-9;
     font-weight: $font-semibold;
 
     @include hover {
-      background-color: var(--mantine-primary-color-5);
+      background-color: $color-primary-3;
     }
   }
 }
@@ -688,40 +775,24 @@ $font-black: 900;
   }
 
   .checkboxInput {
-    border-radius: 8px;
+    border-radius: $rounded-checkbox;
     width: 100%;
     height: 100%;
-    transition: background-color 0.5s ease-out;
-    border-color: transparent;
+    transition: all 0.3s ease-out;
+    background-color: transparent;
     @include inputBorder();
-
-    &:focus,
-    &:focus-within {
-      border-color: transparent;
-    }
-
-    &:focus-visible {
-      outline-color: var(--mantine-primary-color-5);
-    }
 
     &:checked + .checkboxIcon {
       opacity: unset;
       transform: unset;
     }
 
-    @include light {
-      background-color: $color-secondary-button-background;
+    &:checked {
+      background-color: $color-primary-3;
+      border-color: transparent;
 
-      &:checked {
-        background-color: var(--mantine-primary-color-5);
-      }
-    }
-
-    @include dark {
-      background-color: $color-secondary-button-background-dark;
-
-      &:checked {
-        background-color: var(--mantine-primary-color-5);
+      @include dark {
+        background-color: $color-primary-4;
       }
     }
   }
@@ -732,10 +803,10 @@ $font-black: 900;
     & {
       font-weight: $font-normal;
       color: $color-foreground-6;
-      font-size: var(--mantine-font-size-base);
+      @include text-base();
 
       @include smaller-than($breakpoint-xs) {
-        font-size: var(--mantine-font-size-sm);
+        @include text-sm();
       }
     }
 
@@ -750,7 +821,7 @@ $font-black: 900;
 
   .checkboxIcon {
     width: 65%;
-    color: $color-foreground-0;
+    color: $color-primary-9;
     transform: unset;
     opacity: unset;
     transition: unset;
@@ -766,73 +837,44 @@ $font-black: 900;
   transition: all 0.5s ease-out;
 
   .buttonLabel {
-    font-size: var(--mantine-font-size-base);
     font-weight: $font-semibold;
-    line-height: var(--mantine-line-height-body);
+    @include text-base();
 
     @include smaller-than($breakpoint-xs) {
-      font-size: var(--mantine-font-size-sm);
+      @include text-sm();
     }
+  }
+
+  .buttonLoader {
+    height: 40%;
+    aspect-ratio: 1 / 1;
   }
 }
 
 @mixin primaryButtonRoot {
+  background: $color-primary-button-background;
+  border-radius: $rounded-button;
   @include buttonRoot;
 
-  & {
-    background: $color-primary-button-background;
-    position: relative;
-    z-index: 0;
-  }
-
   &:hover {
-    transform: scale(1.01);
-    box-shadow: var(--mantine-shadow-xl);
+    background-color: $color-primary-button-background-hover;
 
-    .buttonLabel {
-      color: var(--mantine-color-white);
+    @include dark() {
+      background-color: $color-primary-button-background-hover-dark;
     }
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    inset: 0;
-    background: $color-primary-button-background-hover;
-    z-index: -1;
-    transition: opacity 0.3s ease-out;
-    opacity: 0;
-    filter: blur(0);
-    border-radius: inherit;
-    transform: translateY(0);
-
-    @include dark {
-      // background: $mantine-color-bg-gradient-primary-lighten;
-    }
-  }
-
-  &:hover::before {
-    opacity: 1;
   }
 
   .buttonLabel {
-    color: $color-foreground-0;
-    will-change: transform;
-    transition: color 0.4s ease-out;
+    color: $color-primary-button-label;
   }
 }
 
 @mixin secondaryButtonRoot {
+  background-color: $color-secondary-button-background;
   @include buttonRoot;
 
-  & {
-    background-color: $color-secondary-button-background;
-
-    @include dark {
-      background-color: $color-secondary-button-background-dark;
-    }
+  @include dark {
+    background-color: $color-secondary-button-background-dark;
   }
 
   &:hover {
@@ -844,10 +886,10 @@ $font-black: 900;
   }
 
   .buttonLabel {
-    color: $color-foreground-6;
+    color: $color-secondary-button-label;
 
     @include dark {
-      color: $color-foreground-3;
+      color: $color-secondary-button-label-dark;
     }
   }
 }
@@ -855,25 +897,27 @@ $font-black: 900;
 @mixin anchorRoot {
   font-size: inherit;
   line-height: inherit;
-  color: var(--mantine-primary-color-5);
+  color: $color-link;
   font-weight: $font-semibold;
   transition: color 0.3s ease-out;
 
   &:hover {
-    color: var(--mantine-primary-color-6);
+    color: $color-link-hover;
+
+    @include dark() {
+      color: $color-link-hover-dark;
+    }
   }
 }
 
 @mixin loaderRoot {
-  --loader-color: var(--mantine-color-white);
-  --loader-size: calc(var(--mantine-font-size-lg) * 1.5);
+  width: 100%;
+  height: 100%;
 
-  @include smaller-than($breakpoint-sm) {
-    --loader-size: calc(var(--mantine-font-size-base) * 1.5);
-  }
-
-  @include smaller-than($breakpoint-xs) {
-    --loader-size: calc(var(--mantine-font-size-sm) * 1.5);
+  &::after {
+    width: 100%;
+    height: 100%;
+    border-color: $color-primary-9 $color-primary-9 $color-primary-9 transparent;
   }
 }
 
@@ -905,7 +949,7 @@ $font-black: 900;
 
   .progressSection {
     border-radius: rem(8px);
-    background-color: var(--mantine-primary-color-5);
+    background-color: $color-primary-5;
   }
 }
 
@@ -915,7 +959,7 @@ $font-black: 900;
 }
 
 body {
-  background-color: var(--mantine-color-white);
+  background-color: $color-white;
 
   @include dark {
     background-color: $color-background-8;

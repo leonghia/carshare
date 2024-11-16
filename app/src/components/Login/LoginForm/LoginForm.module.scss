@@ -2,7 +2,7 @@
   & > :not(:last-child) {
     margin-bottom: 2rem;
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: 1.5rem;
     }
   }
@@ -12,7 +12,11 @@
   & > :not(:last-child) {
     margin-bottom: 2rem;
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-sm) {
+      margin-bottom: 1.5rem;
+    }
+
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: 1rem;
     }
   }
@@ -34,18 +38,17 @@
 }
 
 .forgotPasswordAnchorRoot {
-  font-size: var(--mantine-font-size-base);
-  line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-medium;
-  color: $mantine-color-foreground-5;
+  font-weight: $font-medium;
+  color: $color-foreground-5;
   text-underline-offset: 0.25rem;
+  @include text-base;
 
   @include dark {
-    color: $mantine-color-foreground-4;
+    color: $color-foreground-4;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
+  @include smaller-than($breakpoint-xs) {
+    @include text-sm;
   }
 }
 
@@ -62,9 +65,9 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
     width: 100%;
-    border-radius: rem(20px);
+    border-radius: $rounded-button;
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding-top: 0.75rem;
       padding-bottom: 0.75rem;
     }
@@ -72,18 +75,17 @@
 }
 
 .notHaveAccount {
-  font-size: var(--mantine-font-size-base);
-  line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-normal;
-  color: $mantine-color-foreground-4;
+  font-weight: $font-normal;
+  color: $color-foreground-4;
   text-align: center;
+  @include text-base;
 
   @include dark {
-    color: $mantine-color-foreground-5;
+    color: $color-foreground-5;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
+  @include smaller-than($breakpoint-xs) {
+    @include text-sm;
   }
 }
 
@@ -93,35 +95,38 @@
 
 .error {
   width: 100%;
-  background-color: $mantine-color-danger-0;
-  border-radius: 1rem;
+  background-color: $color-danger-0;
+  border-radius: $rounded-xl;
   padding: 1rem 1.5rem;
 
   @include dark {
-    background-color: $mantine-color-danger-flat;
+    background-color: $color-danger-flat;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     padding: 0.75rem 1rem;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     padding: 0.75rem;
     border-radius: 0.75rem;
   }
 }
 
 .errorMessage {
-  font-size: var(--mantine-font-size-base);
-  line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-normal;
-  color: $mantine-color-danger-5;
+  font-weight: $font-normal;
+  color: $color-danger-5;
+  @include text-base;
 
-  @include smaller-than($mantine-breakpoint-sm) {
-    font-size: var(--mantine-font-size-sm);
+  @include smaller-than($breakpoint-sm) {
+    @include text-sm;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-xs);
+  @include smaller-than($breakpoint-xs) {
+    @include text-xs;
   }
+}
+
+.loaderRoot {
+  @include loaderRoot;
 }

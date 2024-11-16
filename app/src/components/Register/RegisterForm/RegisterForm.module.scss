@@ -2,11 +2,11 @@
   & > :not(:last-child) {
     margin-bottom: rem(32px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: rem(24px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: rem(16px);
     }
   }
@@ -22,7 +22,7 @@
   .textInputInput {
     padding-inline-start: rem(64px);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding-inline-start: rem(56px);
     }
   }
@@ -33,11 +33,11 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: rem(24px);
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     gap: 1rem;
   }
 }
@@ -49,7 +49,7 @@
 .datePickerPopoverDropdown {
   @include popoverDropdown();
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     right: rem(16px);
     left: unset !important;
   }
@@ -62,7 +62,7 @@
     padding-top: rem(16px);
     padding-bottom: rem(16px);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding: rem(12px);
     }
   }
@@ -80,7 +80,7 @@
   & > :not(:last-child) {
     margin-bottom: rem(12px);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: rem(8px);
     }
   }
@@ -88,17 +88,16 @@
 
 .login {
   text-align: center;
-  font-size: var(--mantine-font-size-base);
-  line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-normal;
-  color: $mantine-color-foreground-4;
+  font-weight: $font-normal;
+  color: $color-foreground-4;
+  @include text-base;
 
   @include dark {
-    color: $mantine-color-foreground-5;
+    color: $color-foreground-5;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
+  @include smaller-than($breakpoint-xs) {
+    @include text-sm;
   }
 }
 
@@ -110,12 +109,11 @@
   @include primaryButtonRoot;
 
   & {
-    border-radius: rem(20px);
     padding-top: rem(16px);
     padding-bottom: rem(16px);
     width: 100%;
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding-top: rem(12px);
       padding-bottom: rem(12px);
     }
@@ -128,11 +126,11 @@
   gap: rem(8px);
 
   &[data-meets='true'] {
-    color: $mantine-color-success-5;
+    color: $color-success-5;
   }
 
   &[data-meets='false'] {
-    color: $mantine-color-danger-5;
+    color: $color-danger-5;
   }
 
   &:not(:last-child) {
@@ -143,7 +141,7 @@
     width: rem(18px);
     height: rem(18px);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       width: 1rem;
       height: 1rem;
     }
@@ -151,12 +149,11 @@
 }
 
 .passwordRequirementLabel {
-  font-size: var(--mantine-font-size-sm);
-  line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-normal;
+  font-weight: $font-normal;
+  @include text-sm;
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-xs);
+  @include smaller-than($breakpoint-xs) {
+    @include text-xs;
   }
 }
 
@@ -165,19 +162,19 @@
 
   &[data-strength='weak'] {
     .progressSection {
-      background-color: $mantine-color-danger-5;
+      background-color: $color-danger-5;
     }
   }
 
   &[data-strength='average'] {
     .progressSection {
-      background-color: $mantine-color-warning-4;
+      background-color: $color-warning-4;
     }
   }
 
   &[data-strength='strong'] {
     .progressSection {
-      background-color: $mantine-color-success-5;
+      background-color: $color-success-5;
     }
   }
 }
