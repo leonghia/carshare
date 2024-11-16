@@ -5,9 +5,9 @@
     padding: rem(16px) rem(40px);
     display: block;
     margin-inline: auto;
-    border-radius: rem(20px);
+    border-radius: $rounded-button;
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding: rem(12px) rem(32px);
     }
   }
@@ -17,33 +17,32 @@
   & > :not(:last-child) {
     margin-bottom: rem(24px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: rem(16px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: rem(12px);
     }
   }
 }
 
 .title {
-  font-size: var(--mantine-font-size-3xl);
-  line-height: var(--mantine-line-height-heading);
-  font-weight: $mantine-font-semibold;
-  color: $mantine-color-foreground-9;
+  font-weight: $font-semibold;
+  color: $color-foreground-9;
   margin-bottom: rem(24px);
+  @include text-3xl;
 
   @include dark {
-    color: $mantine-color-foreground-0;
+    color: $color-foreground-0;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
-    font-size: var(--mantine-font-size-2xl);
+  @include smaller-than($breakpoint-sm) {
+    @include text-2xl;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-xl);
+  @include smaller-than($breakpoint-xs) {
+    @include text-xl;
   }
 }
 

@@ -6,7 +6,7 @@
     width: rem(40px);
     height: rem(40px);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       width: rem(34px);
       height: rem(34px);
     }

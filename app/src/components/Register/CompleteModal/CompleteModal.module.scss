@@ -14,25 +14,25 @@
   width: 100%;
   border-radius: rem(32px);
   overflow: hidden;
-  background-color: var(--mantine-color-white);
+  background-color: $color-white;
 
   @include dark {
-    background-color: $mantine-color-background-8;
+    background-color: $color-background-8;
   }
 }
 
 .illustratorContainer {
   width: 100%;
   height: min-content;
-  background-color: $mantine-color-background-1;
+  background-color: $color-background-1;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 
   @include dark {
-    background-color: $mantine-color-background-7;
+    background-color: $color-background-7;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
   }
@@ -48,12 +48,12 @@
     height: rem(148px);
     object-fit: contain;
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       width: rem(120px);
       height: rem(120px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       width: rem(100px);
       height: rem(100px);
     }
@@ -63,18 +63,18 @@
 .lower {
   padding: rem(24px) rem(40px);
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     padding: rem(16px) rem(24px);
   }
 
   & > :not(:last-child) {
     margin-bottom: rem(32px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: rem(24px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: 1rem;
     }
   }
@@ -87,53 +87,50 @@
   & > :not(:last-child) {
     margin-bottom: 1rem;
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: 0.5rem;
     }
   }
 }
 
 .title {
-  font-size: var(--mantine-font-size-xl);
-  line-height: var(--mantine-line-height-heading);
-  font-weight: $mantine-font-semibold;
-  color: $mantine-color-foreground-9;
+  font-weight: $font-semibold;
+  color: $color-foreground-9;
+  @include text-xl;
 
   @include dark {
-    color: $mantine-color-foreground-0;
+    color: $color-foreground-0;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
-    font-size: var(--mantine-font-size-lg);
-    line-height: var(--mantine-line-height-body);
+  @include smaller-than($breakpoint-sm) {
+    @include text-lg;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-base);
+  @include smaller-than($breakpoint-xs) {
+    @include text-base;
   }
 }
 
 .content {
-  font-size: var(--mantine-font-size-base);
-  line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-normal;
-  color: $mantine-color-foreground-5;
+  font-weight: $font-normal;
+  color: $color-foreground-5;
+  @include text-base;
 
   @include dark {
-    color: $mantine-color-foreground-4;
+    color: $color-foreground-4;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-sm);
+  @include smaller-than($breakpoint-xs) {
+    @include text-sm;
   }
 }
 
 .highlight {
-  font-weight: $mantine-font-semibold;
-  color: $mantine-color-foreground-7;
+  font-weight: $font-semibold;
+  color: $color-foreground-7;
 
   @include dark {
-    color: $mantine-color-foreground-2;
+    color: $color-foreground-2;
   }
 }
 
@@ -145,9 +142,8 @@
     height: min-content;
     padding-top: 1rem;
     padding-bottom: 1rem;
-    border-radius: rem(20px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       padding-top: rem(12px);
       padding-bottom: rem(12px);
     }

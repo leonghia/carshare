@@ -1,11 +1,11 @@
 .container {
   padding: rem(80px) rem(64px);
 
-  @include smaller-than($mantine-breakpoint-xl) {
+  @include smaller-than($breakpoint-xl) {
     padding-inline: rem(40px);
   }
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     padding: 0;
   }
 }
@@ -18,27 +18,27 @@
   gap: rem(48px);
   justify-content: center;
 
-  @include smaller-than($mantine-breakpoint-2xl) {
+  @include smaller-than($breakpoint-2xl) {
     grid-template-columns: rem(558px) rem(576px);
   }
 
-  @include smaller-than($mantine-breakpoint-xl) {
+  @include smaller-than($breakpoint-xl) {
     grid-template-columns: rem(506px) rem(400px);
     gap: rem(40px);
   }
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     grid-template-columns: minmax(0, 1fr);
     max-width: rem(558px);
     width: 100%;
     padding: rem(48px) rem(32px) rem(80px);
   }
 
-  @include smaller-than($mantine-breakpoint-md) {
+  @include smaller-than($breakpoint-md) {
     padding-inline: rem(24px);
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     padding: rem(24px) rem(16px) rem(40px);
     max-width: 100%;
   }
@@ -48,7 +48,7 @@
   & > :not(:last-child) {
     margin-bottom: rem(48px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: rem(24px);
     }
   }
@@ -62,25 +62,24 @@
 }
 
 .heading {
-  font-size: var(--mantine-font-size-4xl);
-  line-height: var(--mantine-line-height-heading);
-  font-weight: $mantine-font-bold;
-  color: $mantine-color-foreground-9;
+  font-weight: $font-bold;
+  color: $color-foreground-9;
+  @include text-4xl;
 
   @include dark {
-    color: $mantine-color-foreground-0;
+    color: $color-foreground-0;
   }
 
-  @include smaller-than($mantine-breakpoint-md) {
-    font-size: var(--mantine-font-size-3xl);
+  @include smaller-than($breakpoint-md) {
+    @include text-3xl;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
-    font-size: var(--mantine-font-size-2xl);
+  @include smaller-than($breakpoint-sm) {
+    @include text-2xl;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-xl);
+  @include smaller-than($breakpoint-xs) {
+    @include text-xl;
   }
 }
 
@@ -93,15 +92,15 @@
   background-position: center;
   align-self: center;
 
-  @include smaller-than($mantine-breakpoint-2xl) {
+  @include smaller-than($breakpoint-2xl) {
     background-image: url('../../assets/images/register_side_image_576w.webp');
   }
 
-  @include smaller-than($mantine-breakpoint-xl) {
+  @include smaller-than($breakpoint-xl) {
     background-image: url('../../assets/images/register_side_image_400w.webp');
   }
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     display: none;
   }
 }
@@ -113,7 +112,7 @@
   width: max-content;
   height: min-content;
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     top: rem(24px);
     right: rem(24px);
   }
@@ -123,11 +122,11 @@
     width: auto;
     object-fit: contain;
 
-    @include smaller-than($mantine-breakpoint-lg) {
+    @include smaller-than($breakpoint-lg) {
       height: rem(24px);
     }
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       height: rem(16px);
     }
   }
@@ -143,17 +142,17 @@
   z-index: 1;
   text-align: center;
 
-  @include smaller-than($mantine-breakpoint-2xl) {
+  @include smaller-than($breakpoint-2xl) {
     width: rem(490px);
     bottom: rem(80px);
   }
 
-  @include smaller-than($mantine-breakpoint-xl) {
+  @include smaller-than($breakpoint-xl) {
     width: rem(350px);
     bottom: rem(64px);
   }
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     position: static;
     width: 100%;
     margin-top: auto;
@@ -163,15 +162,15 @@
   & > :not(:last-child) {
     margin-bottom: rem(24px);
 
-    @include smaller-than($mantine-breakpoint-xl) {
+    @include smaller-than($breakpoint-xl) {
       margin-bottom: rem(16px);
     }
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: rem(8px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: rem(4px);
     }
   }
@@ -179,57 +178,56 @@
 
 .title {
   font-family: 'Carattere Regular', sans-serif;
-  font-weight: $mantine-font-normal;
+  font-weight: $font-normal;
   font-size: rem(64px);
   line-height: 1;
-  color: var(--mantine-color-white);
+  color: $color-white;
 
-  @include smaller-than($mantine-breakpoint-2xl) {
+  @include smaller-than($breakpoint-2xl) {
     font-size: rem(48px);
   }
 
-  @include smaller-than($mantine-breakpoint-xl) {
+  @include smaller-than($breakpoint-xl) {
     font-size: rem(40px);
   }
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     font-size: rem(48px);
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     font-size: rem(32px);
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     font-size: rem(24px);
   }
 }
 
 .subtitle {
-  font-size: var(--mantine-font-size-xl);
-  font-weight: $mantine-font-normal;
-  color: $mantine-color-foreground-4;
-  line-height: var(--mantine-line-height-heading);
+  font-weight: $font-normal;
+  color: $color-foreground-4;
 
-  @include smaller-than($mantine-breakpoint-2xl) {
-    font-size: var(--mantine-font-size-lg);
-    line-height: var(--mantine-line-height-body);
+  @include text-xl;
+
+  @include smaller-than($breakpoint-2xl) {
+    @include text-lg;
   }
 
-  @include smaller-than($mantine-breakpoint-xl) {
-    font-size: var(--mantine-font-size-base);
+  @include smaller-than($breakpoint-xl) {
+    @include text-base;
   }
 
-  @include smaller-than($mantine-breakpoint-lg) {
-    font-size: var(--mantine-font-size-lg);
+  @include smaller-than($breakpoint-lg) {
+    @include text-lg;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
-    font-size: var(--mantine-font-size-sm);
+  @include smaller-than($breakpoint-sm) {
+    @include text-sm;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-xs);
+  @include smaller-than($breakpoint-xs) {
+    @include text-xs;
   }
 }
 
@@ -249,12 +247,12 @@
   mask-repeat: no-repeat;
   mask-position: center;
 
-  @include smaller-than($mantine-breakpoint-2xl) {
+  @include smaller-than($breakpoint-2xl) {
     -webkit-mask-image: url('../../assets/images/register_page_image_mask_576w.webp');
     mask-image: url('../../assets/images/register_page_image_mask_576w.webp');
   }
 
-  @include smaller-than($mantine-breakpoint-xl) {
+  @include smaller-than($breakpoint-xl) {
     -webkit-mask-image: url('../../assets/images/register_page_image_mask_400w.webp');
     mask-image: url('../../assets/images/register_page_image_mask_400w.webp');
   }
@@ -271,23 +269,23 @@
   background-position: center;
   padding: 0 rem(80px) rem(40px) rem(80px);
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     display: flex;
   }
 
-  @include smaller-than($mantine-breakpoint-md) {
+  @include smaller-than($breakpoint-md) {
     padding-inline: rem(64px);
     padding-bottom: rem(32px);
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     border-radius: 0 0 rem(39px) rem(39px);
     padding-inline: rem(24px);
     padding-bottom: rem(24px);
     height: 15rem;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     border-radius: 0 0 rem(33px) rem(33px);
     padding-inline: rem(16px);
     padding-bottom: rem(16px);

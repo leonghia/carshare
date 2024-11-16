@@ -12,7 +12,7 @@
     background-image: url('../../assets/images/login_page_dark_background_1920w.webp');
   }
 
-  @include smaller-than($mantine-breakpoint-2xl) {
+  @include smaller-than($breakpoint-2xl) {
     background-image: url('../../assets/images/login_page_light_background_1536w.webp');
 
     @include dark {
@@ -20,7 +20,7 @@
     }
   }
 
-  @include smaller-than($mantine-breakpoint-xl) {
+  @include smaller-than($breakpoint-xl) {
     background-image: url('../../assets/images/login_page_light_background_1280w.webp');
 
     @include dark {
@@ -28,7 +28,7 @@
     }
   }
 
-  @include smaller-than($mantine-breakpoint-lg) {
+  @include smaller-than($breakpoint-lg) {
     background-image: url('../../assets/images/login_page_light_background_1024w.webp');
 
     @include dark {
@@ -36,7 +36,7 @@
     }
   }
 
-  @include smaller-than($mantine-breakpoint-md) {
+  @include smaller-than($breakpoint-md) {
     background-image: url('../../assets/images/login_page_light_background_768w.webp');
 
     @include dark {
@@ -44,7 +44,7 @@
     }
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     padding-inline: 1rem;
     background-image: url('../../assets/images/login_page_light_background_640w.webp');
 
@@ -53,7 +53,7 @@
     }
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     background-image: url('../../assets/images/login_page_light_background_384w.webp');
 
     @include dark {
@@ -78,7 +78,7 @@
       }
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       top: 4vh;
     }
   }
@@ -87,31 +87,31 @@
 .loginCard {
   width: 100%;
   max-width: rem(500px);
-  background-color: var(--mantine-color-white);
+  background-color: $color-white;
   border-radius: rem(32px);
   padding: rem(40px) rem(32px);
-  box-shadow: var(--mantine-shadow-2xl);
+  box-shadow: $shadow-2xl;
 
   @include dark {
-    background-color: $mantine-color-background-8;
+    background-color: $color-background-8;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     padding: rem(32px) rem(24px) rem(24px);
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     padding: rem(24px) rem(16px);
   }
 
   & > :not(:last-child) {
     margin-bottom: rem(40px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: 2rem;
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-bottom: 1.5rem;
     }
   }
@@ -121,7 +121,7 @@
   & > :not(:last-child) {
     margin-bottom: 1rem;
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-bottom: 0.5rem;
     }
   }
@@ -135,32 +135,31 @@
     width: auto;
     object-fit: contain;
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       height: 0.75rem;
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       height: rem(10px);
     }
   }
 }
 
 .heading {
-  font-size: var(--mantine-font-size-3xl);
-  line-height: var(--mantine-line-height-heading);
-  font-weight: $mantine-font-bold;
-  color: $mantine-color-foreground-9;
+  font-weight: $font-bold;
+  color: $color-foreground-9;
   text-align: center;
+  @include text-3xl;
 
   @include dark {
-    color: $mantine-color-foreground-0;
+    color: $color-foreground-0;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
-    font-size: var(--mantine-font-size-2xl);
+  @include smaller-than($breakpoint-sm) {
+    @include text-2xl;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
-    font-size: var(--mantine-font-size-xl);
+  @include smaller-than($breakpoint-xs) {
+    @include text-xl;
   }
 }

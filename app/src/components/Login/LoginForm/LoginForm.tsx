@@ -9,9 +9,9 @@ import RememberMe from './RememberMe/RememberMe';
 
 export default function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isSubmitting, { open: turnOnSubmitting, close: turnOffSubmitting }] = useDisclosure(false);
+  const [isLoading, { open: turnOnLoading, close: turnOffLoading }] = useDisclosure(false);
   const { start: startSubmitting, clear } = useTimeout(() => {
-    turnOffSubmitting();
+    turnOffLoading();
     setErrorMessage('Email hoặc mật khẩu của bạn không chính xác!');
   }, 3000);
 
@@ -23,14 +23,19 @@ export default function LoginForm() {
       rememberMe: false,
     },
     validate: {
-      email: isNotEmpty('Email không được để trống') && isEmail('Địa chỉ email không hợp lệ'),
+      email: (val) => {
+        if (isNotEmpty()(val)) return 'Địa chỉ email không được để trống';
+        if (isEmail()(val)) return 'Địa chỉ email không hợp lệ';
+        return null;
+      },
       password: isNotEmpty('Mật khẩu không được để trống'),
     },
   });
 
   const handleSubmit = (values: typeof form.values) => {
     console.log(values);
-    turnOnSubmitting();
+    setErrorMessage(null);
+    turnOnLoading();
     startSubmitting();
   };
 
@@ -96,11 +101,14 @@ export default function LoginForm() {
         {/* Login button */}
         <Button
           type="submit"
-          loading={isSubmitting}
+          loading={isLoading}
+          // loading={true}
           classNames={{
             root: classes.loginButtonRoot,
             label: classes.buttonLabel,
+            loader: classes.buttonLoader,
           }}
+          loaderProps={{ classNames: { root: classes.loaderRoot } }}
         >
           Đăng nhập
         </Button>
