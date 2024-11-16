@@ -22,117 +22,12 @@
 
 // Define variables for your breakpoints,
 // values must be the same as in your theme
-$mantine-breakpoint-xs: '24em'; // 384px
-$mantine-breakpoint-sm: '40em'; // 640px
-$mantine-breakpoint-md: '48em'; // 768px
-$mantine-breakpoint-lg: '64em'; // 1024px
-$mantine-breakpoint-xl: '80em'; // 1280px
-$mantine-breakpoint-2xl: '96em'; // 1536px
-
-// Background shades
-$mantine-color-background-0: var(--mantine-color-zinc-0);
-$mantine-color-background-1: var(--mantine-color-zinc-1);
-$mantine-color-background-2: var(--mantine-color-zinc-2);
-$mantine-color-background-3: var(--mantine-color-zinc-3);
-$mantine-color-background-4: var(--mantine-color-zinc-4);
-$mantine-color-background-5: var(--mantine-color-zinc-5);
-$mantine-color-background-6: var(--mantine-color-zinc-6);
-$mantine-color-background-7: var(--mantine-color-zinc-7);
-$mantine-color-background-8: var(--mantine-color-zinc-8);
-$mantine-color-background-9: var(--mantine-color-zinc-9);
-
-// Foreground shades
-$mantine-color-foreground-0: var(--mantine-color-slate-0);
-$mantine-color-foreground-1: var(--mantine-color-slate-1);
-$mantine-color-foreground-2: var(--mantine-color-slate-2);
-$mantine-color-foreground-3: var(--mantine-color-slate-3);
-$mantine-color-foreground-4: var(--mantine-color-slate-4);
-$mantine-color-foreground-5: var(--mantine-color-slate-5);
-$mantine-color-foreground-6: var(--mantine-color-slate-6);
-$mantine-color-foreground-7: var(--mantine-color-slate-7);
-$mantine-color-foreground-8: var(--mantine-color-slate-8);
-$mantine-color-foreground-9: var(--mantine-color-slate-9);
-
-// Success shades
-$mantine-color-success: var(--mantine-color-green-5);
-$mantine-color-success-0: var(--mantine-color-green-0);
-$mantine-color-success-1: var(--mantine-color-green-1);
-$mantine-color-success-2: var(--mantine-color-green-2);
-$mantine-color-success-3: var(--mantine-color-green-3);
-$mantine-color-success-4: var(--mantine-color-green-4);
-$mantine-color-success-5: var(--mantine-color-green-5);
-$mantine-color-success-6: var(--mantine-color-green-6);
-$mantine-color-success-7: var(--mantine-color-green-7);
-$mantine-color-success-8: var(--mantine-color-green-8);
-$mantine-color-success-9: var(--mantine-color-green-9);
-
-// Warning shades
-$mantine-color-warning: var(--mantine-color-yellow-5);
-$mantine-color-warning-0: var(--mantine-color-yellow-0);
-$mantine-color-warning-1: var(--mantine-color-yellow-1);
-$mantine-color-warning-2: var(--mantine-color-yellow-2);
-$mantine-color-warning-3: var(--mantine-color-yellow-3);
-$mantine-color-warning-4: var(--mantine-color-yellow-4);
-$mantine-color-warning-5: var(--mantine-color-yellow-5);
-$mantine-color-warning-6: var(--mantine-color-yellow-6);
-$mantine-color-warning-7: var(--mantine-color-yellow-7);
-$mantine-color-warning-8: var(--mantine-color-yellow-8);
-$mantine-color-warning-9: var(--mantine-color-yellow-9);
-
-// Danger shades
-$mantine-color-danger: var(--mantine-color-red-5);
-$mantine-color-danger-0: var(--mantine-color-red-0);
-$mantine-color-danger-1: var(--mantine-color-red-1);
-$mantine-color-danger-2: var(--mantine-color-red-2);
-$mantine-color-danger-3: var(--mantine-color-red-3);
-$mantine-color-danger-4: var(--mantine-color-red-4);
-$mantine-color-danger-5: var(--mantine-color-red-5);
-$mantine-color-danger-6: var(--mantine-color-red-6);
-$mantine-color-danger-7: var(--mantine-color-red-7);
-$mantine-color-danger-8: var(--mantine-color-red-8);
-$mantine-color-danger-9: var(--mantine-color-red-9);
-
-// Flat colors
-$mantine-color-amber-flat: rgba(245, 158, 11, 0.2);
-$mantine-color-teal-flat: rgba(43, 222, 176, 0.2);
-$mantine-color-slate-flat-300: rgba(203, 213, 225, 0.4);
-$mantine-color-slate-flat-700: rgba(51, 65, 85, 0.4);
-$mantine-color-green-flat: rgba(34, 197, 94, 0.2);
-$mantine-color-red-flat: rgba(239, 68, 68, 0.15);
-$mantine-color-yellow-flat: rgba(234, 179, 8, 0.2);
-$mantine-color-indigo-flat: rgba(99, 102, 241, 0.2);
-$mantine-color-zinc-flat-300: rgba(212, 212, 216, 0.4);
-$mantine-color-zinc-flat-700: rgba(63, 63, 70, 0.4);
-$mantine-color-primary-flat: $mantine-color-indigo-flat;
-$mantine-color-background-flat: $mantine-color-zinc-flat-300;
-$mantine-color-success-flat: $mantine-color-green-flat;
-$mantine-color-warning-flat: $mantine-color-yellow-flat;
-$mantine-color-danger-flat: $mantine-color-red-flat;
-
-// Layout colors
-$mantine-color-overlay: rgba(0, 0, 0, 0.3);
-$mantine-color-divider: rgba(17, 17, 17, 0.15);
-
-// Other colors
-$mantine-color-input-bg-light: #f8f8f9;
-$mantine-color-input-bg-dark: #2c2c31;
-$mantine-color-nd-btn-bg-dark: #323238;
-$mantine-color-nd-btn-bg-dark-hover: #39393f;
-$mantine-color-nd-btn-bg-light: #f4f4f5;
-$mantine-color-nd-btn-bg-light-hover: #ececee;
-
-$mantine-color-bg-gradient-primary: linear-gradient(90deg, #4776e6, #8e54e9);
-$mantine-color-bg-gradient-primary-dimmed: linear-gradient(90deg, #396be0, #7e40e2);
-
-// Font weights
-$mantine-font-extralight: 200;
-$mantine-font-light: 300;
-$mantine-font-normal: 400;
-$mantine-font-medium: 500;
-$mantine-font-semibold: 600;
-$mantine-font-bold: 700;
-$mantine-font-extrabold: 800;
-$mantine-font-black: 900;
+$breakpoint-xs: '24em'; // 384px
+$breakpoint-sm: '40em'; // 640px
+$breakpoint-md: '48em'; // 768px
+$breakpoint-lg: '64em'; // 1024px
+$breakpoint-xl: '80em'; // 1280px
+$breakpoint-2xl: '96em'; // 1536px
 
 @function rem($value) {
   @return #{math.div(math.div($value, $value * 0 + 1), 16)}rem;
@@ -189,6 +84,243 @@ $mantine-font-black: 900;
   }
 }
 
+/* Primitives */
+// Slate
+$color-slate-0: #f8fafc;
+$color-slate-1: #f1f5f9;
+$color-slate-2: #e2e8f0;
+$color-slate-3: #cbd5e1;
+$color-slate-4: #94a3b8;
+$color-slate-5: #64748b;
+$color-slate-6: #475569;
+$color-slate-7: #334155;
+$color-slate-8: #1e293b;
+$color-slate-9: #0f172a;
+$color-slate-10: #020617;
+$color-slate-flat-300: rgba(203, 213, 225, 0.4);
+$color-slate-flat-700: rgba(51, 65, 85, 0.4);
+
+// Zinc
+$color-zinc-0: #fafafa;
+$color-zinc-1: #f4f4f5;
+$color-zinc-2: #e4e4e7;
+$color-zinc-3: #d4d4d8;
+$color-zinc-4: #a1a1aa;
+$color-zinc-5: #71717a;
+$color-zinc-6: #52525b;
+$color-zinc-7: #3f3f46;
+$color-zinc-8: #27272a;
+$color-zinc-9: #18181b;
+$color-zinc-10: #09090b;
+$color-zinc-flat-300: rgba(212, 212, 216, 0.4);
+$color-zinc-flat-700: rgba(63, 63, 70, 0.4);
+
+// Yellow
+$color-yellow-0: #fefce8;
+$color-yellow-1: #fef9c3;
+$color-yellow-2: #fef08a;
+$color-yellow-3: #fde047;
+$color-yellow-4: #facc15;
+$color-yellow-5: #eab308;
+$color-yellow-6: #ca8a04;
+$color-yellow-7: #a16207;
+$color-yellow-8: #854d0e;
+$color-yellow-9: #713f12;
+$color-yellow-10: #422006;
+$color-yellow-flat: rgba(234, 179, 8, 0.1);
+
+// Red
+$color-red-0: #fef2f2;
+$color-red-1: #fee2e2;
+$color-red-2: #fecaca;
+$color-red-3: #fca5a5;
+$color-red-4: #f87171;
+$color-red-5: #ef4444;
+$color-red-6: #dc2626;
+$color-red-7: #b91c1c;
+$color-red-8: #991b1b;
+$color-red-9: #7f1d1d;
+$color-red-10: #450a0a;
+$color-red-flat: rgba(239, 68, 68, 0.15);
+
+// Green
+$color-green-0: #f0fdf4;
+$color-green-1: #dcfce7;
+$color-green-2: #bbf7d0;
+$color-green-3: #86efac;
+$color-green-4: #4ade80;
+$color-green-5: #22c55e;
+$color-green-6: #16a34a;
+$color-green-7: #15803d;
+$color-green-8: #166534;
+$color-green-9: #14532d;
+$color-green-10: #052e16;
+$color-green-flat: rgba(34, 197, 94, 0.15);
+
+// Amber
+$color-amber-0: #fffbeb;
+$color-amber-1: #fef3c7;
+$color-amber-2: #fde68a;
+$color-amber-3: #fcd34d;
+$color-amber-4: #fbbf24;
+$color-amber-5: #f59e0b;
+$color-amber-6: #d97706;
+$color-amber-7: #b45309;
+$color-amber-8: #92400e;
+$color-amber-9: #78350f;
+$color-amber-10: #451a03;
+$color-amber-flat: rgba(245, 158, 11, 0.07);
+
+// Indigo
+$color-indigo-0: #eef2ff;
+$color-indigo-1: #e0e7ff;
+$color-indigo-2: #c7d2fe;
+$color-indigo-3: #a5b4fc;
+$color-indigo-4: #818cf8;
+$color-indigo-5: #6366f1;
+$color-indigo-6: #4f46e5;
+$color-indigo-7: #4338ca;
+$color-indigo-8: #3730a3;
+$color-indigo-9: #312e81;
+$color-indigo-10: #1e1b4b;
+$color-indigo-flat: rgba(99, 102, 241, 0.2);
+
+// Corner radius
+$rounded-sm: rem(2px);
+$rounded-base: rem(4px);
+$rounded-md: rem(6px);
+$rounded-lg: rem(8px);
+$rounded-xl: rem(12px);
+$rounded-2xl: rem(16px);
+$rounded-3xl: rem(24px);
+$rounded-full: 9999px;
+
+/* Tokens */
+// Background
+$color-background-0: $color-zinc-0;
+$color-background-1: $color-zinc-1;
+$color-background-2: $color-zinc-2;
+$color-background-3: $color-zinc-3;
+$color-background-4: $color-zinc-4;
+$color-background-5: $color-zinc-5;
+$color-background-6: $color-zinc-6;
+$color-background-7: $color-zinc-7;
+$color-background-8: $color-zinc-8;
+$color-background-9: $color-zinc-9;
+$color-background-10: $color-zinc-10;
+
+// Foreground
+$color-foreground-0: $color-slate-0;
+$color-foreground-1: $color-slate-1;
+$color-foreground-2: $color-slate-2;
+$color-foreground-3: $color-slate-3;
+$color-foreground-4: $color-slate-4;
+$color-foreground-5: $color-slate-5;
+$color-foreground-6: $color-slate-6;
+$color-foreground-7: $color-slate-7;
+$color-foreground-8: $color-slate-8;
+$color-foreground-9: $color-slate-9;
+$color-foreground-10: $color-slate-10;
+
+// Success
+$color-success-0: $color-green-0;
+$color-success-1: $color-green-1;
+$color-success-2: $color-green-2;
+$color-success-3: $color-green-3;
+$color-success-4: $color-green-4;
+$color-success-5: $color-green-5;
+$color-success-6: $color-green-6;
+$color-success-7: $color-green-7;
+$color-success-8: $color-green-8;
+$color-success-9: $color-green-9;
+$color-success-10: $color-green-10;
+
+// Warning
+$color-warning-0: $color-yellow-0;
+$color-warning-1: $color-yellow-1;
+$color-warning-2: $color-yellow-2;
+$color-warning-3: $color-yellow-3;
+$color-warning-4: $color-yellow-4;
+$color-warning-5: $color-yellow-5;
+$color-warning-6: $color-yellow-6;
+$color-warning-7: $color-yellow-7;
+$color-warning-8: $color-yellow-8;
+$color-warning-9: $color-yellow-9;
+$color-warning-10: $color-yellow-10;
+
+// Danger
+$color-danger-0: $color-red-0;
+$color-danger-1: $color-red-1;
+$color-danger-2: $color-red-2;
+$color-danger-3: $color-red-3;
+$color-danger-4: $color-red-4;
+$color-danger-5: $color-red-5;
+$color-danger-6: $color-red-6;
+$color-danger-7: $color-red-7;
+$color-danger-8: $color-red-8;
+$color-danger-9: $color-red-9;
+$color-danger-10: $color-red-10;
+
+// Primary
+$color-primary-0: $color-indigo-0;
+$color-primary-1: $color-indigo-1;
+$color-primary-2: $color-indigo-2;
+$color-primary-3: $color-indigo-3;
+$color-primary-4: $color-indigo-4;
+$color-primary-5: $color-indigo-5;
+$color-primary-6: $color-indigo-6;
+$color-primary-7: $color-indigo-7;
+$color-primary-8: $color-indigo-8;
+$color-primary-9: $color-indigo-9;
+$color-primary-10: $color-indigo-10;
+
+// Flat
+$color-primary-flat: $color-indigo-flat;
+$color-background-flat: $color-zinc-flat-300;
+$color-success-flat: $color-green-flat;
+$color-warning-flat: $color-yellow-flat;
+$color-danger-flat: $color-red-flat;
+
+// Layout colors
+$color-overlay: rgba(0, 0, 0, 0.3);
+$color-divider: rgba(17, 17, 17, 0.15);
+$color-divider-dark: rgba(210, 210, 210, 0.15);
+
+// Other colors
+$color-secondary-button-background: #f4f4f5;
+$color-secondary-button-background-hover: #ececee;
+$color-secondary-button-background-dark: #323238;
+$color-secondary-button-background-dark-hover: #39393f;
+
+$color-primary-button-background: $color-primary-5;
+$color-primary-button-background-hover: $color-primary-6;
+$color-primary-button-background-hover-dark: $color-primary-4;
+
+$color-primary-button-label: $color-foreground-0;
+$color-secondary-button-label: $color-foreground-7;
+$color-secondary-button-label-dark: $color-foreground-2;
+
+$color-link: $color-primary-5;
+$color-link-hover: $color-primary-6;
+$color-link-hover-dark: $color-primary-4;
+$color-outline: $color-foreground-6;
+$color-outline-dark: $color-foreground-3;
+
+// Corner radius
+$rounded-input: $rounded-lg;
+$rounded-checkbox: $rounded-md;
+$rounded-button: $rounded-xl;
+
+// Font weights
+$font-extralight: 200;
+$font-light: 300;
+$font-normal: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;
+$font-extrabold: 800;
+$font-black: 900;
+
 // Custom mixins
 @mixin inputBorder {
   border: rem(2px) solid transparent;
@@ -199,18 +331,18 @@ $mantine-font-black: 900;
   }
 
   &[data-error='true'] {
-    border-color: $mantine-color-danger-5;
+    border-color: $color-danger-5;
   }
 }
 
 @mixin inputError {
   font-size: var(--mantine-font-size-sm);
-  font-weight: $mantine-font-normal;
-  color: $mantine-color-danger-5;
+  font-weight: $font-normal;
+  color: $color-danger-5;
   line-height: var(--mantine-line-height-body);
   margin-top: rem(8px);
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     font-size: var(--mantine-font-size-xs);
     margin-top: rem(4px);
   }
@@ -219,18 +351,18 @@ $mantine-font-black: 900;
 @mixin inputLabel {
   font-size: var(--mantine-font-size-lg);
   line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-semibold;
-  color: $mantine-color-foreground-7;
+  font-weight: $font-semibold;
+  color: $color-foreground-7;
 
   @include dark {
-    color: $mantine-color-foreground-2;
+    color: $color-foreground-2;
   }
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     font-size: var(--mantine-font-size-base);
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     font-size: var(--mantine-font-size-sm);
   }
 }
@@ -238,28 +370,28 @@ $mantine-font-black: 900;
 @mixin inputContent {
   font-size: var(--mantine-font-size-base);
   line-height: var(--mantine-line-height-body);
-  font-weight: $mantine-font-normal;
-  color: $mantine-color-foreground-6;
+  font-weight: $font-normal;
+  color: $color-foreground-6;
 
   @include dark {
-    color: $mantine-color-foreground-3;
+    color: $color-foreground-3;
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     font-size: var(--mantine-font-size-sm);
   }
 }
 
 @mixin inputPlaceholder {
-  color: $mantine-color-foreground-4;
+  color: $color-foreground-4;
 
   @include dark {
-    color: $mantine-color-foreground-5;
+    color: $color-foreground-5;
   }
 }
 
 @mixin inputRequired {
-  color: $mantine-color-danger;
+  color: $color-danger-5;
 }
 
 @mixin inputSection {
@@ -269,7 +401,7 @@ $mantine-font-black: 900;
   &[data-position='right'] {
     inset-inline-end: rem(16px);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       inset-inline-end: rem(12px);
     }
   }
@@ -277,21 +409,21 @@ $mantine-font-black: 900;
   &[data-position='left'] {
     inset-inline-start: rem(16px);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       inset-inline-start: rem(12px);
     }
   }
 
   svg {
-    color: $mantine-color-foreground-5;
+    color: $color-foreground-5;
     width: rem(24px);
     height: rem(24px);
 
     @include dark {
-      color: $mantine-color-foreground-4;
+      color: $color-foreground-4;
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       width: rem(20px);
       height: rem(20px);
     }
@@ -306,11 +438,11 @@ $mantine-font-black: 900;
   .textInputWrapper {
     margin-top: rem(12px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-top: rem(8px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-top: rem(4px);
     }
   }
@@ -338,7 +470,7 @@ $mantine-font-black: 900;
       background-color: $mantine-color-input-bg-dark;
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding-inline: rem(12px);
     }
 
@@ -354,7 +486,7 @@ $mantine-font-black: 900;
 
 @mixin numberInputRoot {
   .numberInputInput {
-    background-color: $mantine-color-background-1;
+    background-color: $color-background-1;
     border-radius: 20px;
     padding-top: rem(12px);
     padding-bottom: rem(12px);
@@ -364,20 +496,20 @@ $mantine-font-black: 900;
     @include inputBorder();
     @include inputContent();
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding-inline: rem(12px);
     }
 
     &::placeholder {
-      font-weight: $mantine-font-light;
-      color: $mantine-color-foreground-4;
+      font-weight: $font-light;
+      color: $color-foreground-4;
     }
   }
 
   .numberInputSection {
-    color: $mantine-color-foreground-7;
+    color: $color-foreground-7;
     font-size: var(--mantine-font-size-base);
-    font-weight: $mantine-font-normal;
+    font-weight: $font-normal;
     line-height: var(--mantine-line-height-body);
 
     &[data-position='left'] {
@@ -398,11 +530,11 @@ $mantine-font-black: 900;
   .passwordInputWrapper {
     margin-top: rem(12px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-top: rem(8px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-top: rem(4px);
     }
   }
@@ -415,7 +547,7 @@ $mantine-font-black: 900;
     padding-inline-end: rem(48px);
     @include inputBorder();
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding-inline-start: rem(12px);
       padding-inline-end: rem(40px);
     }
@@ -445,10 +577,10 @@ $mantine-font-black: 900;
   }
 
   .passwordInputVisibilityToggle {
-    color: $mantine-color-foreground-5;
+    color: $color-foreground-5;
 
     @include dark {
-      color: $mantine-color-foreground-4;
+      color: $color-foreground-4;
     }
   }
 
@@ -472,7 +604,7 @@ $mantine-font-black: 900;
     @include inputBorder();
     @include inputContent();
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       padding-inline: rem(12px);
     }
 
@@ -486,18 +618,18 @@ $mantine-font-black: 900;
     }
 
     &[data-error='true'] {
-      border: rem(2px) solid $mantine-color-danger;
+      border: rem(2px) solid $color-danger-5;
     }
   }
 
   .datePickerInputWrapper {
     margin-top: rem(12px);
 
-    @include smaller-than($mantine-breakpoint-sm) {
+    @include smaller-than($breakpoint-sm) {
       margin-top: rem(8px);
     }
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       margin-top: rem(4px);
     }
   }
@@ -534,8 +666,8 @@ $mantine-font-black: 900;
 
   &:where([data-selected]) {
     background-color: var(--mantine-primary-color-5);
-    color: $mantine-color-foreground-0;
-    font-weight: $mantine-font-semibold;
+    color: $color-foreground-0;
+    font-weight: $font-semibold;
 
     @include hover {
       background-color: var(--mantine-primary-color-5);
@@ -549,7 +681,7 @@ $mantine-font-black: 900;
     height: rem(24px);
     flex-shrink: 0;
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       width: rem(20px);
       height: rem(20px);
     }
@@ -578,7 +710,7 @@ $mantine-font-black: 900;
     }
 
     @include light {
-      background-color: $mantine-color-nd-btn-bg-light;
+      background-color: $color-secondary-button-background;
 
       &:checked {
         background-color: var(--mantine-primary-color-5);
@@ -586,7 +718,7 @@ $mantine-font-black: 900;
     }
 
     @include dark {
-      background-color: $mantine-color-nd-btn-bg-dark;
+      background-color: $color-secondary-button-background-dark;
 
       &:checked {
         background-color: var(--mantine-primary-color-5);
@@ -598,17 +730,17 @@ $mantine-font-black: 900;
     @include inputLabel();
 
     & {
-      font-weight: $mantine-font-normal;
-      color: $mantine-color-foreground-6;
+      font-weight: $font-normal;
+      color: $color-foreground-6;
       font-size: var(--mantine-font-size-base);
 
-      @include smaller-than($mantine-breakpoint-xs) {
+      @include smaller-than($breakpoint-xs) {
         font-size: var(--mantine-font-size-sm);
       }
     }
 
     @include dark {
-      color: $mantine-color-foreground-3;
+      color: $color-foreground-3;
     }
   }
 
@@ -618,7 +750,7 @@ $mantine-font-black: 900;
 
   .checkboxIcon {
     width: 65%;
-    color: $mantine-color-foreground-0;
+    color: $color-foreground-0;
     transform: unset;
     opacity: unset;
     transition: unset;
@@ -635,10 +767,10 @@ $mantine-font-black: 900;
 
   .buttonLabel {
     font-size: var(--mantine-font-size-base);
-    font-weight: $mantine-font-semibold;
+    font-weight: $font-semibold;
     line-height: var(--mantine-line-height-body);
 
-    @include smaller-than($mantine-breakpoint-xs) {
+    @include smaller-than($breakpoint-xs) {
       font-size: var(--mantine-font-size-sm);
     }
   }
@@ -648,7 +780,7 @@ $mantine-font-black: 900;
   @include buttonRoot;
 
   & {
-    background: $mantine-color-bg-gradient-primary;
+    background: $color-primary-button-background;
     position: relative;
     z-index: 0;
   }
@@ -668,7 +800,7 @@ $mantine-font-black: 900;
     height: 100%;
     width: 100%;
     inset: 0;
-    background: $mantine-color-bg-gradient-primary-dimmed;
+    background: $color-primary-button-background-hover;
     z-index: -1;
     transition: opacity 0.3s ease-out;
     opacity: 0;
@@ -686,7 +818,7 @@ $mantine-font-black: 900;
   }
 
   .buttonLabel {
-    color: $mantine-color-foreground-0;
+    color: $color-foreground-0;
     will-change: transform;
     transition: color 0.4s ease-out;
   }
@@ -696,26 +828,26 @@ $mantine-font-black: 900;
   @include buttonRoot;
 
   & {
-    background-color: $mantine-color-nd-btn-bg-light;
+    background-color: $color-secondary-button-background;
 
     @include dark {
-      background-color: $mantine-color-nd-btn-bg-dark;
+      background-color: $color-secondary-button-background-dark;
     }
   }
 
   &:hover {
-    background-color: $mantine-color-nd-btn-bg-light-hover;
+    background-color: $color-secondary-button-background-hover;
 
     @include dark {
-      background-color: $mantine-color-nd-btn-bg-dark-hover;
+      background-color: $color-secondary-button-background-dark-hover;
     }
   }
 
   .buttonLabel {
-    color: $mantine-color-foreground-6;
+    color: $color-foreground-6;
 
     @include dark {
-      color: $mantine-color-foreground-3;
+      color: $color-foreground-3;
     }
   }
 }
@@ -724,7 +856,7 @@ $mantine-font-black: 900;
   font-size: inherit;
   line-height: inherit;
   color: var(--mantine-primary-color-5);
-  font-weight: $mantine-font-semibold;
+  font-weight: $font-semibold;
   transition: color 0.3s ease-out;
 
   &:hover {
@@ -736,11 +868,11 @@ $mantine-font-black: 900;
   --loader-color: var(--mantine-color-white);
   --loader-size: calc(var(--mantine-font-size-lg) * 1.5);
 
-  @include smaller-than($mantine-breakpoint-sm) {
+  @include smaller-than($breakpoint-sm) {
     --loader-size: calc(var(--mantine-font-size-base) * 1.5);
   }
 
-  @include smaller-than($mantine-breakpoint-xs) {
+  @include smaller-than($breakpoint-xs) {
     --loader-size: calc(var(--mantine-font-size-sm) * 1.5);
   }
 }
@@ -756,19 +888,19 @@ $mantine-font-black: 900;
 }
 
 @mixin overlayRoot {
-  background-color: $mantine-color-overlay;
+  background-color: $color-overlay;
   width: 100%;
   height: 100%;
   backdrop-filter: blur(rem(8px));
 }
 
 @mixin progressRoot {
-  background-color: $mantine-color-background-1;
+  background-color: $color-background-1;
   margin-bottom: rem(16px);
   border-radius: rem(8px);
 
   @include dark {
-    background-color: $mantine-color-background-7;
+    background-color: $color-background-7;
   }
 
   .progressSection {
@@ -786,6 +918,6 @@ body {
   background-color: var(--mantine-color-white);
 
   @include dark {
-    background-color: $mantine-color-background-8;
+    background-color: $color-background-8;
   }
 }
