@@ -291,20 +291,20 @@ $color-danger-9: $color-red-9;
 $color-danger-10: $color-red-10;
 
 // Primary
-$color-primary-0: $color-teal-0;
-$color-primary-1: $color-teal-1;
-$color-primary-2: $color-teal-2;
-$color-primary-3: $color-teal-3;
-$color-primary-4: $color-teal-4;
-$color-primary-5: $color-teal-5;
-$color-primary-6: $color-teal-6;
-$color-primary-7: $color-teal-7;
-$color-primary-8: $color-teal-8;
-$color-primary-9: $color-teal-9;
-$color-primary-10: $color-teal-10;
+$color-primary-0: $color-indigo-0;
+$color-primary-1: $color-indigo-1;
+$color-primary-2: $color-indigo-2;
+$color-primary-3: $color-indigo-3;
+$color-primary-4: $color-indigo-4;
+$color-primary-5: $color-indigo-5;
+$color-primary-6: $color-indigo-6;
+$color-primary-7: $color-indigo-7;
+$color-primary-8: $color-indigo-8;
+$color-primary-9: $color-indigo-9;
+$color-primary-10: $color-indigo-10;
 
 // Flat
-$color-primary-flat: $color-teal-flat;
+$color-primary-flat: $color-indigo-flat;
 $color-background-flat: $color-zinc-flat-300;
 $color-success-flat: $color-green-flat;
 $color-warning-flat: $color-yellow-flat;
@@ -321,11 +321,11 @@ $color-secondary-button-background-hover: #ececee;
 $color-secondary-button-background-dark: #323238;
 $color-secondary-button-background-dark-hover: #39393f;
 
-$color-primary-button-background: linear-gradient(90deg, #00ff87, #60efff);
+$color-primary-button-background: $color-primary-5;
 $color-primary-button-background-hover: $color-primary-6;
 $color-primary-button-background-hover-dark: $color-primary-4;
 
-$color-primary-button-label: $color-primary-9;
+$color-primary-button-label: $color-foreground-0;
 
 $color-secondary-button-label: $color-foreground-7;
 $color-secondary-button-label-dark: $color-foreground-2;
@@ -788,11 +788,11 @@ $line-height-body: 1.5;
     }
 
     &:checked {
-      background-color: $color-primary-3;
+      background-color: $color-primary-5;
       border-color: transparent;
 
       @include dark {
-        background-color: $color-primary-4;
+        background-color: $color-primary-5;
       }
     }
   }
@@ -821,7 +821,7 @@ $line-height-body: 1.5;
 
   .checkboxIcon {
     width: 65%;
-    color: $color-primary-9;
+    color: $color-foreground-0;
     transform: unset;
     opacity: unset;
     transition: unset;
@@ -917,7 +917,7 @@ $line-height-body: 1.5;
   &::after {
     width: 100%;
     height: 100%;
-    border-color: $color-primary-9 $color-primary-9 $color-primary-9 transparent;
+    border-color: $color-foreground-0 $color-foreground-0 $color-foreground-0 transparent;
   }
 }
 

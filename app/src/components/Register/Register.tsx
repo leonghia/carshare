@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classes from './Register.module.scss';
 import { useDisclosure } from '@mantine/hooks';
-import logo from '../../assets/images/logo_2.svg';
+import logo from '../../assets/images/logo.svg';
 import ModeToggle from '../ModeToggle/ModeToggle';
 import CompleteModal from './CompleteModal/CompleteModal';
 import RegisterForm from './RegisterForm/RegisterForm';
