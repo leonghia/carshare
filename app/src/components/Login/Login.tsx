@@ -1,5 +1,5 @@
 import classes from './Login.module.scss';
-import logo from '../../assets/images/logo_1.svg';
+import logo from '../../assets/images/logo.svg';
 import ModeToggle from '../ModeToggle/ModeToggle';
 import LoginForm from './LoginForm/LoginForm';
 

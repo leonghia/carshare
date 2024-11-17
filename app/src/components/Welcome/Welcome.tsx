@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import centerIllustrator from '../../assets/images/hello_illustrator.webp';
-import logo from '../../assets/images/logo_1.svg';
+import logo from '../../assets/images/logo.svg';
 import leftSideIllustrator from '../../assets/images/side_illustrators_1.webp';
 import rightSideIllustrator from '../../assets/images/side_illustrators_2.webp';
 import ModeToggle from '../ModeToggle/ModeToggle';
