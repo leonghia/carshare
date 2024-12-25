@@ -15,7 +15,7 @@ const labelVariants = cva(
         small: "text-xs",
       },
       state: {
-        default: "text-foreground-200",
+        default: "text-white",
         dirty: "text-foreground-500",
         error: "text-danger-500",
       },
