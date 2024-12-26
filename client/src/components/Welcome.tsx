@@ -15,6 +15,7 @@ import {
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link, useNavigate } from "react-router";
+import { useMediaQuery } from "react-responsive";
 
 const formSchema = z.object({
   name: z
@@ -33,19 +34,21 @@ export function Welcome(): React.JSX.Element {
   const [isNext, setIsNext] = React.useState(false);
   let navigate = useNavigate();
 
+  const isSM = useMediaQuery({ maxWidth: 639 });
+
   useEffect(() => {
     const guest_name = localStorage.getItem("guest_name");
     if (guest_name) navigate("/");
   }, []);
 
   return (
-    <div className="w-full min-h-screen grid items-center justify-items-center bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_1920w.webp')] bg-cover bg-center bg-no-repeat">
-      <div className="space-y-12 w-96">
+    <div className="w-full min-h-screen grid items-center justify-items-center bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_1920w.webp')] 2xl:bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_1535w.webp')] xl:bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_1279w.webp')] lg:bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_1023w.webp')] md:bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_767w.webp')] sm:bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_639w.webp')] bg-cover bg-center bg-no-repeat sm:px-4">
+      <div className="space-y-12 sm:space-y-8 w-96 sm:w-full">
         <figure>
           <img
             src={logo}
             alt="carshare logo"
-            className="h-8 w-auto object-contain mx-auto"
+            className="h-8 sm:h-5 w-auto object-contain mx-auto"
           />
         </figure>
         <AnimatePresence mode="wait">
@@ -55,6 +58,7 @@ export function Welcome(): React.JSX.Element {
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
+              isSM={isSM}
             />
           ) : (
             <MotionEnterName
@@ -62,6 +66,7 @@ export function Welcome(): React.JSX.Element {
               exit={{ opacity: 0, x: -100 }}
               transition={{ type: "spring", duration: 0.3 }}
               onNext={() => setIsNext(true)}
+              isSM={isSM}
             />
           )}
         </AnimatePresence>
@@ -72,12 +77,13 @@ export function Welcome(): React.JSX.Element {
 
 type EnterNameProps = {
   onNext: () => void;
+  isSM: boolean;
 };
 
 const EnterName = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & EnterNameProps
->(({ onNext, ...props }, ref) => {
+>(({ onNext, isSM, ...props }, ref) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -92,29 +98,47 @@ const EnterName = React.forwardRef<
   };
 
   return (
-    <div ref={ref} className="space-y-6 w-full" {...props}>
-      <h1 className="text-lg font-semibold text-white text-center">
+    <div
+      ref={ref}
+      className="space-y-6 mx-auto sm:space-y-3 w-full sm:max-w-80"
+      {...props}
+    >
+      <h1 className="text-lg sm:text-base font-semibold text-white text-center">
         Chúng mình có thể gọi bạn là?
       </h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-12 sm:space-y-8"
+        >
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem
                 state={form.getFieldState("name").error ? "error" : "default"}
-                message={<FormMessage />}
-                label={<FormLabel required>Tên của bạn</FormLabel>}
+                message={<FormMessage size={isSM ? "small" : "default"} />}
+                size={isSM ? "small" : "default"}
+                // size={"small"}
+                label={
+                  <FormLabel size={isSM ? "small" : "default"} required>
+                    Tên của bạn
+                  </FormLabel>
+                }
               >
                 <FormControl>
-                  <Input placeholder="VD. Nguyễn Văn A" {...field} />
+                  <Input
+                    size={isSM ? "small" : "default"}
+                    placeholder="VD. Nguyễn Văn A"
+                    {...field}
+                  />
                 </FormControl>
               </FormItem>
             )}
           />
           <Button
             intent="secondary"
+            size={isSM ? "small" : "default"}
             type="submit"
             className="px-0 w-40 block mx-auto"
           >
@@ -130,28 +154,33 @@ const MotionEnterName = motion.create(EnterName);
 
 const Hello = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->((props, ref) => {
+  React.HTMLAttributes<HTMLDivElement> & { isSM: boolean }
+>(({ isSM, ...props }, ref) => {
   const guestName = localStorage.getItem("guest_name")!;
 
   return (
-    <div ref={ref} className="space-y-12 w-full" {...props}>
+    <div ref={ref} className="space-y-12 sm:space-y-8 w-full" {...props}>
       <motion.div
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", duration: 1, delay: 0.3, bounce: 0.75 }}
-        className="mx-auto size-60 bg-[url('/src/assets/images/hello_illustrator_240w.webp')] bg-contain bg-center bg-no-repeat"
+        className="mx-auto size-60 sm:size-[7.5rem] bg-[url('/src/assets/images/hello_illustrator_240w.webp')] sm:bg-[url('/src/assets/images/hello_illustrator_120w.webp')] bg-contain bg-center bg-no-repeat"
       ></motion.div>
       <div className="space-y-2">
-        <p className="text-base font-medium text-foreground-500 text-center">
+        <p className="text-base sm:text-sm font-medium text-foreground-500 text-center">
           Chào {guestName} 👋
         </p>
-        <h1 className="text-lg font-semibold text-white text-center">
+        <h1 className="text-lg sm:text-base font-semibold text-white text-center">
           Chào mừng bạn đến với Carshare!
         </h1>
       </div>
       <div className="text-center">
-        <Button asChild intent="primary" className="px-0 w-[11.25rem]">
+        <Button
+          asChild
+          intent="primary"
+          size={isSM ? "small" : "default"}
+          className={`px-0 ${isSM ? "w-40" : "w-[11.25rem]"}`}
+        >
           <Link to="/">Bắt đầu</Link>
         </Button>
       </div>

@@ -51,7 +51,7 @@ const containerVariants = cva(
         error: "outline outline-8 outline-danger-flat",
       },
       size: {
-        default: "rounded-3xl w-96",
+        default: "rounded-3xl",
         small: "rounded-2xl",
       },
     },
@@ -71,7 +71,7 @@ const wrapperVariants = cva(
       },
       size: {
         default: "px-6 py-3 rounded-3xl [&_svg]:size-6",
-        small: "px-4 py-2 rounded-2xl [&_svg]:size-5",
+        small: "px-4 py-3 rounded-2xl [&_svg]:size-5",
       },
     },
     defaultVariants: {
