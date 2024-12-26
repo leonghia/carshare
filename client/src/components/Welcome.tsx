@@ -12,9 +12,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const formSchema = z.object({
   name: z
@@ -31,6 +31,12 @@ const formSchema = z.object({
 
 export function Welcome(): React.JSX.Element {
   const [isNext, setIsNext] = React.useState(false);
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    const guest_name = localStorage.getItem("guest_name");
+    if (guest_name) navigate("/");
+  }, []);
 
   return (
     <div className="w-full min-h-screen grid items-center justify-items-center bg-[linear-gradient(45deg,rgba(39,42,55,0.9)0%,rgba(39,42,55,0.8)100%),url('/src/assets/images/background_main_1920w.webp')] bg-cover bg-center bg-no-repeat">
