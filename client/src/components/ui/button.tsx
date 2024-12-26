@@ -1,4 +1,5 @@
 import React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { HTMLMotionProps, motion } from "motion/react";
@@ -65,28 +66,41 @@ const buttonVariants = cva(
   }
 );
 
-interface Props
-  extends HTMLMotionProps<"button">,
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, Props>(
+const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, intent, size, iconOnly, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+
     return (
-      <motion.button
-        whileTap={{
-          y: 8,
-        }}
+      <Comp
         className={cn(buttonVariants({ intent, size, iconOnly, className }))}
         ref={ref}
         {...props}
-      >
-        {props.children}
-      </motion.button>
+      />
     );
   }
 );
+
+const MotionButton = motion.create(UnmotionButton);
+
+// This is deprecated
+// Button.defaultProps = {
+//   whileTap: { y: 8 },
+// };
+
+// Instead, use object destructuring like this:
+const Button = ({
+  whileTap = { y: 8 },
+  ...props
+}: ButtonProps & HTMLMotionProps<"button">) => (
+  <MotionButton whileTap={whileTap} {...props} />
+);
+
 Button.displayName = "Button";
 
 export { Button };
