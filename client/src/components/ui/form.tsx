@@ -71,7 +71,7 @@ const wrapperVariants = cva(
       },
       size: {
         default: "px-6 py-3 rounded-3xl [&_svg]:size-6",
-        small: "px-4 py-3 rounded-2xl [&_svg]:size-5",
+        small: "px-4 py-2 rounded-2xl [&_svg]:size-5",
       },
     },
     defaultVariants: {
