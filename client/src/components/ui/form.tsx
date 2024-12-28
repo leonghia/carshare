@@ -20,8 +20,6 @@ import { Label, LabelProps } from "@/components/ui/label";
 import { Input } from "./input";
 import { Eye, EyeSlash } from "iconsax-react";
 
-const Form = FormProvider;
-
 const pwInnerVariants = cva("w-full h-fit flex items-center", {
   variants: {
     size: {
@@ -253,11 +251,43 @@ export interface PasswordFormItemProps
   description?: string;
 }
 
-enum PasswordStrength {
-  Default = "default",
-  Weak = "weak",
-  Average = "average",
-  Strong = "strong",
+type Strength = "default" | "weak" | "average" | "strong";
+type StrengthText = "Độ mạnh" | "Yếu" | "Trung bình" | "Mạnh";
+
+const strengths: Record<Strength, [Strength, StrengthText]> = {
+  default: ["default", "Độ mạnh"],
+  weak: ["weak", "Yếu"],
+  average: ["average", "Trung bình"],
+  strong: ["strong", "Mạnh"],
+};
+
+function calculatePasswordStrength(password: string): [Strength, StrengthText] {
+  let score = 0;
+
+  if (password.length === 0) return strengths.default;
+  if (password.length < 6) return strengths.weak;
+  // Check password length
+  if (password.length >= 8) score += 1;
+  // Contains lowercase
+  if (/[a-z]/.test(password)) score += 1;
+  // Contains uppercase
+  if (/[A-Z]/.test(password)) score += 1;
+  // Contains numbers
+  if (/\d/.test(password)) score += 1;
+  // Contains special characters
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+  switch (score) {
+    case 0:
+    case 1:
+    case 2:
+      return strengths.weak;
+    case 3:
+    case 4:
+      return strengths.average;
+    default:
+      return strengths.strong;
+  }
 }
 
 const FormItemPassword = React.forwardRef<
@@ -283,9 +313,7 @@ const FormItemPassword = React.forwardRef<
     const [isFocus, setIsFocus] = React.useState(false);
     const [isVisible, setIsVisible] = React.useState(false);
 
-    const [strength, setStrength] = React.useState<PasswordStrength>(
-      PasswordStrength.Default
-    );
+    const [strength, strengthText] = calculatePasswordStrength(field.value);
 
     return (
       <FormItemContext.Provider value={{ id }}>
@@ -311,14 +339,21 @@ const FormItemPassword = React.forwardRef<
                     <div className="flex items-center gap-2">
                       <span
                         className={cn(
-                          pwStrengthTextVariants({ size, strength })
+                          pwStrengthTextVariants({
+                            size,
+                            strength,
+                          })
                         )}
                       >
-                        Độ mạnh
+                        {strengthText}
                       </span>
                       <div className={cn(pwThermometerVariants({ size }))}>
                         <div
-                          className={cn(pwIndicatorVariants({ strength }))}
+                          className={cn(
+                            pwIndicatorVariants({
+                              strength,
+                            })
+                          )}
                         ></div>
                       </div>
                     </div>
@@ -356,37 +391,45 @@ const FormItemPassword = React.forwardRef<
               </div>
             </div>
           </div>
-          <div className={cn(messageAndDescriptionVariants({ size }))}>
-            <AnimatePresence>
-              {error && (
-                <MotionFormMessage
-                  key={id + "message"}
-                  size={size}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
-                  transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-                >
-                  {String(error.message)}
-                </MotionFormMessage>
-              )}
-            </AnimatePresence>
+          <AnimatePresence>
+            {(error || (description && isFocus)) && (
+              <div className={cn(messageAndDescriptionVariants({ size }))}>
+                {error && (
+                  <MotionFormMessage
+                    key={id + "message"}
+                    size={size}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                    transition={{
+                      type: "tween",
+                      duration: 0.3,
+                      ease: "easeOut",
+                    }}
+                  >
+                    {String(error.message)}
+                  </MotionFormMessage>
+                )}
 
-            <AnimatePresence>
-              {description && isFocus && (
-                <MotionFormDescription
-                  key={id + "description"}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
-                  transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-                  size={size}
-                >
-                  {description}
-                </MotionFormDescription>
-              )}
-            </AnimatePresence>
-          </div>
+                {description && isFocus && (
+                  <MotionFormDescription
+                    key={id + "description"}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                    transition={{
+                      type: "tween",
+                      duration: 0.3,
+                      ease: "easeOut",
+                    }}
+                    size={size}
+                  >
+                    {description}
+                  </MotionFormDescription>
+                )}
+              </div>
+            )}
+          </AnimatePresence>
         </div>
       </FormItemContext.Provider>
     );
@@ -550,7 +593,7 @@ MotionFormMessage.displayName = "MotionFormMessage";
 
 export {
   useFormField,
-  Form,
+  FormProvider,
   FormItem,
   FormItemPassword,
   FormLabel,
