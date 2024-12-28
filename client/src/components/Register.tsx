@@ -4,7 +4,8 @@ import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormItemPassword } from "./ui/form";
+import { FormProvider, FormField, FormItemPassword } from "./ui/form";
+import { motion } from "motion/react";
 
 export function Register(): JSX.Element {
   return (
@@ -16,9 +17,14 @@ export function Register(): JSX.Element {
           className="object-cover w-[17.25rem] h-full"
         />
       </figure>
-      <div className="relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)]">
+      <div className="overflow-x-hidden relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)]">
         <div className="relative top-[6.25rem] left-[10%] w-[34rem] space-y-12">
-          <div className="w-full space-y-4">
+          <motion.div
+            initial={{ opacity: 0, x: -150, filter: "blur(0.25rem)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0)" }}
+            transition={{ type: "spring", duration: 1, filter: { bounce: 0 } }}
+            className="w-full space-y-4"
+          >
             <div className="flex gap-1">
               <h1 className="text-4xl font-bold text-white shrink-0">
                 Đăng ký tài khoản
@@ -34,12 +40,17 @@ export function Register(): JSX.Element {
                 Đăng nhập ngay
               </a>
             </p>
-          </div>
+          </motion.div>
           <SignupForm />
         </div>
-        <figure className="absolute right-12 bottom-10">
+        <motion.figure
+          initial={{ opacity: 0, x: 100, filter: "blur(0.25rem)" }}
+          animate={{ opacity: 1, x: 0, filter: "blur(0)" }}
+          transition={{ type: "spring", duration: 1, filter: { bounce: 0 } }}
+          className="absolute right-12 bottom-10"
+        >
           <img src={logo} alt="logo" className="h-16 object-contain" />
-        </figure>
+        </motion.figure>
       </div>
       <div className="absolute z-0 top-0 right-0 w-[58%] h-full bg-[url('/src/assets/images/background_side_default.webp')] bg-cover bg-right"></div>
     </div>
@@ -109,7 +120,7 @@ function SignupForm(): JSX.Element {
   };
 
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-12"
@@ -160,6 +171,6 @@ function SignupForm(): JSX.Element {
           Đăng ký tài khoản
         </Button>
       </form>
-    </Form>
+    </FormProvider>
   );
 }
