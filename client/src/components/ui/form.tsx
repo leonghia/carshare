@@ -6,6 +6,7 @@ import { Slot } from "@radix-ui/react-slot";
 import {
   Controller,
   ControllerProps,
+  ControllerRenderProps,
   FieldPath,
   FieldValues,
   FormProvider,
@@ -15,8 +16,62 @@ import {
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { Label, LabelProps } from "@/components/ui/label";
+import { Input } from "./input";
 
 const Form = FormProvider;
+
+const pwInnerVariants = cva("w-full h-fit flex items-center", {
+  variants: {
+    size: {
+      default: "gap-6",
+      small: "gap-4",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
+const pwThermometerVariants = cva(
+  "h-1 rounded bg-background-600 overflow-hidden",
+  {
+    variants: {
+      size: {
+        default: "w-[5.625rem]",
+        small: "w-[4.5rem]",
+      },
+    },
+    defaultVariants: { size: "default" },
+  }
+);
+
+const pwIndicatorVariants = cva("h-full", {
+  variants: {
+    strength: {
+      default: "w-0 bg-background-600",
+      weak: "w-1/3 bg-danger-500",
+      average: "w-2/3 bg-warning-500",
+      strong: "w-full bg-success-500",
+    },
+  },
+  defaultVariants: {
+    strength: "default",
+  },
+});
+
+const pwStrengthTextVariants = cva("font-normal", {
+  variants: {
+    size: {
+      default: "text-xs",
+      small: "text-xxs",
+    },
+    strength: {
+      default: "text-foreground-500",
+      weak: "text-danger-500",
+      average: "text-warning-500",
+      strong: "text-success-500",
+    },
+  },
+  defaultVariants: { size: "default", strength: "default" },
+});
 
 const rootVariants = cva(undefined, {
   variants: {
@@ -30,15 +85,20 @@ const rootVariants = cva(undefined, {
   },
 });
 
-const messageVariants = cva("font-normal text-danger-500", {
+const messageVariants = cva("font-normal", {
   variants: {
     size: {
       default: "text-sm",
       small: "text-xs",
     },
+    state: {
+      default: "text-foreground-600",
+      error: "text-danger-500",
+    },
   },
   defaultVariants: {
     size: "default",
+    state: "default",
   },
 });
 
@@ -146,7 +206,7 @@ const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue
 );
 
-interface FormItemProps
+export interface FormItemProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof wrapperVariants> {
   iconBefore?: React.ReactNode;
@@ -155,7 +215,113 @@ interface FormItemProps
   label?: string;
   leftText?: string;
   required?: boolean;
+  placeholder?: string;
+  field: ControllerRenderProps<any, any>;
 }
+
+export interface PasswordFormItemProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof wrapperVariants> {
+  icon?: React.ReactNode;
+  // label?: React.ReactElement<typeof FormLabel>;
+  label?: string;
+  required?: boolean;
+  placeholder?: string;
+  field: ControllerRenderProps<any, any>;
+}
+
+enum PasswordStrength {
+  Default = "default",
+  Weak = "weak",
+  Average = "average",
+  Strong = "strong",
+}
+
+const FormItemPassword = React.forwardRef<
+  HTMLDivElement,
+  PasswordFormItemProps
+>(
+  (
+    {
+      className,
+      size,
+      state,
+      icon,
+      label,
+      children,
+      required = false,
+      placeholder,
+      field,
+      ...props
+    },
+    ref
+  ) => {
+    const id = React.useId();
+    const [strength, setStrength] = React.useState<PasswordStrength>(
+      PasswordStrength.Default
+    );
+
+    return (
+      <FormItemContext.Provider value={{ id }}>
+        <div
+          ref={ref}
+          className={cn(rootVariants({ size }), className)}
+          {...props}
+        >
+          <div className={cn(containerVariants({ size, state }))}>
+            <div className={cn(wrapperVariants({ size, state }))}>
+              <div className={cn(pwInnerVariants({ size }))}>
+                <div className="group flex-1 h-fit space-y-1">
+                  <div
+                    className={`w-full flex items-center ${
+                      label ? "justify-between" : "justify-end"
+                    }`}
+                  >
+                    {label && (
+                      <FormLabel size={size} required={required}>
+                        {label}
+                      </FormLabel>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          pwStrengthTextVariants({ size, strength })
+                        )}
+                      >
+                        Strength
+                      </span>
+                      <div className={cn(pwThermometerVariants({ size }))}>
+                        <div
+                          className={cn(pwIndicatorVariants({ strength }))}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full flex items-center">
+                    <FormControl>
+                      <Input
+                        type="password"
+                        size={size}
+                        placeholder={placeholder}
+                        {...field}
+                      />
+                    </FormControl>
+                  </div>
+                </div>
+                {icon}
+              </div>
+            </div>
+          </div>
+          <FormMessage size={size}>
+            Minimum of 6 characters, with upper and lowercase and a number, or a
+            symbo.
+          </FormMessage>
+          <FormMessage size={size} />
+        </div>
+      </FormItemContext.Provider>
+    );
+  }
+);
 
 const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
   (
@@ -169,6 +335,8 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       leftText,
       children,
       required = false,
+      placeholder,
+      field,
       ...props
     },
     ref
@@ -198,7 +366,9 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
                         {leftText}
                       </span>
                     )}
-                    {children}
+                    <FormControl>
+                      <Input size={size} placeholder={placeholder} {...field} />
+                    </FormControl>
                   </div>
                 </div>
                 {iconAfter}
@@ -287,7 +457,10 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn(messageVariants({ size }), className)}
+      className={cn(
+        messageVariants({ size, state: error ? "error" : "default" }),
+        className
+      )}
       {...props}
     >
       {body}
@@ -300,9 +473,14 @@ export {
   useFormField,
   Form,
   FormItem,
+  FormItemPassword,
   FormLabel,
   FormControl,
   FormDescription,
   FormMessage,
   FormField,
+  FormItemContext,
+  rootVariants,
+  containerVariants,
+  wrapperVariants,
 };
