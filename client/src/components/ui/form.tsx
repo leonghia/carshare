@@ -151,9 +151,10 @@ interface FormItemProps
     VariantProps<typeof wrapperVariants> {
   iconBefore?: React.ReactNode;
   iconAfter?: React.ReactNode;
-  label?: React.ReactElement<typeof FormLabel>;
+  // label?: React.ReactElement<typeof FormLabel>;
+  label?: string;
   leftText?: string;
-  message: React.ReactElement<typeof FormMessage>;
+  required?: boolean;
 }
 
 const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
@@ -167,7 +168,7 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       label,
       leftText,
       children,
-      message,
+      required = false,
       ...props
     },
     ref
@@ -186,7 +187,11 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
               <div className="w-full h-fit flex gap-4 items-center">
                 {iconBefore}
                 <div className="group flex-1 h-fit space-y-1">
-                  {label}
+                  {label && (
+                    <FormLabel size={size} required={required}>
+                      {label}
+                    </FormLabel>
+                  )}
                   <div className="w-full flex items-center gap-2">
                     {leftText && (
                       <span className={cn(leftTextVariants({ size }))}>
@@ -200,7 +205,7 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
               </div>
             </div>
           </div>
-          {message}
+          <FormMessage size={size} />
         </div>
       </FormItemContext.Provider>
     );

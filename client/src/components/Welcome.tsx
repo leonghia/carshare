@@ -117,14 +117,10 @@ const EnterName = React.forwardRef<
             render={({ field }) => (
               <FormItem
                 state={form.getFieldState("name").error ? "error" : "default"}
-                message={<FormMessage size={isSM ? "small" : "default"} />}
                 size={isSM ? "small" : "default"}
                 // size={"small"}
-                label={
-                  <FormLabel size={isSM ? "small" : "default"} required>
-                    Tên của bạn
-                  </FormLabel>
-                }
+                label="Tên của bạn"
+                required
               >
                 <FormControl>
                   <Input
