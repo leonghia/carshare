@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { AnimatePresence, motion } from "motion/react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import {
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { Label, LabelProps } from "@/components/ui/label";
 import { Input } from "./input";
+import { Eye, EyeSlash } from "iconsax-react";
 
 const Form = FormProvider;
 
@@ -31,7 +33,7 @@ const pwInnerVariants = cva("w-full h-fit flex items-center", {
 });
 
 const pwThermometerVariants = cva(
-  "h-1 rounded bg-background-600 overflow-hidden",
+  "h-1 rounded bg-background-600 group-focus-within:bg-background-500 overflow-hidden",
   {
     variants: {
       size: {
@@ -57,17 +59,17 @@ const pwIndicatorVariants = cva("h-full", {
   },
 });
 
-const pwStrengthTextVariants = cva("font-normal", {
+const pwStrengthTextVariants = cva("font-normal w-max", {
   variants: {
     size: {
       default: "text-xs",
       small: "text-xxs",
     },
     strength: {
-      default: "text-foreground-500",
-      weak: "text-danger-500",
-      average: "text-warning-500",
-      strong: "text-success-500",
+      default: "text-foreground-500 group-focus-within:text-foreground-400",
+      weak: "text-danger-500 group-focus-within:text-danger-500",
+      average: "text-warning-500 group-focus-within:text-warning-500",
+      strong: "text-success-500 group-focus-within:text-success-500",
     },
   },
   defaultVariants: { size: "default", strength: "default" },
@@ -92,18 +94,39 @@ const messageVariants = cva("font-normal", {
       small: "text-xs",
     },
     state: {
-      default: "text-foreground-600",
       error: "text-danger-500",
     },
   },
   defaultVariants: {
     size: "default",
-    state: "default",
+    state: "error",
   },
 });
 
+const descriptionVariants = cva("font-normal text-foreground-600", {
+  variants: {
+    size: {
+      default: "text-sm",
+      small: "text-xs",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
+
+const messageAndDescriptionVariants = cva(undefined, {
+  variants: {
+    size: {
+      default: "space-y-2",
+      small: "space-y-1",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
 const containerVariants = cva(
-  "focus-within:outline focus-within:outline-8 focus-within:outline-primary-flat",
+  "group peer focus-within:outline focus-within:outline-8 focus-within:outline-primary-flat",
   {
     variants: {
       state: {
@@ -122,7 +145,7 @@ const containerVariants = cva(
 );
 
 const wrapperVariants = cva(
-  "w-full h-fit bg-background-900 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:flex-none [&_svg]:text-foreground-300 focus-within:outline focus-within:outline-2 focus-within:outline-primary-500 focus-within:bg-background-800",
+  "w-full h-fit bg-background-900 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:flex-none [&_svg]:text-foreground-300 focus-within:outline focus-within:outline-2 focus-within:outline-primary-500 focus-within:bg-[#383D4C]",
   {
     variants: {
       state: {
@@ -222,12 +245,12 @@ export interface FormItemProps
 export interface PasswordFormItemProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof wrapperVariants> {
-  icon?: React.ReactNode;
   // label?: React.ReactElement<typeof FormLabel>;
   label?: string;
   required?: boolean;
   placeholder?: string;
   field: ControllerRenderProps<any, any>;
+  description?: string;
 }
 
 enum PasswordStrength {
@@ -246,17 +269,20 @@ const FormItemPassword = React.forwardRef<
       className,
       size,
       state,
-      icon,
       label,
-      children,
       required = false,
       placeholder,
       field,
+      description,
       ...props
     },
     ref
   ) => {
     const id = React.useId();
+    const { error } = useFormField();
+    const [isFocus, setIsFocus] = React.useState(false);
+    const [isVisible, setIsVisible] = React.useState(false);
+
     const [strength, setStrength] = React.useState<PasswordStrength>(
       PasswordStrength.Default
     );
@@ -271,7 +297,7 @@ const FormItemPassword = React.forwardRef<
           <div className={cn(containerVariants({ size, state }))}>
             <div className={cn(wrapperVariants({ size, state }))}>
               <div className={cn(pwInnerVariants({ size }))}>
-                <div className="group flex-1 h-fit space-y-1">
+                <div className="flex-1 h-fit space-y-1">
                   <div
                     className={`w-full flex items-center ${
                       label ? "justify-between" : "justify-end"
@@ -288,7 +314,7 @@ const FormItemPassword = React.forwardRef<
                           pwStrengthTextVariants({ size, strength })
                         )}
                       >
-                        Strength
+                        Độ mạnh
                       </span>
                       <div className={cn(pwThermometerVariants({ size }))}>
                         <div
@@ -300,23 +326,67 @@ const FormItemPassword = React.forwardRef<
                   <div className="w-full flex items-center">
                     <FormControl>
                       <Input
-                        type="password"
+                        onFocus={(_) => setIsFocus(true)}
+                        type={isVisible ? "text" : "password"}
                         size={size}
                         placeholder={placeholder}
                         {...field}
+                        onBlur={(_) => {
+                          field.onBlur();
+                          setIsFocus(false);
+                        }}
                       />
                     </FormControl>
                   </div>
                 </div>
-                {icon}
+                <button
+                  className="block"
+                  type="button"
+                  onClick={() => {
+                    setIsVisible(!isVisible);
+                    // setIsFocus(true);
+                  }}
+                >
+                  {isVisible ? (
+                    <EyeSlash variant="Bold" />
+                  ) : (
+                    <Eye variant="Bold" />
+                  )}
+                </button>
               </div>
             </div>
           </div>
-          <FormMessage size={size}>
-            Minimum of 6 characters, with upper and lowercase and a number, or a
-            symbo.
-          </FormMessage>
-          <FormMessage size={size} />
+          <div className={cn(messageAndDescriptionVariants({ size }))}>
+            <AnimatePresence>
+              {error && (
+                <MotionFormMessage
+                  key={id + "message"}
+                  size={size}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
+                  transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+                >
+                  {String(error.message)}
+                </MotionFormMessage>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {description && isFocus && (
+                <MotionFormDescription
+                  key={id + "description"}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
+                  transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+                  size={size}
+                >
+                  {description}
+                </MotionFormDescription>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </FormItemContext.Provider>
     );
@@ -333,7 +403,6 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       iconAfter,
       label,
       leftText,
-      children,
       required = false,
       placeholder,
       field,
@@ -354,7 +423,7 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             <div className={cn(wrapperVariants({ size, state }))}>
               <div className="w-full h-fit flex gap-4 items-center">
                 {iconBefore}
-                <div className="group flex-1 h-fit space-y-1">
+                <div className="flex-1 h-fit space-y-1">
                   {label && (
                     <FormLabel size={size} required={required}>
                       {label}
@@ -426,48 +495,58 @@ FormControl.displayName = "FormControl";
 
 const FormDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => {
+  React.HTMLAttributes<HTMLParagraphElement> &
+    VariantProps<typeof descriptionVariants>
+>(({ className, size, ...props }, ref) => {
   const { formDescriptionId } = useFormField();
 
   return (
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-[0.8rem] text-muted-foreground", className)}
+      className={cn(descriptionVariants({ size }), className)}
       {...props}
     />
   );
 });
 FormDescription.displayName = "FormDescription";
 
+const MotionFormDescription = motion.create(FormDescription);
+MotionFormDescription.displayName = "MotionFormDescription";
+
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement> &
     VariantProps<typeof messageVariants>
->(({ className, children, size, ...props }, ref) => {
-  const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+>(({ className, size, ...props }, ref) => {
+  // const { error, formMessageId } = useFormField();
 
-  if (!body) {
-    return null;
-  }
+  // const body = error ? String(error.message) : children;
+
+  // if (!body) {
+  //   return null;
+  // }
+
+  const { formMessageId } = useFormField();
 
   return (
     <p
       ref={ref}
       id={formMessageId}
       className={cn(
-        messageVariants({ size, state: error ? "error" : "default" }),
+        messageVariants({
+          size,
+        }),
         className
       )}
       {...props}
-    >
-      {body}
-    </p>
+    />
   );
 });
 FormMessage.displayName = "FormMessage";
+
+const MotionFormMessage = motion.create(FormMessage);
+MotionFormMessage.displayName = "MotionFormMessage";
 
 export {
   useFormField,
@@ -477,7 +556,7 @@ export {
   FormLabel,
   FormControl,
   FormDescription,
-  FormMessage,
+  MotionFormMessage,
   FormField,
   FormItemContext,
   rootVariants,
