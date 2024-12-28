@@ -2,10 +2,9 @@ import { z } from "zod";
 import curvedDivider from "../assets/images/curved_divider_1.svg";
 import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
-import { FormItemPassword } from "./ui/passwordInput";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "./ui/form";
+import { Form, FormField, FormItemPassword } from "./ui/form";
 
 export function Register(): JSX.Element {
   return (
@@ -84,6 +83,10 @@ const formSchema = z.object({
     .string()
     .trim()
     .min(1, { message: "Mật khẩu không được để trống" }),
+  retypePassword: z
+    .string()
+    .trim()
+    .min(1, { message: "Mật khẩu nhập lại không được để trống" }),
 });
 
 function SignupForm(): JSX.Element {
@@ -96,11 +99,67 @@ function SignupForm(): JSX.Element {
       nationalID: "",
       publishedDate: "",
       password: "",
+      retypePassword: "",
     },
     shouldFocusError: false,
   });
 
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+  };
+
   return (
-    
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-12"
+      >
+        <div className="w-full grid grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItemPassword
+                state={
+                  form.getFieldState("password").error ? "error" : "default"
+                }
+                size={"default"}
+                label="Mật khẩu"
+                required
+                placeholder="****************"
+                field={field}
+                className="col-span-full"
+                description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái in hoa, 1 chữ cái thường, 1 chữ số (0-9) và 1 ký tự đặc biệt."
+              />
+            )}
+          ></FormField>
+          <FormField
+            control={form.control}
+            name="retypePassword"
+            render={({ field }) => (
+              <FormItemPassword
+                state={
+                  form.getFieldState("retypePassword").error
+                    ? "error"
+                    : "default"
+                }
+                size={"default"}
+                label="Nhập lại mật khẩu"
+                required
+                placeholder="****************"
+                field={field}
+                className="col-span-full"
+              />
+            )}
+          ></FormField>
+        </div>
+        <Button
+          type="submit"
+          className="block px-0 py-0  w-[18.75rem] h-[4.375rem]"
+        >
+          Đăng ký tài khoản
+        </Button>
+      </form>
+    </Form>
   );
 }
