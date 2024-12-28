@@ -7,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const labelVariants = cva(
-  "w-full block font-normal group-focus-within:text-primary-500",
+  "block font-normal group-focus-within:text-primary-500",
   {
     variants: {
       size: {
