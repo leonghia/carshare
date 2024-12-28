@@ -7,6 +7,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontSize: {
+        xxs: ["0.625rem", "0.875rem"],
+      },
       borderRadius: {
         "3xl": "1.25rem",
         "4xl": "1.5rem",
