@@ -2,6 +2,10 @@ import { z } from "zod";
 import curvedDivider from "../assets/images/curved_divider_1.svg";
 import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
+import { FormItemPassword } from "./ui/passwordInput";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "./ui/form";
 
 export function Register(): JSX.Element {
   return (
@@ -79,18 +83,24 @@ const formSchema = z.object({
   password: z
     .string()
     .trim()
-    .min(1, { message: "Mật khẩu không được để trống" })
-    .min(6, { message: "Mật khẩu phải chứa tối thiểu 6 ký tự" })
-    .max(64, { message: "Mật khẩu chỉ được chứa tối đa 64 ký tự" }),
+    .min(1, { message: "Mật khẩu không được để trống" }),
 });
 
 function SignupForm(): JSX.Element {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullName: "",
+      phone: "",
+      email: "",
+      nationalID: "",
+      publishedDate: "",
+      password: "",
+    },
+    shouldFocusError: false,
+  });
+
   return (
-    <div className="space-y-12">
-      <div className="grid grid-cols-2 gap-6"></div>
-      <Button className="px-0 py-0 w-[18.75rem] h-[4.375rem]">
-        Đăng ký tài khoản
-      </Button>
-    </div>
+    
   );
 }
