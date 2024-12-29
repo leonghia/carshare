@@ -18,20 +18,11 @@ export default {
         "7xl": "3rem",
       },
       boxShadow: {
-        // primary: {
-        //   sm: "0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
-        //   DEFAULT:
-        //     "0 0.063rem 0.125rem 0 rgba(208, 92, 54, 0.05), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
-        //   md: "0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 1)",
-        //   lg: "0 0.5rem 1rem 0 rgba(208, 92, 54, 0.1), 0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1)",
-        //   xl: "0 0.25rem 1rem 0 rgba(208, 92, 54, 0.25), 0 0.5rem 1.5rem 0 rgba(208, 92, 54, 0.1)",
-        //   "2xl": "0 1rem 3rem 0.25rem rgba(208, 92, 54, 0.25)",
-        // },
         sm: "0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
         DEFAULT:
           "0 0.063rem 0.125rem 0 rgba(208, 92, 54, 0.05), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
         md: "0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 1)",
-        lg: "0 0.5rem 1rem 0 rgba(208, 92, 54, 0.1), 0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1)",
+        lg: "0 0.5rem 1rem 0 rgba(29, 144, 245, 0.1), 0 0.25rem 0.5rem 0.125rem rgba(29, 144, 245, 0.1)",
         xl: "0 0.25rem 1rem 0 rgba(29, 144, 245, 0.25), 0 0.5rem 1.5rem 0 rgba(29, 144, 245, 0.1)",
         "2xl": "0 1rem 3rem 0.25rem rgba(208, 92, 54, 0.25)",
       },

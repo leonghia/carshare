@@ -4,7 +4,13 @@ import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, FormField, FormItemPassword } from "./ui/form";
+import {
+  FormProvider,
+  FormField,
+  FormItemPassword,
+  FormItem,
+  FormItemDatePicker,
+} from "./ui/form";
 import { motion } from "motion/react";
 
 export function Register(): JSX.Element {
@@ -60,45 +66,34 @@ export function Register(): JSX.Element {
 const formSchema = z
   .object({
     fullName: z
-      .string()
-      .trim()
-      .min(1, { message: "Họ tên không được để trống" })
+      .string({ required_error: "Họ tên không được để trống" })
       .min(3, { message: "Họ tên phải chứa tối thiểu 3 ký tự" })
       .max(50, { message: "Họ tên chỉ được chứa tối đa 50 ký tự" })
       .regex(
         /^[a-zA-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/gm,
         { message: "Họ tên không hợp lệ" }
       ),
-    phone: z
-      .string()
-      .trim()
-      .min(1, { message: "Số điện thoại không được để trống" })
-      .max(11, { message: "Số điện thoại chỉ chứa tối đa 11 số" })
+    phoneNumber: z
+      .string({ required_error: "Số điện thoại không được để trống" })
+      .max(11, { message: "Số điện thoại không chứa quá 11 số" })
       .regex(/^\d+$/, { message: "Số điện thoại không hợp lệ" }),
     email: z
-      .string()
-      .trim()
-      .min(1, { message: "Email không được để trống" })
+      .string({ required_error: "Email không được để trống" })
+      .max(254, { message: "Email không chứa quá 254 ký tự" })
       .email({ message: "Địa chỉ email không hợp lệ" }),
     nationalID: z
-      .string()
-      .trim()
-      .min(1, { message: "Số CCCD không được để trống" })
-      .max(11, { message: "Số CCCD chỉ chứa tối đa 11 số" })
+      .string({ required_error: "Số CCCD không được để trống" })
+      .max(12, { message: "Số CCCD không chứa quá 12 số" })
       .regex(/^\d+$/, { message: "Số CCCD không hợp lệ" }),
-    publishedDate: z
-      .string()
-      .trim()
-      .min(1, { message: "Ngày cấp CCCD không được để trống" })
-      .date("Ngày cấp CCCD không hợp lệ"),
+    publishedDate: z.date({
+      required_error: "Ngày cấp CCCD không được để trống",
+    }),
     password: z
-      .string()
-      .trim()
-      .min(1, { message: "Mật khẩu không được để trống" }),
-    retypePassword: z
-      .string()
-      .trim()
-      .min(1, { message: "Mật khẩu nhập lại không được để trống" }),
+      .string({ required_error: "Mật khẩu không được để trống" })
+      .max(128, { message: "Mật khẩu không chứa quá 128 ký tự" }),
+    retypePassword: z.string({
+      required_error: "Mật khẩu nhập lại không được để tróng",
+    }),
   })
   .superRefine(({ password, retypePassword }, ctx) => {
     if (password !== retypePassword) {
@@ -115,10 +110,10 @@ function SignupForm(): JSX.Element {
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
-      phone: "",
+      phoneNumber: "",
       email: "",
       nationalID: "",
-      publishedDate: "",
+      publishedDate: undefined,
       password: "",
       retypePassword: "",
     },
@@ -136,6 +131,94 @@ function SignupForm(): JSX.Element {
         className="w-full space-y-12"
       >
         <div className="w-full grid grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem
+                state={
+                  form.getFieldState("fullName").error ? "error" : "default"
+                }
+                size={"default"}
+                label="Họ tên"
+                required
+                placeholder="Nguyễn Văn A"
+                field={field}
+                className="col-span-1"
+                type="text"
+              />
+            )}
+          ></FormField>
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem
+                state={
+                  form.getFieldState("phoneNumber").error ? "error" : "default"
+                }
+                size={"default"}
+                label="Số điện thoại"
+                required
+                placeholder="123 456 789"
+                field={field}
+                className="col-span-1"
+                type="tel"
+                leftText="+84"
+              />
+            )}
+          ></FormField>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem
+                state={form.getFieldState("email").error ? "error" : "default"}
+                size={"default"}
+                label="Email"
+                required
+                placeholder="abc@email.com"
+                field={field}
+                className="col-span-full"
+                type="email"
+              />
+            )}
+          ></FormField>
+          <FormField
+            control={form.control}
+            name="nationalID"
+            render={({ field }) => (
+              <FormItem
+                state={
+                  form.getFieldState("nationalID").error ? "error" : "default"
+                }
+                size={"default"}
+                label="Số CCCD"
+                required
+                placeholder="00000000000"
+                field={field}
+                className="col-span-1"
+                type="tel"
+              />
+            )}
+          ></FormField>
+          <FormField
+            control={form.control}
+            name="publishedDate"
+            render={({ field }) => (
+              <FormItemDatePicker
+                state={
+                  form.getFieldState("fullName").error ? "error" : "default"
+                }
+                size="default"
+                label="Ngày cấp CCCD"
+                required
+                placeholder="01/01/2020"
+                field={field}
+                className="col-span-1"
+              />
+            )}
+          />
           <FormField
             control={form.control}
             name="password"

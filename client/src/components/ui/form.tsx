@@ -14,17 +14,37 @@ import {
   useFormContext,
 } from "react-hook-form";
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { Label, LabelProps } from "@/components/ui/label";
 import { Input } from "./input";
-import { Eye, EyeSlash } from "iconsax-react";
+import { Eye, EyeSlash, Calendar as CalendarIcon } from "iconsax-react";
+
+const current = new Date();
 
 const pwInnerVariants = cva("w-full h-fit flex items-center", {
   variants: {
     size: {
       default: "gap-6",
       small: "gap-4",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
+const datePickerInputVariants = cva("flex-1", {
+  variants: {
+    size: {
+      default: "text-base",
+      small: "text-sm",
     },
   },
   defaultVariants: { size: "default" },
@@ -263,7 +283,9 @@ const strengths: Record<Strength, [Strength, StrengthText]> = {
   strong: ["strong", "Mạnh"],
 };
 
-function calculatePasswordStrength(password: string): [Strength, StrengthText] {
+const calculatePasswordStrength = (
+  password: string
+): [Strength, StrengthText] => {
   let score = 0;
 
   if (password.length === 0) return strengths.default;
@@ -290,7 +312,7 @@ function calculatePasswordStrength(password: string): [Strength, StrengthText] {
     default:
       return strengths.strong;
   }
-}
+};
 
 const FormItemPassword = React.forwardRef<
   HTMLDivElement,
@@ -440,6 +462,7 @@ const FormItemPassword = React.forwardRef<
     );
   }
 );
+FormItemPassword.displayName = "FormItemPassword";
 
 const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
   (
@@ -519,6 +542,126 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
   }
 );
 FormItem.displayName = "FormItem";
+
+const FormItemDatePicker = React.forwardRef<
+  HTMLDivElement,
+  Omit<FormItemProps, "type" | "iconBefore" | "leftText">
+>(
+  (
+    {
+      className,
+      size,
+      state,
+      iconAfter,
+      label,
+      required = false,
+      placeholder,
+      field,
+      ...props
+    },
+    ref
+  ) => {
+    const id = React.useId();
+    const { error } = useFormField();
+    return (
+      <FormItemContext.Provider value={{ id }}>
+        <div
+          ref={ref}
+          className={cn(rootVariants({ size }), className)}
+          {...props}
+        >
+          <Popover>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <button type="button" className="block w-full text-left">
+                  <div className={cn(containerVariants({ size, state }))}>
+                    <div className={cn(wrapperVariants({ size, state }))}>
+                      <div className="w-full h-fit flex gap-4 items-center">
+                        <div className="flex-1 h-fit space-y-1">
+                          {label && (
+                            <FormLabel size={size} required={required}>
+                              {label}
+                            </FormLabel>
+                          )}
+                          <div className="w-full flex items-center">
+                            <div
+                              className={cn(
+                                datePickerInputVariants({ size }),
+                                field.value
+                                  ? "font-medium text-white"
+                                  : "font-normal text-foreground-600"
+                              )}
+                            >
+                              {field.value
+                                ? format(field.value, "dd/MM/yyyy")
+                                : placeholder}
+                            </div>
+                          </div>
+                        </div>
+                        <CalendarIcon variant="Bold" />
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                showOutsideDays
+                required
+                selected={field.value}
+                onSelect={field.onChange}
+                autoFocus
+                hideNavigation
+                captionLayout="dropdown"
+                defaultMonth={current}
+                startMonth={new Date(2014, 0)}
+                endMonth={current}
+                classNames={{
+                  root: "px-3 sm:px-1 py-2 sm:py-1",
+                  month_caption: "p-2",
+                  caption_label: "text-white font-medium text-sm gap-2",
+                  chevron: "fill-foreground-500 inline-block",
+                  dropdowns: "relative inline-flex items-center gap-4",
+                  weekday:
+                    "py-2 font-normal text-xs text-foreground-500 text-center",
+                  today: "",
+                  day: "text-sm sm:text-xs font-medium text-foreground-200",
+                  outside: "data-[outside=true]:text-foreground-700",
+                  selected:
+                    "group data-[selected=true]:font-semibold data-[selected=true]:text-white",
+                  day_button:
+                    "group-data-[selected=true]:bg-primary-500 group-data-[selected=true]:shadow-lg transition-all duration-300 ease-out sm:size-10",
+                }}
+                formatters={{
+                  formatMonthDropdown: (monthNumber, locale) =>
+                    `Tháng ${monthNumber + 1}`,
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+
+          <AnimatePresence>
+            {error && (
+              <MotionFormMessage
+                key={id + "message"}
+                size={size}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+              >
+                {String(error.message)}
+              </MotionFormMessage>
+            )}
+          </AnimatePresence>
+        </div>
+      </FormItemContext.Provider>
+    );
+  }
+);
+FormItemDatePicker.displayName = "FormItemDatePicker";
 
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
@@ -621,6 +764,7 @@ export {
   FormProvider,
   FormItem,
   FormItemPassword,
+  FormItemDatePicker,
   FormLabel,
   FormControl,
   FormDescription,

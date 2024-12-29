@@ -1,17 +1,9 @@
 import logo from "../assets/images/logo.svg";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormProvider, FormField, FormItem } from "@/components/ui/form";
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link, useNavigate } from "react-router";
@@ -106,7 +98,7 @@ const EnterName = React.forwardRef<
       <h1 className="text-lg sm:text-base font-semibold text-white text-center">
         Chúng mình có thể gọi bạn là?
       </h1>
-      <Form {...form}>
+      <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-12 sm:space-y-8"
@@ -118,18 +110,11 @@ const EnterName = React.forwardRef<
               <FormItem
                 state={form.getFieldState("name").error ? "error" : "default"}
                 size={isSM ? "small" : "default"}
-                // size={"small"}
                 label="Tên của bạn"
                 required
-              >
-                <FormControl>
-                  <Input
-                    size={isSM ? "small" : "default"}
-                    placeholder="VD. Nguyễn Văn A"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
+                placeholder="VD. Nguyễn Văn A"
+                field={field}
+              />
             )}
           />
           <Button
@@ -141,7 +126,7 @@ const EnterName = React.forwardRef<
             Tiếp theo
           </Button>
         </form>
-      </Form>
+      </FormProvider>
     </div>
   );
 });
