@@ -238,6 +238,7 @@ export interface FormItemProps
   required?: boolean;
   placeholder?: string;
   field: ControllerRenderProps<any, any>;
+  type: React.HTMLInputTypeAttribute;
 }
 
 export interface PasswordFormItemProps
@@ -249,6 +250,7 @@ export interface PasswordFormItemProps
   placeholder?: string;
   field: ControllerRenderProps<any, any>;
   description?: string;
+  hasStrength?: boolean;
 }
 
 type Strength = "default" | "weak" | "average" | "strong";
@@ -267,7 +269,7 @@ function calculatePasswordStrength(password: string): [Strength, StrengthText] {
   if (password.length === 0) return strengths.default;
   if (password.length < 6) return strengths.weak;
   // Check password length
-  if (password.length >= 8) score += 1;
+  if (password.length >= 12) score += 1;
   // Contains lowercase
   if (/[a-z]/.test(password)) score += 1;
   // Contains uppercase
@@ -304,6 +306,7 @@ const FormItemPassword = React.forwardRef<
       placeholder,
       field,
       description,
+      hasStrength = false,
       ...props
     },
     ref
@@ -336,27 +339,29 @@ const FormItemPassword = React.forwardRef<
                         {label}
                       </FormLabel>
                     )}
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={cn(
-                          pwStrengthTextVariants({
-                            size,
-                            strength,
-                          })
-                        )}
-                      >
-                        {strengthText}
-                      </span>
-                      <div className={cn(pwThermometerVariants({ size }))}>
-                        <div
+                    {hasStrength && (
+                      <div className="flex items-center gap-2">
+                        <span
                           className={cn(
-                            pwIndicatorVariants({
+                            pwStrengthTextVariants({
+                              size,
                               strength,
                             })
                           )}
-                        ></div>
+                        >
+                          {strengthText}
+                        </span>
+                        <div className={cn(pwThermometerVariants({ size }))}>
+                          <div
+                            className={cn(
+                              pwIndicatorVariants({
+                                strength,
+                              })
+                            )}
+                          ></div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                   <div className="w-full flex items-center">
                     <FormControl>
@@ -449,11 +454,13 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       required = false,
       placeholder,
       field,
+      type,
       ...props
     },
     ref
   ) => {
     const id = React.useId();
+    const { error } = useFormField();
 
     return (
       <FormItemContext.Provider value={{ id }}>
@@ -479,7 +486,12 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
                       </span>
                     )}
                     <FormControl>
-                      <Input size={size} placeholder={placeholder} {...field} />
+                      <Input
+                        type={type}
+                        size={size}
+                        placeholder={placeholder}
+                        {...field}
+                      />
                     </FormControl>
                   </div>
                 </div>
@@ -487,7 +499,20 @@ const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
               </div>
             </div>
           </div>
-          <FormMessage size={size} />
+          <AnimatePresence>
+            {error && (
+              <MotionFormMessage
+                key={id + "message"}
+                size={size}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+              >
+                {String(error.message)}
+              </MotionFormMessage>
+            )}
+          </AnimatePresence>
         </div>
       </FormItemContext.Provider>
     );
