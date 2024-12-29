@@ -57,48 +57,58 @@ export function Register(): JSX.Element {
   );
 }
 
-const formSchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(1, { message: "Họ tên không được để trống" })
-    .min(3, { message: "Họ tên phải chứa tối thiểu 3 ký tự" })
-    .max(50, { message: "Họ tên chỉ được chứa tối đa 50 ký tự" })
-    .regex(
-      /^[a-zA-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/gm,
-      { message: "Họ tên không hợp lệ" }
-    ),
-  phone: z
-    .string()
-    .trim()
-    .min(1, { message: "Số điện thoại không được để trống" })
-    .max(11, { message: "Số điện thoại chỉ chứa tối đa 11 số" })
-    .regex(/^\d+$/, { message: "Số điện thoại không hợp lệ" }),
-  email: z
-    .string()
-    .trim()
-    .min(1, { message: "Email không được để trống" })
-    .email({ message: "Địa chỉ email không hợp lệ" }),
-  nationalID: z
-    .string()
-    .trim()
-    .min(1, { message: "Số CCCD không được để trống" })
-    .max(11, { message: "Số CCCD chỉ chứa tối đa 11 số" })
-    .regex(/^\d+$/, { message: "Số CCCD không hợp lệ" }),
-  publishedDate: z
-    .string()
-    .trim()
-    .min(1, { message: "Ngày cấp CCCD không được để trống" })
-    .date("Ngày cấp CCCD không hợp lệ"),
-  password: z
-    .string()
-    .trim()
-    .min(1, { message: "Mật khẩu không được để trống" }),
-  retypePassword: z
-    .string()
-    .trim()
-    .min(1, { message: "Mật khẩu nhập lại không được để trống" }),
-});
+const formSchema = z
+  .object({
+    fullName: z
+      .string()
+      .trim()
+      .min(1, { message: "Họ tên không được để trống" })
+      .min(3, { message: "Họ tên phải chứa tối thiểu 3 ký tự" })
+      .max(50, { message: "Họ tên chỉ được chứa tối đa 50 ký tự" })
+      .regex(
+        /^[a-zA-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/gm,
+        { message: "Họ tên không hợp lệ" }
+      ),
+    phone: z
+      .string()
+      .trim()
+      .min(1, { message: "Số điện thoại không được để trống" })
+      .max(11, { message: "Số điện thoại chỉ chứa tối đa 11 số" })
+      .regex(/^\d+$/, { message: "Số điện thoại không hợp lệ" }),
+    email: z
+      .string()
+      .trim()
+      .min(1, { message: "Email không được để trống" })
+      .email({ message: "Địa chỉ email không hợp lệ" }),
+    nationalID: z
+      .string()
+      .trim()
+      .min(1, { message: "Số CCCD không được để trống" })
+      .max(11, { message: "Số CCCD chỉ chứa tối đa 11 số" })
+      .regex(/^\d+$/, { message: "Số CCCD không hợp lệ" }),
+    publishedDate: z
+      .string()
+      .trim()
+      .min(1, { message: "Ngày cấp CCCD không được để trống" })
+      .date("Ngày cấp CCCD không hợp lệ"),
+    password: z
+      .string()
+      .trim()
+      .min(1, { message: "Mật khẩu không được để trống" }),
+    retypePassword: z
+      .string()
+      .trim()
+      .min(1, { message: "Mật khẩu nhập lại không được để trống" }),
+  })
+  .superRefine(({ password, retypePassword }, ctx) => {
+    if (password !== retypePassword) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Mật khẩu nhập lại phải trùng khớp",
+        path: ["retypePassword"],
+      });
+    }
+  });
 
 function SignupForm(): JSX.Element {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -141,6 +151,7 @@ function SignupForm(): JSX.Element {
                 field={field}
                 className="col-span-full"
                 description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái in hoa, 1 chữ cái thường, 1 chữ số (0-9) và 1 ký tự đặc biệt."
+                hasStrength
               />
             )}
           ></FormField>
