@@ -63,4 +63,13 @@ const FieldLabel = React.forwardRef<
 });
 FieldLabel.displayName = "FieldLabel";
 
-export { Label, FieldLabel };
+const DatepickerFieldLabel = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  LabelProps
+>(({ state, ...props }, ref) => {
+  return <Label ref={ref} state={state} {...props} />;
+});
+
+DatepickerFieldLabel.displayName = "DatepickerFieldLabel";
+
+export { Label, FieldLabel, DatepickerFieldLabel };

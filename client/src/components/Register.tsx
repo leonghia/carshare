@@ -8,6 +8,7 @@ import { FormProvider, FormItemDatePicker } from "./ui/form";
 import { motion } from "motion/react";
 import { BasicField } from "./ui/basicField";
 import { PasswordField } from "./ui/passwordField";
+import { DatepickerField } from "./ui/datepickerField";
 
 export function Register(): JSX.Element {
   return (
@@ -210,13 +211,22 @@ function SignupForm(): JSX.Element {
             type="tel"
             className="col-span-1"
           />
-          <FormItemDatePicker
-            label="Ngày cấp CCCD"
+          <DatepickerField
+            control={form.control}
+            dayFieldName="publishedDay"
+            monthFieldName="publishedMonth"
+            yearFieldName="publishedYear"
             dayPlaceholder="01"
             monthPlaceholder="01"
             yearPlaceholder="2020"
-            required
             size="default"
+            state={
+              form.getFieldState("publishedDay").error ? "error" : "default"
+            }
+            className="col-span-1"
+            label="Ngày cấp CCCD"
+            required
+            description="Here is some description"
           />
           <PasswordField
             control={form.control}
