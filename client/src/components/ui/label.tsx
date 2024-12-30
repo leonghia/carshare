@@ -5,6 +5,7 @@ import * as LabelPrimitive from "@radix-ui/react-label";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
+import { useFormField } from "./form";
 
 const labelVariants = cva(
   "block font-normal group-focus-within:text-primary-500",
@@ -44,4 +45,22 @@ const Label = React.forwardRef<
 ));
 Label.displayName = LabelPrimitive.Root.displayName;
 
-export { Label };
+const FieldLabel = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  LabelProps
+>(({ className, ...props }, ref) => {
+  const { error, formItemId, isDirty } = useFormField();
+
+  return (
+    <Label
+      ref={ref}
+      className={className}
+      htmlFor={formItemId}
+      state={error ? "error" : isDirty ? "dirty" : "default"}
+      {...props}
+    />
+  );
+});
+FieldLabel.displayName = "FieldLabel";
+
+export { Label, FieldLabel };

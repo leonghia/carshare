@@ -4,14 +4,10 @@ import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormProvider,
-  FormField,
-  FormItemPassword,
-  FormItem,
-  FormItemDatePicker,
-} from "./ui/form";
+import { FormProvider, FormItemDatePicker } from "./ui/form";
 import { motion } from "motion/react";
+import { BasicField } from "./ui/basicField";
+import { PasswordField } from "./ui/passwordField";
 
 export function Register(): JSX.Element {
   return (
@@ -85,9 +81,9 @@ const formSchema = z
       .string({ required_error: "Số CCCD không được để trống" })
       .max(12, { message: "Số CCCD không chứa quá 12 số" })
       .regex(/^\d+$/, { message: "Số CCCD không hợp lệ" }),
-    publishedDate: z.date({
-      required_error: "Ngày cấp CCCD không được để trống",
-    }),
+    publishedDay: z.string().trim(),
+    publishedMonth: z.string().trim(),
+    publishedYear: z.string().trim(),
     password: z
       .string({ required_error: "Mật khẩu không được để trống" })
       .max(128, { message: "Mật khẩu không chứa quá 128 ký tự" }),
@@ -95,15 +91,49 @@ const formSchema = z
       required_error: "Mật khẩu nhập lại không được để tróng",
     }),
   })
-  .superRefine(({ password, retypePassword }, ctx) => {
-    if (password !== retypePassword) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Mật khẩu nhập lại phải trùng khớp",
-        path: ["retypePassword"],
-      });
+  .superRefine(
+    (
+      { password, retypePassword, publishedDay, publishedMonth, publishedYear },
+      ctx
+    ) => {
+      if (password !== retypePassword) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Mật khẩu nhập lại phải trùng khớp",
+          path: ["retypePassword"],
+        });
+      }
+      if (
+        publishedDay.length === 0 ||
+        publishedMonth.length === 0 ||
+        publishedYear.length === 0
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Ngày cấp CCCD không được để trống",
+          path: ["publishedDay"],
+        });
+      }
+
+      if (
+        !z
+          .string()
+          .date()
+          .safeParse(
+            `${publishedYear}-${publishedMonth.padStart(
+              2,
+              "0"
+            )}-${publishedDay.padStart(2, "0")}`
+          ).success
+      ) {
+        ctx.addIssue({
+          code: "invalid_date",
+          message: "Ngày cấp CCCD không hợp lệ",
+          path: ["publishedDay"],
+        });
+      }
     }
-  });
+  );
 
 function SignupForm(): JSX.Element {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -113,7 +143,9 @@ function SignupForm(): JSX.Element {
       phoneNumber: "",
       email: "",
       nationalID: "",
-      publishedDate: undefined,
+      publishedDay: "",
+      publishedMonth: "",
+      publishedYear: "",
       password: "",
       retypePassword: "",
     },
@@ -131,132 +163,85 @@ function SignupForm(): JSX.Element {
         className="w-full space-y-12"
       >
         <div className="w-full grid grid-cols-2 gap-6">
-          <FormField
+          <BasicField
             control={form.control}
             name="fullName"
-            render={({ field }) => (
-              <FormItem
-                state={
-                  form.getFieldState("fullName").error ? "error" : "default"
-                }
-                size={"default"}
-                label="Họ tên"
-                required
-                placeholder="Nguyễn Văn A"
-                field={field}
-                className="col-span-1"
-                type="text"
-              />
-            )}
-          ></FormField>
-          <FormField
+            state={form.getFieldState("fullName").error ? "error" : "default"}
+            size="default"
+            label="Họ tên"
+            required
+            placeholder="Nguyễn Văn A"
+            type="text"
+            className="col-span-1"
+          />
+          <BasicField
             control={form.control}
             name="phoneNumber"
-            render={({ field }) => (
-              <FormItem
-                state={
-                  form.getFieldState("phoneNumber").error ? "error" : "default"
-                }
-                size={"default"}
-                label="Số điện thoại"
-                required
-                placeholder="123 456 789"
-                field={field}
-                className="col-span-1"
-                type="tel"
-                leftText="+84"
-              />
-            )}
-          ></FormField>
-          <FormField
+            state={
+              form.getFieldState("phoneNumber").error ? "error" : "default"
+            }
+            size="default"
+            label="Số điện thoại"
+            required
+            leftText="+84"
+            placeholder="123 456 789"
+            type="tel"
+            className="col-span-1"
+          />
+          <BasicField
             control={form.control}
             name="email"
-            render={({ field }) => (
-              <FormItem
-                state={form.getFieldState("email").error ? "error" : "default"}
-                size={"default"}
-                label="Email"
-                required
-                placeholder="abc@email.com"
-                field={field}
-                className="col-span-full"
-                type="email"
-              />
-            )}
-          ></FormField>
-          <FormField
+            state={form.getFieldState("email").error ? "error" : "default"}
+            size="default"
+            label="Email"
+            required
+            placeholder="abc@email.com"
+            type="email"
+            className="col-span-full"
+          />
+          <BasicField
             control={form.control}
             name="nationalID"
-            render={({ field }) => (
-              <FormItem
-                state={
-                  form.getFieldState("nationalID").error ? "error" : "default"
-                }
-                size={"default"}
-                label="Số CCCD"
-                required
-                placeholder="00000000000"
-                field={field}
-                className="col-span-1"
-                type="tel"
-              />
-            )}
-          ></FormField>
-          <FormField
-            control={form.control}
-            name="publishedDate"
-            render={({ field }) => (
-              <FormItemDatePicker
-                state={
-                  form.getFieldState("fullName").error ? "error" : "default"
-                }
-                size="default"
-                label="Ngày cấp CCCD"
-                required
-                placeholder="01/01/2020"
-                field={field}
-                className="col-span-1"
-              />
-            )}
+            state={form.getFieldState("nationalID").error ? "error" : "default"}
+            size="default"
+            label="Số CCCD"
+            required
+            placeholder="000000000000"
+            type="tel"
+            className="col-span-1"
           />
-          <FormField
+          <FormItemDatePicker
+            label="Ngày cấp CCCD"
+            dayPlaceholder="01"
+            monthPlaceholder="01"
+            yearPlaceholder="2020"
+            required
+            size="default"
+          />
+          <PasswordField
             control={form.control}
             name="password"
-            render={({ field }) => (
-              <FormItemPassword
-                state={
-                  form.getFieldState("password").error ? "error" : "default"
-                }
-                size={"default"}
-                label="Mật khẩu"
-                required
-                placeholder="****************"
-                field={field}
-                className="col-span-full"
-                description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái in hoa, 1 chữ cái thường, 1 chữ số (0-9) và 1 ký tự đặc biệt."
-                hasStrength
-              />
-            )}
-          ></FormField>
-          <FormField
+            state={form.getFieldState("password").error ? "error" : "default"}
+            size="default"
+            label="Mật khẩu"
+            required
+            placeholder="****************"
+            className="col-span-full"
+            description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái in hoa, 1 chữ cái thường, 1 chữ số (0-9) và 1 ký tự đặc biệt."
+            hasStrength
+          />
+          <PasswordField
             control={form.control}
             name="retypePassword"
-            render={({ field }) => (
-              <FormItemPassword
-                state={
-                  form.getFieldState("retypePassword").error
-                    ? "error"
-                    : "default"
-                }
-                size={"default"}
-                label="Nhập lại mật khẩu"
-                required
-                placeholder="****************"
-                field={field}
-                className="col-span-full"
-              />
-            )}
-          ></FormField>
+            state={
+              form.getFieldState("retypePassword").error ? "error" : "default"
+            }
+            size="default"
+            label="Nhập lại mật khẩu"
+            required
+            placeholder="****************"
+            className="col-span-full"
+          />
         </div>
         <Button
           type="submit"

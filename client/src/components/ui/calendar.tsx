@@ -27,7 +27,7 @@ export function Calendar({
         root: cn(defaultClassNames.root, root),
         month_caption: cn(defaultClassNames.month_caption, month_caption),
         caption_label: cn(defaultClassNames.caption_label, caption_label),
-        day_button: cn(defaultClassNames.day_button, day_button),
+        day_button: cn(defaultClassNames.day_button, "nghia", day_button),
         ...classNames,
       }}
       {...props}

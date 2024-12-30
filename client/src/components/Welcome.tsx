@@ -3,11 +3,12 @@ import { Button } from "./ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, FormField, FormItem } from "@/components/ui/form";
+import { FormProvider } from "@/components/ui/form";
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { useMediaQuery } from "react-responsive";
+import { BasicField } from "./ui/basicField";
 
 const formSchema = z.object({
   name: z
@@ -103,20 +104,17 @@ const EnterName = React.forwardRef<
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-12 sm:space-y-8"
         >
-          <FormField
+          <BasicField
             control={form.control}
             name="name"
-            render={({ field }) => (
-              <FormItem
-                state={form.getFieldState("name").error ? "error" : "default"}
-                size={isSM ? "small" : "default"}
-                label="Tên của bạn"
-                required
-                placeholder="VD. Nguyễn Văn A"
-                field={field}
-              />
-            )}
+            state={form.getFieldState("name").error ? "error" : "default"}
+            size={isSM ? "small" : "default"}
+            label="Tên của bạn"
+            required
+            placeholder="VD. Nguyễn Văn A"
+            type="text"
           />
+
           <Button
             intent="secondary"
             size={isSM ? "small" : "default"}
