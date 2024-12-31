@@ -1,91 +1,22 @@
 "use client";
 
 import * as React from "react";
-
+import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import {
-  Control,
   Controller,
   ControllerProps,
-  ControllerRenderProps,
   FieldPath,
   FieldValues,
-  useFormContext,
   FormProvider,
+  useFormContext,
 } from "react-hook-form";
 
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 import { cva, VariantProps } from "class-variance-authority";
 
-const rootVariants = cva(undefined, {
-  variants: {
-    size: {
-      default: "space-y-4",
-      small: "space-y-3",
-    },
-  },
-  defaultVariants: {
-    size: "default",
-  },
-});
-
-const messageAndDescriptionVariants = cva(undefined, {
-  variants: {
-    size: {
-      default: "space-y-2",
-      small: "space-y-1",
-    },
-  },
-  defaultVariants: { size: "default" },
-});
-
-const containerVariants = cva(
-  "group peer focus-within:outline focus-within:outline-8 focus-within:outline-primary-flat",
-  {
-    variants: {
-      state: {
-        default: null,
-        error: "outline outline-8 outline-danger-flat",
-      },
-      size: {
-        default: "rounded-3xl",
-        small: "rounded-2xl",
-      },
-    },
-    defaultVariants: {
-      size: "default",
-    },
-  }
-);
-
-const wrapperVariants = cva(
-  "w-full h-fit bg-background-900 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:flex-none [&_svg]:text-foreground-300 focus-within:outline focus-within:outline-2 focus-within:outline-primary-500 focus-within:bg-[#383D4C]",
-  {
-    variants: {
-      state: {
-        default: null,
-        error: "outline outline-2 outline-danger-500",
-      },
-      size: {
-        default: "px-6 py-3 rounded-3xl [&_svg]:size-6",
-        small: "px-4 py-2 rounded-2xl [&_svg]:size-5",
-      },
-    },
-    defaultVariants: {
-      state: "default",
-      size: "default",
-    },
-  }
-);
-
-const textVariants = cva("flex-none font-medium text-white", {
-  variants: {
-    size: {
-      default: "text-base",
-      small: "text-sm",
-    },
-  },
-  defaultVariants: { size: "default" },
-});
+const Form = FormProvider;
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -98,7 +29,7 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
 );
 
-const Field = <
+const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
@@ -111,23 +42,9 @@ const Field = <
   );
 };
 
-interface FieldProps<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
-> extends React.ComponentPropsWithRef<"div">,
-    VariantProps<typeof containerVariants> {
-  control: Control<TFieldValues>;
-  name: TName;
-  label?: string;
-  required?: boolean;
-  placeholder?: string;
-  description?: string;
-  type: React.HTMLInputTypeAttribute;
-}
-
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
-  const itemContext = React.useContext(FieldItemContext);
+  const itemContext = React.useContext(FormItemContext);
   const { getFieldState, formState } = useFormContext();
 
   const fieldState = getFieldState(fieldContext.name, formState);
@@ -141,9 +58,9 @@ const useFormField = () => {
   return {
     id,
     name: fieldContext.name,
-    fieldItemId: `${id}-field-item`,
-    fieldDescriptionId: `${id}-field-item-description`,
-    fieldMessageId: `${id}-field-item-message`,
+    formItemId: `${id}-form-item`,
+    formDescriptionId: `${id}-form-item-description`,
+    formMessageId: `${id}-form-item-message`,
     ...fieldState,
   };
 };
@@ -152,56 +69,142 @@ type FormItemContextValue = {
   id: string;
 };
 
-const FieldItemContext = React.createContext<FormItemContextValue>(
+const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue
 );
 
-interface FieldItemProps<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
-> extends React.ComponentPropsWithRef<"div">,
-    VariantProps<typeof containerVariants> {
-  label?: string;
-  required?: boolean;
-  placeholder?: string;
-  field: ControllerRenderProps<TFieldValues, TName>;
-  description?: string;
-}
+const FormItem = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const id = React.useId();
 
-const FieldControl = React.forwardRef<
+  return (
+    <FormItemContext.Provider value={{ id }}>
+      <div ref={ref} className={cn("space-y-2", className)} {...props} />
+    </FormItemContext.Provider>
+  );
+});
+FormItem.displayName = "FormItem";
+
+const FormLabel = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
+>(({ className, ...props }, ref) => {
+  const { error, formItemId } = useFormField();
+
+  return (
+    <Label
+      ref={ref}
+      className={cn(error && "text-destructive", className)}
+      htmlFor={formItemId}
+      {...props}
+    />
+  );
+});
+FormLabel.displayName = "FormLabel";
+
+const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
-  const { error, fieldItemId, fieldDescriptionId, fieldMessageId } =
+  const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
 
   return (
     <Slot
       ref={ref}
-      id={fieldItemId}
+      id={formItemId}
       aria-describedby={
         !error
-          ? `${fieldDescriptionId}`
-          : `${fieldDescriptionId} ${fieldMessageId}`
+          ? `${formDescriptionId}`
+          : `${formDescriptionId} ${formMessageId}`
       }
       aria-invalid={!!error}
       {...props}
     />
   );
 });
-FieldControl.displayName = "FieldControl";
+FormControl.displayName = "FormControl";
+
+const formDescriptionVariants = cva("font-normal text-foreground-600", {
+  variants: {
+    size: {
+      default: "text-sm",
+      small: "text-xs",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
+
+interface FormDescriptionProps
+  extends React.ComponentPropsWithoutRef<"p">,
+    VariantProps<typeof formDescriptionVariants> {
+  formDescriptionId: string;
+}
+
+const FormDescription = React.forwardRef<
+  HTMLParagraphElement,
+  FormDescriptionProps
+>(({ className, formDescriptionId, size, ...props }, ref) => {
+  return (
+    <p
+      ref={ref}
+      id={formDescriptionId}
+      className={cn(formDescriptionVariants({ size }), className)}
+      {...props}
+    />
+  );
+});
+FormDescription.displayName = "FormDescription";
+
+const formMessageVariants = cva("font-normal", {
+  variants: {
+    size: {
+      default: "text-sm",
+      small: "text-xs",
+    },
+    state: {
+      default: "text-foreground-500",
+      error: "text-danger-500",
+      success: "text-success-500",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+    state: "default",
+  },
+});
+
+interface FormMessageProps
+  extends React.ComponentPropsWithoutRef<"p">,
+    VariantProps<typeof formMessageVariants> {
+  formMessageId: string;
+}
+
+const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
+  ({ className, children, size, state, formMessageId, ...props }, ref) => {
+    return (
+      <p
+        ref={ref}
+        id={formMessageId}
+        className={cn(formMessageVariants({ size, state }), className)}
+        {...props}
+      />
+    );
+  }
+);
+FormMessage.displayName = "FormMessage";
 
 export {
-  FormProvider,
-  Field,
   useFormField,
-  FieldControl,
-  type FieldProps,
-  type FieldItemProps,
-  FieldItemContext,
-  rootVariants,
-  containerVariants,
-  wrapperVariants,
-  textVariants,
-  messageAndDescriptionVariants,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
 };
