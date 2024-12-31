@@ -141,9 +141,9 @@ const useFormField = () => {
   return {
     id,
     name: fieldContext.name,
-    formItemId: `${id}-field-item`,
-    formDescriptionId: `${id}-field-item-description`,
-    formMessageId: `${id}-field-item-message`,
+    fieldItemId: `${id}-field-item`,
+    fieldDescriptionId: `${id}-field-item-description`,
+    fieldMessageId: `${id}-field-item-message`,
     ...fieldState,
   };
 };
@@ -172,17 +172,17 @@ const FieldControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } =
+  const { error, fieldItemId, fieldDescriptionId, fieldMessageId } =
     useFormField();
 
   return (
     <Slot
       ref={ref}
-      id={formItemId}
+      id={fieldItemId}
       aria-describedby={
         !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
+          ? `${fieldDescriptionId}`
+          : `${fieldDescriptionId} ${fieldMessageId}`
       }
       aria-invalid={!!error}
       {...props}

@@ -4,6 +4,7 @@ import {
   FieldPath,
   FieldValues,
   useFormContext,
+  useWatch,
 } from "react-hook-form";
 import {
   containerVariants,
@@ -13,6 +14,7 @@ import {
   messageAndDescriptionVariants,
   rootVariants,
   textVariants,
+  useFormField,
   wrapperVariants,
 } from "./form";
 import React from "react";
@@ -23,6 +25,8 @@ import { Input } from "./input";
 import { AnimatePresence } from "motion/react";
 import { MotionFieldMessage } from "./fieldMessage";
 import { MotionFieldDescription } from "./fieldDescription";
+
+const digitRegex = /^[0-9\b]+$/;
 
 interface DatepickerFieldProps<
   TFieldValues extends FieldValues,
@@ -87,7 +91,10 @@ function DatepickerField<
               {label && (
                 <DatepickerFieldLabel
                   htmlFor={`${dayFieldId}-field-item`}
-                  state={state}
+                  dayFieldName={dayFieldName}
+                  monthFieldName={monthFieldName}
+                  yearFieldName={yearFieldName}
+                  dayFieldItemId={`${dayFieldId}-field-item`}
                   required={required}
                 >
                   {label}
@@ -98,14 +105,15 @@ function DatepickerField<
                   control={control}
                   name={dayFieldName}
                   render={({ field }) => (
-                    <DatepickerFieldItem
+                    <NumericFieldItem
                       fieldId={dayFieldId}
+                      maxLength={2}
                       size={size}
                       placeholder={dayPlaceholder}
                       field={field}
                       className="flex-none w-6 min-w-0"
-                      onFocus={(_) => setIsFocus(true)}
-                      onBlur={(_) => {
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => {
                         field.onBlur();
                         setIsFocus(false);
                       }}
@@ -121,14 +129,15 @@ function DatepickerField<
                   control={control}
                   name={monthFieldName}
                   render={({ field }) => (
-                    <DatepickerFieldItem
+                    <NumericFieldItem
                       fieldId={monthFieldId}
+                      maxLength={2}
                       size={size}
                       placeholder={monthPlaceholder}
                       field={field}
                       className="flex-none w-6 min-w-0"
-                      onFocus={(_) => setIsFocus(true)}
-                      onBlur={(_) => {
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => {
                         field.onBlur();
                         setIsFocus(false);
                       }}
@@ -144,14 +153,15 @@ function DatepickerField<
                   control={control}
                   name={yearFieldName}
                   render={({ field }) => (
-                    <DatepickerFieldItem
+                    <NumericFieldItem
                       fieldId={yearFieldId}
+                      maxLength={4}
                       size={size}
                       placeholder={yearPlaceholder}
                       field={field}
                       className="flex-1 min-w-0"
-                      onFocus={(_) => setIsFocus(true)}
-                      onBlur={(_) => {
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => {
                         field.onBlur();
                         setIsFocus(false);
                       }}
@@ -216,7 +226,7 @@ interface DatepickerFieldItemProps<
   fieldId: string;
 }
 
-const DatepickerFieldItem = <
+const NumericFieldItem = <
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>
 >({
@@ -226,9 +236,6 @@ const DatepickerFieldItem = <
   fieldId,
   ...props
 }: DatepickerFieldItemProps<TFieldValues, TName>) => {
-  //   const { error } = useFormField();
-  //   const [isFocus, setIsFocus] = React.useState(false);
-
   return (
     <FieldItemContext.Provider value={{ id: fieldId }}>
       <FieldControl>
@@ -237,11 +244,22 @@ const DatepickerFieldItem = <
           size={size}
           placeholder={placeholder}
           {...field}
+          onChange={(e) => field.onChange(transform(e.target.value))}
           {...props}
         />
       </FieldControl>
     </FieldItemContext.Provider>
   );
+};
+
+const transform = (value: string): string => {
+  if (value.trim().length === 0) return "";
+  let validChars: string[] = [];
+  const rawChars = value.split("");
+  rawChars.forEach((char) => {
+    if (!isNaN(Number(char))) validChars.push(char);
+  });
+  return validChars.join("");
 };
 
 export { DatepickerField };
