@@ -22,8 +22,7 @@ const messageVariants = cva("font-normal", {
 
 const FieldMessage = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement> &
-    VariantProps<typeof messageVariants>
+  React.ComponentPropsWithoutRef<"p"> & VariantProps<typeof messageVariants>
 >(({ className, size, ...props }, ref) => {
   const { formMessageId } = useFormField();
 

@@ -4,7 +4,7 @@ import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, FormItemDatePicker } from "./ui/form";
+import { FormProvider } from "./ui/form";
 import { motion } from "motion/react";
 import { BasicField } from "./ui/basicField";
 import { PasswordField } from "./ui/passwordField";
@@ -226,7 +226,6 @@ function SignupForm(): JSX.Element {
             className="col-span-1"
             label="Ngày cấp CCCD"
             required
-            description="Here is some description"
           />
           <PasswordField
             control={form.control}

@@ -114,14 +114,13 @@ const Field = <
 interface FieldProps<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>
-> extends React.HTMLAttributes<HTMLDivElement>,
+> extends React.ComponentPropsWithRef<"div">,
     VariantProps<typeof containerVariants> {
   control: Control<TFieldValues>;
   name: TName;
   label?: string;
   required?: boolean;
   placeholder?: string;
-  ref?: React.Ref<HTMLDivElement>;
   description?: string;
   type: React.HTMLInputTypeAttribute;
 }
@@ -160,14 +159,13 @@ const FieldItemContext = React.createContext<FormItemContextValue>(
 interface FieldItemProps<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>
-> extends React.HTMLAttributes<HTMLDivElement>,
+> extends React.ComponentPropsWithRef<"div">,
     VariantProps<typeof containerVariants> {
   label?: string;
   required?: boolean;
   placeholder?: string;
   field: ControllerRenderProps<TFieldValues, TName>;
   description?: string;
-  ref?: React.Ref<HTMLDivElement>;
 }
 
 const FieldControl = React.forwardRef<

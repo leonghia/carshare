@@ -18,8 +18,7 @@ const descriptionVariants = cva("font-normal text-foreground-600", {
 
 const FieldDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement> &
-    VariantProps<typeof descriptionVariants>
+  React.ComponentPropsWithoutRef<"p"> & VariantProps<typeof descriptionVariants>
 >(({ className, size, ...props }, ref) => {
   const { formDescriptionId } = useFormField();
 

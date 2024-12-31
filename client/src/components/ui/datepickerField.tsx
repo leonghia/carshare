@@ -29,7 +29,7 @@ interface DatepickerFieldProps<
   TDayName extends FieldPath<TFieldValues>,
   TMonthName extends FieldPath<TFieldValues>,
   TYearName extends FieldPath<TFieldValues>
-> extends React.HTMLAttributes<HTMLDivElement>,
+> extends Omit<React.ComponentPropsWithRef<"div">, "size">,
     VariantProps<typeof containerVariants> {
   control: Control<TFieldValues>;
   dayFieldName: TDayName;
@@ -40,7 +40,6 @@ interface DatepickerFieldProps<
   dayPlaceholder?: string;
   monthPlaceholder?: string;
   yearPlaceholder?: string;
-  ref?: React.Ref<HTMLDivElement>;
   description?: string;
 }
 
@@ -210,7 +209,7 @@ function DatepickerField<
 interface DatepickerFieldItemProps<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>
-> extends React.HTMLAttributes<HTMLInputElement>,
+> extends Omit<React.ComponentProps<"input">, "size">,
     Omit<VariantProps<typeof containerVariants>, "state"> {
   placeholder?: string;
   field: ControllerRenderProps<TFieldValues, TName>;

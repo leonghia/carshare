@@ -181,6 +181,6 @@ const BasicFieldItem = <
     </FieldItemContext.Provider>
   );
 };
-BasicFieldItem.displayName = "FormItem";
+BasicFieldItem.displayName = "BasicFieldItem";
 
 export { BasicField };
