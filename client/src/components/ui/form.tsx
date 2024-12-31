@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import {
@@ -59,8 +59,6 @@ const useFormField = () => {
     id,
     name: fieldContext.name,
     formItemId: `${id}-form-item`,
-    formDescriptionId: `${id}-form-item-description`,
-    formMessageId: `${id}-form-item-message`,
     ...fieldState,
   };
 };
@@ -87,16 +85,38 @@ const FormItem = React.forwardRef<
 });
 FormItem.displayName = "FormItem";
 
+const formLabelVariants = cva(
+  "block font-normal group-focus-within:text-primary-500",
+  {
+    variants: {
+      size: {
+        default: "text-sm",
+        small: "text-xs",
+      },
+      state: {
+        default: "text-white",
+        dirty: "text-foreground-500",
+        error: "text-danger-500",
+      },
+    },
+    defaultVariants: { size: "default", state: "default" },
+  }
+);
+
+interface FormLabelProps
+  extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>,
+    VariantProps<typeof formLabelVariants> {
+  formItemId: string;
+}
+
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({ className, ...props }, ref) => {
-  const { error, formItemId } = useFormField();
-
+  FormLabelProps
+>(({ className, formItemId, size, state, ...props }, ref) => {
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-destructive", className)}
+      className={cn(formLabelVariants({ size, state }), className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -104,12 +124,16 @@ const FormLabel = React.forwardRef<
 });
 FormLabel.displayName = "FormLabel";
 
+interface FormControlProps extends React.ComponentPropsWithoutRef<typeof Slot> {
+  formDescriptionId: string;
+  formMessageId: string;
+}
+
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
-  React.ComponentPropsWithoutRef<typeof Slot>
->(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } =
-    useFormField();
+  FormControlProps
+>(({ formDescriptionId, formMessageId, ...props }, ref) => {
+  const { error, formItemId } = useFormField();
 
   return (
     <Slot
