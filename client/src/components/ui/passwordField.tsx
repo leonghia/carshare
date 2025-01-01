@@ -10,7 +10,7 @@ import {
   rootVariants,
   useFormField,
   wrapperVariants,
-} from "./form";
+} from "./field";
 import { FieldLabel } from "./label";
 import React from "react";
 import { cn } from "@/lib/utils";

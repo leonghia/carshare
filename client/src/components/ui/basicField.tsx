@@ -1,8 +1,9 @@
 import React from "react";
-import { FieldLabel, field__textVariants, useField } from "./form";
+import { field__textVariants, useField } from "./field";
 import { Controller, useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Input } from "./input";
+import { FieldLabel } from "./fieldLabel";
 
 interface BasicFieldProps {
   placeholder?: string;

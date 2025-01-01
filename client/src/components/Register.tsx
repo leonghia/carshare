@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
-import { Field } from "./ui/form";
+import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
 
 export function Register(): JSX.Element {

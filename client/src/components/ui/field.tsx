@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import * as LabelPrimitive from "@radix-ui/react-label";
+
 import {
   Control,
   FieldPath,
@@ -10,9 +10,10 @@ import {
 } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
 import { cva, VariantProps } from "class-variance-authority";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
+import { MotionFieldDescription } from "./fieldDescription";
+import { MotionFieldMessage } from "./fieldMessage";
 
 const fieldVariants = cva(undefined, {
   variants: {
@@ -227,130 +228,7 @@ const useField = () => {
   return fieldContext;
 };
 
-const fieldLabelVariants = cva(
-  "block font-normal group-focus-within:text-primary-500",
-  {
-    variants: {
-      size: {
-        default: "text-sm",
-        small: "text-xs",
-      },
-      state: {
-        default: "text-white",
-        dirty: "text-foreground-500",
-        error: "text-danger-500",
-      },
-    },
-    defaultVariants: { size: "default", state: "default" },
-  }
-);
-
-interface FieldLabelProps
-  extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>,
-    VariantProps<typeof fieldLabelVariants> {}
-
-const FieldLabel = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  FieldLabelProps
->(({ className, ...props }, ref) => {
-  const { fieldInputId, label, size, required, name } = useField();
-  const { error } = useFormContext().getFieldState(name);
-
-  return (
-    <Label
-      ref={ref}
-      className={cn(
-        fieldLabelVariants({ size, state: error ? "error" : "default" }),
-        className
-      )}
-      htmlFor={fieldInputId}
-      {...props}
-    >
-      {label}
-      {required && <span className="text-danger-500"> *</span>}
-    </Label>
-  );
-});
-FieldLabel.displayName = "FieldLabel";
-
-const fieldDescriptionVariants = cva("font-normal text-foreground-600", {
-  variants: {
-    size: {
-      default: "text-sm",
-      small: "text-xs",
-    },
-  },
-  defaultVariants: {
-    size: "default",
-  },
-});
-
-interface FieldDescriptionProps
-  extends React.ComponentPropsWithoutRef<"p">,
-    VariantProps<typeof fieldDescriptionVariants> {}
-
-const FieldDescription = React.forwardRef<
-  HTMLParagraphElement,
-  FieldDescriptionProps
->(({ className, size, ...props }, ref) => {
-  const { fieldDescriptionId } = useField();
-
-  return (
-    <p
-      ref={ref}
-      id={fieldDescriptionId}
-      className={cn(fieldDescriptionVariants({ size }), className)}
-      {...props}
-    />
-  );
-});
-FieldDescription.displayName = "FieldDescription";
-
-const MotionFieldDescription = motion.create(FieldDescription);
-MotionFieldDescription.displayName = "MotionFieldDescription";
-
-const fieldMessageVariants = cva("font-normal", {
-  variants: {
-    size: {
-      default: "text-sm",
-      small: "text-xs",
-    },
-    state: {
-      default: "text-foreground-500",
-      error: "text-danger-500",
-      success: "text-success-500",
-    },
-  },
-  defaultVariants: {
-    size: "default",
-    state: "default",
-  },
-});
-
-interface FieldMessageProps
-  extends React.ComponentPropsWithoutRef<"p">,
-    VariantProps<typeof fieldMessageVariants> {}
-
-const FieldMessage = React.forwardRef<HTMLParagraphElement, FieldMessageProps>(
-  ({ className, children, size, state, ...props }, ref) => {
-    const { fieldMessageId } = useField();
-    return (
-      <p
-        ref={ref}
-        id={fieldMessageId}
-        className={cn(fieldMessageVariants({ size, state }), className)}
-        {...props}
-      />
-    );
-  }
-);
-FieldMessage.displayName = "FieldMessage";
-
-const MotionFieldMessage = motion.create(FieldMessage);
-MotionFieldMessage.displayName = "MotionFieldMessage";
-
 export {
-  FieldLabel,
   fieldVariants,
   field__textVariants,
   useField,

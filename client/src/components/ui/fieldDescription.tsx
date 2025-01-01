@@ -1,10 +1,10 @@
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
-import { useFormField } from "./form";
-import { motion } from "motion/react";
+import { useField } from "./field";
 import { cn } from "@/lib/utils";
+import { motion } from "motion/react";
 
-const descriptionVariants = cva("font-normal text-foreground-600", {
+const fieldDescriptionVariants = cva("font-normal text-foreground-600", {
   variants: {
     size: {
       default: "text-sm",
@@ -16,17 +16,21 @@ const descriptionVariants = cva("font-normal text-foreground-600", {
   },
 });
 
+interface FieldDescriptionProps
+  extends React.ComponentPropsWithoutRef<"p">,
+    VariantProps<typeof fieldDescriptionVariants> {}
+
 const FieldDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.ComponentPropsWithoutRef<"p"> & VariantProps<typeof descriptionVariants>
+  FieldDescriptionProps
 >(({ className, size, ...props }, ref) => {
-  const { formDescriptionId } = useFormField();
+  const { fieldDescriptionId } = useField();
 
   return (
     <p
       ref={ref}
-      id={formDescriptionId}
-      className={cn(descriptionVariants({ size }), className)}
+      id={fieldDescriptionId}
+      className={cn(fieldDescriptionVariants({ size }), className)}
       {...props}
     />
   );

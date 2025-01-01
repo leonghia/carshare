@@ -1,45 +1,44 @@
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
-import { useFormField } from "./form";
+import { useField } from "./field";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 
-const messageVariants = cva("font-normal", {
+const fieldMessageVariants = cva("font-normal", {
   variants: {
     size: {
       default: "text-sm",
       small: "text-xs",
     },
     state: {
+      default: "text-foreground-500",
       error: "text-danger-500",
+      success: "text-success-500",
     },
   },
   defaultVariants: {
     size: "default",
-    state: "error",
+    state: "default",
   },
 });
 
-const FieldMessage = React.forwardRef<
-  HTMLParagraphElement,
-  React.ComponentPropsWithoutRef<"p"> & VariantProps<typeof messageVariants>
->(({ className, size, ...props }, ref) => {
-  const { formMessageId } = useFormField();
+interface FieldMessageProps
+  extends React.ComponentPropsWithoutRef<"p">,
+    VariantProps<typeof fieldMessageVariants> {}
 
-  return (
-    <p
-      ref={ref}
-      id={formMessageId}
-      className={cn(
-        messageVariants({
-          size,
-        }),
-        className
-      )}
-      {...props}
-    />
-  );
-});
+const FieldMessage = React.forwardRef<HTMLParagraphElement, FieldMessageProps>(
+  ({ className, children, size, state, ...props }, ref) => {
+    const { fieldMessageId } = useField();
+    return (
+      <p
+        ref={ref}
+        id={fieldMessageId}
+        className={cn(fieldMessageVariants({ size, state }), className)}
+        {...props}
+      />
+    );
+  }
+);
 FieldMessage.displayName = "FieldMessage";
 
 const MotionFieldMessage = motion.create(FieldMessage);
