@@ -2,13 +2,11 @@ import { z } from "zod";
 import curvedDivider from "../assets/images/curved_divider_1.svg";
 import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider } from "./ui/form";
 import { motion } from "motion/react";
+import { Field } from "./ui/form";
 import { BasicField } from "./ui/basicField";
-import { PasswordField } from "./ui/passwordField";
-import { DatepickerField } from "./ui/datepickerField";
 
 export function Register(): JSX.Element {
   return (
@@ -164,93 +162,16 @@ function SignupForm(): JSX.Element {
         className="w-full space-y-12"
       >
         <div className="w-full grid grid-cols-2 gap-6">
-          <BasicField
+          <Field
             control={form.control}
             name="fullName"
-            state={form.getFieldState("fullName").error ? "error" : "default"}
-            size="default"
             label="Họ tên"
             required
-            placeholder="Nguyễn Văn A"
-            type="text"
+            size="default"
             className="col-span-1"
-          />
-          <BasicField
-            control={form.control}
-            name="phoneNumber"
-            state={
-              form.getFieldState("phoneNumber").error ? "error" : "default"
-            }
-            size="default"
-            label="Số điện thoại"
-            required
-            leftText="+84"
-            placeholder="123 456 789"
-            type="tel"
-            className="col-span-1"
-          />
-          <BasicField
-            control={form.control}
-            name="email"
-            state={form.getFieldState("email").error ? "error" : "default"}
-            size="default"
-            label="Email"
-            required
-            placeholder="abc@email.com"
-            type="email"
-            className="col-span-full"
-          />
-          <BasicField
-            control={form.control}
-            name="nationalID"
-            state={form.getFieldState("nationalID").error ? "error" : "default"}
-            size="default"
-            label="Số CCCD"
-            required
-            placeholder="000000000000"
-            type="tel"
-            className="col-span-1"
-          />
-          <DatepickerField
-            control={form.control}
-            dayFieldName="publishedDay"
-            monthFieldName="publishedMonth"
-            yearFieldName="publishedYear"
-            dayPlaceholder="01"
-            monthPlaceholder="01"
-            yearPlaceholder="2020"
-            size="default"
-            state={
-              form.getFieldState("publishedDay").error ? "error" : "default"
-            }
-            className="col-span-1"
-            label="Ngày cấp CCCD"
-            required
-          />
-          <PasswordField
-            control={form.control}
-            name="password"
-            state={form.getFieldState("password").error ? "error" : "default"}
-            size="default"
-            label="Mật khẩu"
-            required
-            placeholder="****************"
-            className="col-span-full"
-            description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái in hoa, 1 chữ cái thường, 1 chữ số (0-9) và 1 ký tự đặc biệt."
-            hasStrength
-          />
-          <PasswordField
-            control={form.control}
-            name="retypePassword"
-            state={
-              form.getFieldState("retypePassword").error ? "error" : "default"
-            }
-            size="default"
-            label="Nhập lại mật khẩu"
-            required
-            placeholder="****************"
-            className="col-span-full"
-          />
+          >
+            <BasicField placeholder="Nguyễn Văn A" type="text" />
+          </Field>
         </div>
         <Button
           type="submit"

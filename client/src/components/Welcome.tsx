@@ -1,10 +1,10 @@
 import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider } from "@/components/ui/form";
-import React, { useEffect } from "react";
+import { Field } from "@/components/ui/form";
+import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { useMediaQuery } from "react-responsive";
@@ -29,7 +29,7 @@ export function Welcome(): React.JSX.Element {
 
   const isSM = useMediaQuery({ maxWidth: 639 });
 
-  useEffect(() => {
+  React.useEffect(() => {
     const guest_name = localStorage.getItem("guest_name");
     if (guest_name) navigate("/");
   }, []);
@@ -104,16 +104,15 @@ const EnterName = React.forwardRef<
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-12 sm:space-y-8"
         >
-          <BasicField
+          <Field
             control={form.control}
             name="name"
-            state={form.getFieldState("name").error ? "error" : "default"}
-            size={isSM ? "small" : "default"}
             label="Tên của bạn"
             required
-            placeholder="VD. Nguyễn Văn A"
-            type="text"
-          />
+            size={isSM ? "small" : "default"}
+          >
+            <BasicField placeholder="VD. Nguyễn Văn A" type="text" />
+          </Field>
 
           <Button
             intent="secondary"
