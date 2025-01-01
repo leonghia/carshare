@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
+import { FieldRoot } from "./ui/fieldRoot";
 
 export function Register(): JSX.Element {
   return (
@@ -61,7 +62,9 @@ export function Register(): JSX.Element {
 const formSchema = z
   .object({
     fullName: z
-      .string({ required_error: "Họ tên không được để trống" })
+      .string()
+      .trim()
+      .min(1, { message: "Họ tên không được để trống" })
       .min(3, { message: "Họ tên phải chứa tối thiểu 3 ký tự" })
       .max(50, { message: "Họ tên chỉ được chứa tối đa 50 ký tự" })
       .regex(
@@ -69,26 +72,34 @@ const formSchema = z
         { message: "Họ tên không hợp lệ" }
       ),
     phoneNumber: z
-      .string({ required_error: "Số điện thoại không được để trống" })
-      .max(11, { message: "Số điện thoại không chứa quá 11 số" })
-      .regex(/^\d+$/, { message: "Số điện thoại không hợp lệ" }),
+      .string()
+      .trim()
+      .min(1, { message: "Số điện thoại không được để trống" })
+      .max(11, { message: "Số điện thoại không chứa quá 11 số" }),
     email: z
-      .string({ required_error: "Email không được để trống" })
+      .string()
+      .trim()
+      .min(1, { message: "Địa chỉ email không được để trống" })
       .max(254, { message: "Email không chứa quá 254 ký tự" })
       .email({ message: "Địa chỉ email không hợp lệ" }),
     nationalID: z
-      .string({ required_error: "Số CCCD không được để trống" })
+      .string()
+      .trim()
+      .min(1, { message: "Số CCCD không được để trống" })
       .max(12, { message: "Số CCCD không chứa quá 12 số" })
       .regex(/^\d+$/, { message: "Số CCCD không hợp lệ" }),
     publishedDay: z.string().trim(),
     publishedMonth: z.string().trim(),
     publishedYear: z.string().trim(),
     password: z
-      .string({ required_error: "Mật khẩu không được để trống" })
+      .string()
+      .trim()
+      .min(1, { message: "Mật khẩu không được để trống" })
       .max(128, { message: "Mật khẩu không chứa quá 128 ký tự" }),
-    retypePassword: z.string({
-      required_error: "Mật khẩu nhập lại không được để tróng",
-    }),
+    retypePassword: z
+      .string()
+      .trim()
+      .min(1, { message: "Mật khẩu nhập lại không được để trống" }),
   })
   .superRefine(
     (
@@ -135,7 +146,7 @@ const formSchema = z
   );
 
 function SignupForm(): JSX.Element {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
@@ -151,27 +162,88 @@ function SignupForm(): JSX.Element {
     shouldFocusError: false,
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onValid = (data: z.infer<typeof formSchema>) => {
+    console.log(data);
+  };
+
+  const onError = (errors: Object) => {
+    console.log(errors);
   };
 
   return (
-    <FormProvider {...form}>
+    <FormProvider {...methods}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(onValid, onError)}
         className="w-full space-y-12"
       >
         <div className="w-full grid grid-cols-2 gap-6">
-          <Field
-            control={form.control}
+          <FieldRoot
+            control={methods.control}
             name="fullName"
             label="Họ tên"
             required
             size="default"
-            className="col-span-1"
           >
-            <BasicField placeholder="Nguyễn Văn A" type="text" />
-          </Field>
+            <Field className="col-span-1">
+              <BasicField
+                inputProps={{ type: "text", placeholder: "Nguyễn Văn A" }}
+              />
+            </Field>
+          </FieldRoot>
+          <FieldRoot
+            control={methods.control}
+            name="phoneNumber"
+            label="Số điện thoại"
+            required
+            size="default"
+          >
+            <Field className="col-span-1">
+              <BasicField
+                leftText="+84"
+                inputProps={{
+                  type: "tel",
+                  maxLength: 11,
+                  inputMode: "tel",
+                  placeholder: "123 456 789",
+                }}
+              />
+            </Field>
+          </FieldRoot>
+          <FieldRoot
+            control={methods.control}
+            name="email"
+            label="Email"
+            required
+            size="default"
+          >
+            <Field className="col-span-full">
+              <BasicField
+                inputProps={{
+                  type: "email",
+                  maxLength: 254,
+                  placeholder: "abc@email.com",
+                }}
+              />
+            </Field>
+          </FieldRoot>
+          <FieldRoot
+            control={methods.control}
+            name="nationalID"
+            label="Số CCCD"
+            required
+            size="default"
+          >
+            <Field className="col-span-1">
+              <BasicField
+                inputProps={{
+                  type: "text",
+                  maxLength: 12,
+                  inputMode: "numeric",
+                  placeholder: "000000000000",
+                }}
+              />
+            </Field>
+          </FieldRoot>
         </div>
         <Button
           type="submit"

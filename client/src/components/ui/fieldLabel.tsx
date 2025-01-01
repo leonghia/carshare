@@ -1,10 +1,9 @@
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
-import { useField } from "./field";
-import { useFormContext } from "react-hook-form";
 import { Label } from "./label";
 import { cn } from "@/lib/utils";
+import { useFieldRoot } from "./fieldRoot";
 
 const fieldLabelVariants = cva(
   "block font-normal group-focus-within:text-primary-500",
@@ -32,14 +31,17 @@ const FieldLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   FieldLabelProps
 >(({ className, ...props }, ref) => {
-  const { fieldInputId, label, size, required, name } = useField();
-  const { error } = useFormContext().getFieldState(name);
+  const { fieldInputId, label, size, required, error, isDirty } =
+    useFieldRoot();
 
   return (
     <Label
       ref={ref}
       className={cn(
-        fieldLabelVariants({ size, state: error ? "error" : "default" }),
+        fieldLabelVariants({
+          size,
+          state: error ? "error" : isDirty ? "dirty" : "default",
+        }),
         className
       )}
       htmlFor={fieldInputId}

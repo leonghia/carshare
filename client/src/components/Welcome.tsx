@@ -4,6 +4,7 @@ import { z } from "zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "@/components/ui/field";
+import { FieldRoot } from "./ui/fieldRoot";
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link, useNavigate } from "react-router";
@@ -104,15 +105,19 @@ const EnterName = React.forwardRef<
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-12 sm:space-y-8"
         >
-          <Field
+          <FieldRoot
             control={form.control}
             name="name"
             label="Tên của bạn"
             required
             size={isSM ? "small" : "default"}
           >
-            <BasicField placeholder="VD. Nguyễn Văn A" type="text" />
-          </Field>
+            <Field>
+              <BasicField
+                inputProps={{ placeholder: "VD. Nguyễn Văn A", type: "text" }}
+              />
+            </Field>
+          </FieldRoot>
 
           <Button
             intent="secondary"

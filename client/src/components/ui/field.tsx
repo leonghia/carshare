@@ -2,18 +2,12 @@
 
 import React from "react";
 
-import {
-  Control,
-  FieldPath,
-  FieldValues,
-  useFormContext,
-} from "react-hook-form";
-
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { AnimatePresence } from "motion/react";
 import { MotionFieldDescription } from "./fieldDescription";
 import { MotionFieldMessage } from "./fieldMessage";
+import { useFieldRoot } from "./fieldRoot";
 
 const fieldVariants = cva(undefined, {
   variants: {
@@ -90,73 +84,18 @@ const field__lowerVariants = cva(undefined, {
   defaultVariants: { size: "default" },
 });
 
-interface FieldContextType
-  extends Pick<VariantProps<typeof fieldVariants>, "size"> {
-  onFocus: () => void;
-  onBlur: () => void;
-  fieldInputId: string;
-  fieldDescriptionId: string;
-  fieldMessageId: string;
-  control: Control<any>;
-  name: string;
-  label?: string;
-  required?: boolean;
-}
+interface FieldProps
+  extends React.ComponentPropsWithoutRef<"div">,
+    VariantProps<typeof fieldVariants> {}
 
-const FieldContext = React.createContext<FieldContextType | null>(null);
+const Field = React.forwardRef<HTMLDivElement, FieldProps>(
+  ({ className, children, ...props }, ref) => {
+    const { size, error, description, isFocus } = useFieldRoot();
 
-interface FieldProps<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
-> extends React.ComponentPropsWithRef<"div">,
-    Pick<VariantProps<typeof fieldVariants>, "size"> {
-  control: Control<TFieldValues>;
-  name: TName;
-  label?: string;
-  description?: string;
-  required?: boolean;
-}
+    const state: Pick<VariantProps<typeof fieldVariants>, "state">["state"] =
+      error ? "error" : "default";
 
-const Field = <
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
->({
-  control,
-  name,
-  label,
-  required,
-  size,
-  children,
-  description,
-  className,
-  ref,
-  ...props
-}: FieldProps<TFieldValues, TName>) => {
-  const { error } = useFormContext().getFieldState(name);
-  const [isFocus, setIsFocus] = React.useState(false);
-  const id = React.useId();
-  const fieldInputId = `${id}-field-input`;
-  const fieldDescriptionId = `${id}-field-description`;
-  const fieldMessageId = `${id}-field-message`;
-
-  const state: Pick<VariantProps<typeof fieldVariants>, "state">["state"] =
-    error ? "error" : "default";
-
-  return (
-    <FieldContext.Provider
-      value={{
-        onFocus: () => setIsFocus(true),
-        onBlur: () => setIsFocus(false),
-        fieldInputId,
-        fieldDescriptionId,
-        fieldMessageId,
-        control,
-        name,
-        label,
-        required,
-        size,
-      }}
-    >
+    return (
       <div
         ref={ref}
         className={cn(fieldVariants({ size, state }), className)}
@@ -174,13 +113,14 @@ const Field = <
             {children}
           </div>
         </div>
-        {(error || (description && isFocus)) && (
-          <div className={cn(field__lowerVariants({ size }))}>
-            <AnimatePresence>
+        <AnimatePresence>
+          {(error || (description && isFocus)) && (
+            <div className={cn(field__lowerVariants({ size }))}>
               {error && (
                 <MotionFieldMessage
                   key="message"
                   size={size}
+                  state="error"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
@@ -210,29 +150,12 @@ const Field = <
                   {description}
                 </MotionFieldDescription>
               )}
-            </AnimatePresence>
-          </div>
-        )}
+            </div>
+          )}
+        </AnimatePresence>
       </div>
-    </FieldContext.Provider>
-  );
-};
-
-const useField = () => {
-  const fieldContext = React.useContext(FieldContext);
-
-  if (!fieldContext) {
-    throw new Error("useField has to be used within <FieldContext.Provider>");
+    );
   }
+);
 
-  return fieldContext;
-};
-
-export {
-  fieldVariants,
-  field__textVariants,
-  useField,
-  Field,
-  FieldContext,
-  type FieldContextType,
-};
+export { fieldVariants, field__textVariants, Field };

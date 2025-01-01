@@ -1,8 +1,8 @@
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
-import { useField } from "./field";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
+import { useFieldRoot } from "./fieldRoot";
 
 const fieldMessageVariants = cva("font-normal", {
   variants: {
@@ -27,8 +27,9 @@ interface FieldMessageProps
     VariantProps<typeof fieldMessageVariants> {}
 
 const FieldMessage = React.forwardRef<HTMLParagraphElement, FieldMessageProps>(
-  ({ className, children, size, state, ...props }, ref) => {
-    const { fieldMessageId } = useField();
+  ({ className, size, state, ...props }, ref) => {
+    const { fieldMessageId } = useFieldRoot();
+
     return (
       <p
         ref={ref}

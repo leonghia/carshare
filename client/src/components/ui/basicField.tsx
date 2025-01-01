@@ -1,19 +1,29 @@
 import React from "react";
-import { field__textVariants, useField } from "./field";
-import { Controller, useFormContext } from "react-hook-form";
+import { field__textVariants } from "./field";
+import { Controller } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Input } from "./input";
 import { FieldLabel } from "./fieldLabel";
+import { useFieldRoot } from "./fieldRoot";
 
 interface BasicFieldProps {
-  placeholder?: string;
   leftIcon?: React.ReactNode;
   leftText?: string;
-  type: React.HTMLInputTypeAttribute;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
+const parseNumeric = (value: string): string => {
+  if (value.trim().length === 0) return "";
+  const parsed: string[] = [];
+  const raw = value.split("");
+  raw.forEach((e) => {
+    if (!isNaN(Number(e))) parsed.push(e);
+  });
+  return parsed.join("");
+};
+
 const BasicField = React.forwardRef<HTMLDivElement, BasicFieldProps>(
-  ({ leftIcon, leftText, placeholder, type, ...props }, ref) => {
+  ({ leftIcon, leftText, inputProps, ...props }, ref) => {
     const {
       fieldInputId,
       fieldDescriptionId,
@@ -24,8 +34,8 @@ const BasicField = React.forwardRef<HTMLDivElement, BasicFieldProps>(
       name,
       onBlur,
       onFocus,
-    } = useField();
-    const { error } = useFormContext().getFieldState(name);
+      error,
+    } = useFieldRoot();
 
     return (
       <div ref={ref} className="w-full flex gap-4 items-center" {...props}>
@@ -44,10 +54,6 @@ const BasicField = React.forwardRef<HTMLDivElement, BasicFieldProps>(
               name={name}
               render={({ field }) => (
                 <Input
-                  id={fieldInputId}
-                  type={type}
-                  size={size}
-                  placeholder={placeholder}
                   aria-describedby={
                     !error
                       ? `${fieldDescriptionId}`
@@ -55,10 +61,21 @@ const BasicField = React.forwardRef<HTMLDivElement, BasicFieldProps>(
                   }
                   aria-invalid={!!error}
                   {...field}
+                  {...inputProps}
+                  id={fieldInputId}
+                  size={size}
                   onFocus={onFocus}
                   onBlur={(_) => {
                     field.onBlur();
                     onBlur();
+                  }}
+                  onChange={(e) => {
+                    if (
+                      inputProps?.type === "tel" ||
+                      inputProps?.inputMode === "numeric"
+                    )
+                      field.onChange(parseNumeric(e.target.value));
+                    else field.onChange(e);
                   }}
                 />
               )}

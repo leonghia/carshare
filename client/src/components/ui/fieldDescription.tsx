@@ -1,8 +1,8 @@
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
-import { useField } from "./field";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
+import { useFieldRoot } from "./fieldRoot";
 
 const fieldDescriptionVariants = cva("font-normal text-foreground-600", {
   variants: {
@@ -24,7 +24,7 @@ const FieldDescription = React.forwardRef<
   HTMLParagraphElement,
   FieldDescriptionProps
 >(({ className, size, ...props }, ref) => {
-  const { fieldDescriptionId } = useField();
+  const { fieldDescriptionId } = useFieldRoot();
 
   return (
     <p
