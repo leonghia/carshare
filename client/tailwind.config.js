@@ -27,7 +27,16 @@ export default {
         "2xl": "0 1rem 3rem 0.25rem rgba(208, 92, 54, 0.25)",
       },
     },
+    outlineWidth: {
+      0: "0rem",
+      1: "0.063rem",
+      2: "0.125rem",
+      4: "0.25rem",
+      8: "0.5rem",
+    },
     screens: {
+      "4xl": { min: "3840px" },
+      "3xl": { min: "2560px" },
       "2xl": { max: "1535px" },
       xl: { max: "1279px" },
       lg: { max: "1023px" },

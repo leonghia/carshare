@@ -9,53 +9,60 @@ import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
 import { DatePickerField } from "./ui/datePickerField";
 import { PasswordField } from "./ui/passwordField";
+import { calculatePasswordStrength } from "@/lib/utils";
 
 export function Register(): JSX.Element {
   return (
     <div className="w-full min-h-screen relative">
-      <figure className="absolute top-0 left-[45%] z-20 w-fit h-full">
+      {/* Right */}
+      <div className="absolute z-0 top-0 right-0 w-[58%] h-full bg-[url('/src/assets/images/background_side_default.webp')] bg-cover bg-right"></div>
+      {/* Container */}
+      <div className="grid justify-items-center items-center px-16 py-20 overflow-x-hidden relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)]">
+        <div className="w-full max-w-7xl h-fit">
+          <div className="w-[34rem] h-fit space-y-12">
+            <motion.div
+              initial={{ opacity: 0, x: -150 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ type: "spring", duration: 1 }}
+              className="w-full space-y-4"
+            >
+              <div className="flex gap-1">
+                <h1 className="text-4xl font-bold text-white shrink-0">
+                  Đăng ký tài khoản
+                </h1>
+                <span className="inline-block translate-y-6 size-[0.625rem] bg-primary-500 rounded-full"></span>
+              </div>
+              <p className="font-normal text-sm text-foreground-500">
+                Bạn đã có tài khoản?{" "}
+                <a
+                  href="/login"
+                  className="font-medium text-primary-500 hover:text-primary-300 transition-all duration-300 ease-out"
+                >
+                  Đăng nhập ngay
+                </a>
+              </p>
+            </motion.div>
+            <SignupForm />
+          </div>
+        </div>
+      </div>
+      {/* Vector */}
+      <figure className="absolute top-0 left-[calc(50%+1.875rem)] -translate-x-1/2 z-20 w-fit h-full">
         <img
           src={curvedDivider}
           alt="divider"
           className="object-fill h-full w-[17.25rem]"
         />
       </figure>
-      <div className="overflow-x-hidden relative z-10 w-full min-h-screen py-16 bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)]">
-        <div className="absolute top-1/2 left-1/2 w-[34rem] space-y-12">
-          <motion.div
-            initial={{ opacity: 0, x: -150 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ type: "spring", duration: 1 }}
-            className="w-full space-y-4"
-          >
-            <div className="flex gap-1">
-              <h1 className="text-4xl font-bold text-white shrink-0">
-                Đăng ký tài khoản
-              </h1>
-              <span className="inline-block translate-y-6 size-[0.625rem] bg-primary-500 rounded-full"></span>
-            </div>
-            <p className="font-normal text-sm text-foreground-500">
-              Bạn đã có tài khoản?{" "}
-              <a
-                href="/login"
-                className="font-medium text-primary-500 hover:text-primary-300 transition-all duration-300 ease-out"
-              >
-                Đăng nhập ngay
-              </a>
-            </p>
-          </motion.div>
-          <SignupForm />
-        </div>
-        <motion.figure
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ type: "spring", duration: 1 }}
-          className="absolute right-12 bottom-10"
-        >
-          <img src={logo} alt="logo" className="h-16 object-contain" />
-        </motion.figure>
-      </div>
-      <div className="absolute z-0 top-0 right-0 w-[58%] h-full bg-[url('/src/assets/images/background_side_default.webp')] bg-cover bg-right"></div>
+      {/* Logo */}
+      <motion.figure
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ type: "spring", duration: 1 }}
+        className="absolute right-12 bottom-10 z-20"
+      >
+        <img src={logo} alt="logo" className="h-16 object-contain" />
+      </motion.figure>
     </div>
   );
 }
@@ -74,8 +81,13 @@ const formSchema = z
     phoneNumber: z
       .string()
       .trim()
-      .min(1, { message: "Số điện thoại không được để trống" })
-      .max(11, { message: "Số điện thoại không chứa quá 11 số" }),
+      .transform((val) => val.replace(/\s+/g, ""))
+      .pipe(
+        z
+          .string()
+          .min(1, { message: "Số điện thoại không được để trống" })
+          .length(10, { message: "Số điện thoại không hợp lệ" })
+      ),
     email: z
       .string()
       .trim()
@@ -99,12 +111,23 @@ const formSchema = z
       .string()
       .trim()
       .min(1, { message: "Mật khẩu nhập lại không được để trống" }),
+    agree: z.boolean().refine((val) => val === true, {
+      message: "Bạn phải đồng ý cam đoan",
+    }),
   })
   .superRefine(
     (
       { password, retypePassword, publishedDay, publishedMonth, publishedYear },
       ctx
     ) => {
+      if (calculatePasswordStrength(password) === "weak") {
+        ctx.addIssue({
+          code: "custom",
+          message: "Mật khẩu của bạn quá yếu",
+          path: ["password"],
+        });
+      }
+
       if (password !== retypePassword) {
         ctx.addIssue({
           code: "custom",
@@ -159,6 +182,7 @@ function SignupForm(): JSX.Element {
       publishedYear: "",
       password: "",
       retypePassword: "",
+      agree: false,
     },
     shouldFocusError: false,
   });
@@ -167,14 +191,10 @@ function SignupForm(): JSX.Element {
     console.log(data);
   };
 
-  const onError = (errors: Object) => {
-    console.log(errors);
-  };
-
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onValid, onError)}
+        onSubmit={methods.handleSubmit(onValid)}
         className="w-full space-y-12"
       >
         <div className="w-full grid grid-cols-2 gap-6">
@@ -209,7 +229,7 @@ function SignupForm(): JSX.Element {
                 type: "tel",
                 inputMode: "tel",
                 placeholder: "0123 456 789",
-                maxLength: 11,
+                maxLength: 12,
               }}
             />
           </Field>

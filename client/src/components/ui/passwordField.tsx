@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority";
 import React from "react";
 import { Control, FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
-import { cn } from "@/lib/utils";
+import { calculatePasswordStrength, cn } from "@/lib/utils";
 import { Eye, EyeSlash } from "iconsax-react";
 import { FieldLabel } from "./fieldLabel";
 import { FieldInput } from "./fieldInput";
@@ -59,35 +59,6 @@ const strengthTextVariants = cva("font-normal w-max", {
   },
   defaultVariants: { size: "default", strength: "default" },
 });
-
-const calculatePasswordStrength = (password: string): Strength => {
-  let score = 0;
-
-  if (password.length === 0) return "default";
-  if (password.length < 6) return "weak";
-  // Check password length
-  if (password.length >= 12) score += 1;
-  // Contains lowercase
-  if (/[a-z]/.test(password)) score += 1;
-  // Contains uppercase
-  if (/[A-Z]/.test(password)) score += 1;
-  // Contains numbers
-  if (/\d/.test(password)) score += 1;
-  // Contains special characters
-  if (/[^A-Za-z0-9]/.test(password)) score += 1;
-
-  switch (score) {
-    case 0:
-    case 1:
-    case 2:
-      return "weak";
-    case 3:
-    case 4:
-      return "average";
-    default:
-      return "strong";
-  }
-};
 
 type Strength = "default" | "weak" | "average" | "strong";
 type StrengthText = "Độ mạnh" | "Yếu" | "Trung bình" | "Mạnh";
@@ -165,4 +136,4 @@ const PasswordField = <
   );
 };
 
-export { PasswordField };
+export { PasswordField, type Strength };
