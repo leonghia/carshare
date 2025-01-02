@@ -3,7 +3,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 import { Label } from "./label";
 import { cn } from "@/lib/utils";
-import { useFieldRoot } from "./fieldRoot";
+import { useField } from "./field";
 
 const fieldLabelVariants = cva(
   "block font-normal group-focus-within:text-primary-500",
@@ -31,8 +31,7 @@ const FieldLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   FieldLabelProps
 >(({ className, ...props }, ref) => {
-  const { fieldInputId, label, size, required, error, isDirty } =
-    useFieldRoot();
+  const { fieldInputId, label, size, required, error, isDirty } = useField();
 
   return (
     <Label

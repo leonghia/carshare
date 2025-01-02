@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
-import { FieldRoot } from "./ui/fieldRoot";
+import { DatePickerField } from "./ui/datePickerField";
 
 export function Register(): JSX.Element {
   return (
@@ -65,8 +65,7 @@ const formSchema = z
       .string()
       .trim()
       .min(1, { message: "Họ tên không được để trống" })
-      .min(3, { message: "Họ tên phải chứa tối thiểu 3 ký tự" })
-      .max(50, { message: "Họ tên chỉ được chứa tối đa 50 ký tự" })
+      .max(64, { message: "Họ tên chỉ được chứa tối đa 64 ký tự" })
       .regex(
         /^[a-zA-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/gm,
         { message: "Họ tên không hợp lệ" }
@@ -86,8 +85,7 @@ const formSchema = z
       .string()
       .trim()
       .min(1, { message: "Số CCCD không được để trống" })
-      .max(12, { message: "Số CCCD không chứa quá 12 số" })
-      .regex(/^\d+$/, { message: "Số CCCD không hợp lệ" }),
+      .max(12, { message: "Số CCCD không chứa quá 12 số" }),
     publishedDay: z.string().trim(),
     publishedMonth: z.string().trim(),
     publishedYear: z.string().trim(),
@@ -145,6 +143,8 @@ const formSchema = z
     }
   );
 
+type TFieldValues = z.infer<typeof formSchema>;
+
 function SignupForm(): JSX.Element {
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -177,73 +177,93 @@ function SignupForm(): JSX.Element {
         className="w-full space-y-12"
       >
         <div className="w-full grid grid-cols-2 gap-6">
-          <FieldRoot
-            control={methods.control}
-            name="fullName"
+          <Field<TFieldValues>
             label="Họ tên"
             required
             size="default"
+            name="fullName"
+            className="col-span-1"
           >
-            <Field className="col-span-1">
-              <BasicField
-                inputProps={{ type: "text", placeholder: "Nguyễn Văn A" }}
-              />
-            </Field>
-          </FieldRoot>
-          <FieldRoot
-            control={methods.control}
-            name="phoneNumber"
+            <BasicField
+              control={methods.control}
+              name="fullName"
+              inputProps={{
+                type: "text",
+                placeholder: "Nguyễn Văn A",
+                maxLength: 64,
+              }}
+            />
+          </Field>
+          <Field<TFieldValues>
             label="Số điện thoại"
             required
             size="default"
+            name="phoneNumber"
+            className="col-span-1"
           >
-            <Field className="col-span-1">
-              <BasicField
-                leftText="+84"
-                inputProps={{
-                  type: "tel",
-                  maxLength: 11,
-                  inputMode: "tel",
-                  placeholder: "123 456 789",
-                }}
-              />
-            </Field>
-          </FieldRoot>
-          <FieldRoot
-            control={methods.control}
-            name="email"
+            <BasicField
+              control={methods.control}
+              name="phoneNumber"
+              inputProps={{
+                type: "tel",
+                inputMode: "tel",
+                placeholder: "0123 456 789",
+                maxLength: 11,
+              }}
+            />
+          </Field>
+          <Field<TFieldValues>
             label="Email"
             required
             size="default"
+            name="email"
+            className="col-span-full"
           >
-            <Field className="col-span-full">
-              <BasicField
-                inputProps={{
-                  type: "email",
-                  maxLength: 254,
-                  placeholder: "abc@email.com",
-                }}
-              />
-            </Field>
-          </FieldRoot>
-          <FieldRoot
-            control={methods.control}
-            name="nationalID"
+            <BasicField
+              control={methods.control}
+              name="email"
+              inputProps={{
+                type: "email",
+                placeholder: "abc@email.com",
+                maxLength: 254,
+              }}
+            />
+          </Field>
+          <Field<TFieldValues>
             label="Số CCCD"
             required
             size="default"
+            name="nationalID"
+            className="col-span-1"
           >
-            <Field className="col-span-1">
-              <BasicField
-                inputProps={{
-                  type: "text",
-                  maxLength: 12,
-                  inputMode: "numeric",
-                  placeholder: "000000000000",
-                }}
-              />
-            </Field>
-          </FieldRoot>
+            <BasicField
+              control={methods.control}
+              name="nationalID"
+              inputProps={{
+                type: "text",
+                inputMode: "numeric",
+                placeholder: "000000000000",
+                maxLength: 12,
+              }}
+            />
+          </Field>
+          <Field<TFieldValues>
+            label="Ngày cấp CCCD"
+            required
+            size="default"
+            name="publishedDay"
+            className="col-span-1"
+          >
+            <DatePickerField
+              control={methods.control}
+              dayName="publishedDay"
+              monthName="publishedMonth"
+              yearName="publishedYear"
+              dayPlaceholder="01"
+              monthPlaceholder="01"
+              yearPlaceholder="2020"
+            />
+          </Field>
         </div>
         <Button
           type="submit"
