@@ -7,6 +7,8 @@ import { Eye, EyeSlash } from "iconsax-react";
 import { FieldLabel } from "./fieldLabel";
 import { FieldInput } from "./fieldInput";
 import { FieldContainer } from "./fieldContainer";
+import { FieldUpper } from "./fieldUpper";
+import { FieldLower } from "./fieldLower";
 
 const innerVariants = cva("w-full flex items-center", {
   variants: {
@@ -104,37 +106,44 @@ const PasswordField = <
 
   return (
     <FieldContainer ref={ref} {...props}>
-      <div className={cn(innerVariants({ size }))}>
-        <div className="flex-1 space-y-1">
-          <div className="flex items-center justify-between">
-            {label && <FieldLabel />}
-            {hasStrength && (
-              <div className="flex items-center gap-2">
-                <span className={cn(strengthTextVariants({ size, strength }))}>
-                  {strengths[strength][1]}
-                </span>
-                <div className={cn(thermometerVariants({ size }))}>
-                  <span className={cn(indicatorVariants({ strength }))}></span>
+      <FieldUpper>
+        <div className={cn(innerVariants({ size }))}>
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center justify-between">
+              {label && <FieldLabel />}
+              {hasStrength && (
+                <div className="flex items-center gap-2">
+                  <span
+                    className={cn(strengthTextVariants({ size, strength }))}
+                  >
+                    {strengths[strength][1]}
+                  </span>
+                  <div className={cn(thermometerVariants({ size }))}>
+                    <span
+                      className={cn(indicatorVariants({ strength }))}
+                    ></span>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+            <FieldInput
+              control={control}
+              fieldName={name}
+              id={fieldInputId}
+              type={isVisible ? "text" : "password"}
+              placeholder={placeholder}
+              maxLength={maxLength}
+              onChange={(e) =>
+                setStrength(calculatePasswordStrength(e.target.value))
+              }
+            />
           </div>
-          <FieldInput
-            control={control}
-            fieldName={name}
-            id={fieldInputId}
-            type={isVisible ? "text" : "password"}
-            placeholder={placeholder}
-            maxLength={maxLength}
-            onChange={(e) =>
-              setStrength(calculatePasswordStrength(e.target.value))
-            }
-          />
+          <button type="button" onClick={() => setIsVisible(!isVisible)}>
+            {isVisible ? invisibleIcon : visibleIcon}
+          </button>
         </div>
-        <button type="button" onClick={() => setIsVisible(!isVisible)}>
-          {isVisible ? invisibleIcon : visibleIcon}
-        </button>
-      </div>
+      </FieldUpper>
+      <FieldLower />
     </FieldContainer>
   );
 };

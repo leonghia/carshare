@@ -38,3 +38,9 @@ html {
     font-size: 200%;
   }
 }
+
+@media (min-width: 7680px) {
+  html {
+    font-size: 400%;
+  }
+}

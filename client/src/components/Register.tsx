@@ -321,7 +321,12 @@ function SignupForm(): JSX.Element {
             size="default"
             name="agree"
           >
-            <CheckboxField control={methods.control} name="agree" />
+            <CheckboxField
+              control={methods.control}
+              name="agree"
+              className="col-span-full"
+              labelProps={{ className: "font-normal text-foreground-100" }}
+            />
           </Field>
         </div>
         <Button

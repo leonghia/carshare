@@ -63,66 +63,94 @@ const descriptionVariants = cva("font-normal text-foreground-600", {
   defaultVariants: { size: "default" },
 });
 
-interface Props
+interface CheckboxProps
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
     VariantProps<typeof checkboxVariants> {
   label?: string;
   description?: string;
+  labelProps?: React.ComponentPropsWithRef<"label">;
+  descriptionProps?: React.ComponentPropsWithRef<"p">;
 }
 
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
-  Props
->(({ className, size, label, description, id = "field", ...props }, ref) => {
-  const [checked, setChecked] =
-    React.useState<CheckboxPrimitive.CheckedState>(false);
+  CheckboxProps
+>(
+  (
+    {
+      className,
+      size,
+      label,
+      description,
+      id = "field",
+      labelProps,
+      descriptionProps,
+      ...props
+    },
+    ref
+  ) => {
+    const [checked, setChecked] =
+      React.useState<CheckboxPrimitive.CheckedState>(false);
 
-  return (
-    <div className={cn(containerVariants({ size }))}>
-      <CheckboxPrimitive.Root
-        checked={checked}
-        onCheckedChange={setChecked}
-        id={id}
-        ref={ref}
-        className={cn(checkboxVariants({ size }), className)}
-        {...props}
-      >
-        <CheckboxPrimitive.Indicator
-          className={cn(
-            "flex items-center justify-center text-current relative z-10"
-          )}
+    return (
+      <div className={cn(containerVariants({ size }), className)}>
+        <CheckboxPrimitive.Root
+          checked={checked}
+          onCheckedChange={setChecked}
+          id={id}
+          ref={ref}
+          className={cn(checkboxVariants({ size }))}
+          {...props}
         >
-          <MotionCheck />
-        </CheckboxPrimitive.Indicator>
-        <motion.div
-          animate={checked ? "checked" : "unchecked"}
-          variants={{
-            checked: {
-              scale: [1.25, 1.25],
-              opacity: [1, 0],
-            },
-            unchecked: {
-              scale: 1,
-              opacity: 0,
-            },
-          }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="absolute inset-0 size-[inherit] rounded-[inherit] bg-primary-flat z-0"
-        ></motion.div>
-      </CheckboxPrimitive.Root>
-      <div className={cn(rightVariants({ size }))}>
-        {label && (
-          <label htmlFor={id} className={cn(labelVariants({ size }))}>
-            {label}
-          </label>
-        )}
-        {description && (
-          <p className={cn(descriptionVariants({ size }))}>{description}</p>
-        )}
+          <CheckboxPrimitive.Indicator
+            className={cn(
+              "flex items-center justify-center text-current relative z-10"
+            )}
+          >
+            <MotionCheck />
+          </CheckboxPrimitive.Indicator>
+          <motion.div
+            animate={checked ? "checked" : "unchecked"}
+            variants={{
+              checked: {
+                scale: [1.25, 1.25],
+                opacity: [1, 0],
+              },
+              unchecked: {
+                scale: 1,
+                opacity: 0,
+              },
+            }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="absolute inset-0 size-[inherit] rounded-[inherit] bg-primary-flat z-0"
+          ></motion.div>
+        </CheckboxPrimitive.Root>
+        <div className={cn(rightVariants({ size }))}>
+          {label && (
+            <label
+              htmlFor={id}
+              {...labelProps}
+              className={cn(labelVariants({ size }), labelProps?.className)}
+            >
+              {label}
+            </label>
+          )}
+          {description && (
+            <p
+              {...descriptionProps}
+              className={cn(
+                descriptionVariants({ size }),
+                descriptionProps?.className
+              )}
+            >
+              {description}
+            </p>
+          )}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
 export { Checkbox };

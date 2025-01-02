@@ -5,6 +5,8 @@ import { FieldLabel } from "./fieldLabel";
 import { useField } from "./field";
 import { FieldInput } from "./fieldInput";
 import { Control, FieldPath, FieldValues } from "react-hook-form";
+import { FieldUpper } from "./fieldUpper";
+import { FieldLower } from "./fieldLower";
 
 interface BasicFieldProps<
   TFieldValues extends FieldValues,
@@ -32,25 +34,28 @@ const BasicField = <
   const { label, size, fieldInputId } = useField();
   return (
     <FieldContainer ref={ref} {...props}>
-      <div className="w-full flex gap-4 items-center">
-        {leftIcon}
-        <div className="flex-1 space-y-1">
-          {label && <FieldLabel />}
-          <div className="w-full flex items-center gap-2">
-            {leftText && (
-              <span className={cn(field__textVariants({ size }))}>
-                {leftText}
-              </span>
-            )}
-            <FieldInput
-              control={control}
-              fieldName={name}
-              id={fieldInputId}
-              {...inputProps}
-            />
+      <FieldUpper>
+        <div className="w-full flex gap-4 items-center">
+          {leftIcon}
+          <div className="flex-1 space-y-1">
+            {label && <FieldLabel />}
+            <div className="w-full flex items-center gap-2">
+              {leftText && (
+                <span className={cn(field__textVariants({ size }))}>
+                  {leftText}
+                </span>
+              )}
+              <FieldInput
+                control={control}
+                fieldName={name}
+                id={fieldInputId}
+                {...inputProps}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </FieldUpper>
+      <FieldLower />
     </FieldContainer>
   );
 };
