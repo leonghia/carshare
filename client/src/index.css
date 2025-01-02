@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  @media screen(sm) {
+    .rdp-day_button.nghia {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+}
+
 @font-face {
   font-family: "Lexend Deca";
   src: url("./assets/fonts/LexendDeca-VariableFont_wght.woff2")
@@ -16,4 +25,22 @@ html {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@media (min-width: 2560px) {
+  html {
+    font-size: 150%;
+  }
+}
+
+@media (min-width: 3840px) {
+  html {
+    font-size: 200%;
+  }
+}
+
+@media (min-width: 7680px) {
+  html {
+    font-size: 400%;
+  }
 }
