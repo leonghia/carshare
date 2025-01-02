@@ -8,6 +8,7 @@ import { motion } from "motion/react";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
 import { DatePickerField } from "./ui/datePickerField";
+import { PasswordField } from "./ui/passwordField";
 
 export function Register(): JSX.Element {
   return (
@@ -16,15 +17,15 @@ export function Register(): JSX.Element {
         <img
           src={curvedDivider}
           alt="divider"
-          className="object-cover w-[17.25rem] h-full"
+          className="object-fill h-full w-[17.25rem]"
         />
       </figure>
-      <div className="overflow-x-hidden relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)]">
-        <div className="relative top-[6.25rem] left-[10%] w-[34rem] space-y-12">
+      <div className="overflow-x-hidden relative z-10 w-full min-h-screen py-16 bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)]">
+        <div className="absolute top-1/2 left-1/2 w-[34rem] space-y-12">
           <motion.div
-            initial={{ opacity: 0, x: -150, filter: "blur(0.25rem)" }}
-            animate={{ opacity: 1, x: 0, filter: "blur(0)" }}
-            transition={{ type: "spring", duration: 1, filter: { bounce: 0 } }}
+            initial={{ opacity: 0, x: -150 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ type: "spring", duration: 1 }}
             className="w-full space-y-4"
           >
             <div className="flex gap-1">
@@ -46,9 +47,9 @@ export function Register(): JSX.Element {
           <SignupForm />
         </div>
         <motion.figure
-          initial={{ opacity: 0, x: 100, filter: "blur(0.25rem)" }}
-          animate={{ opacity: 1, x: 0, filter: "blur(0)" }}
-          transition={{ type: "spring", duration: 1, filter: { bounce: 0 } }}
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: "spring", duration: 1 }}
           className="absolute right-12 bottom-10"
         >
           <img src={logo} alt="logo" className="h-16 object-contain" />
@@ -262,6 +263,36 @@ function SignupForm(): JSX.Element {
               dayPlaceholder="01"
               monthPlaceholder="01"
               yearPlaceholder="2020"
+            />
+          </Field>
+          <Field<TFieldValues>
+            label="Mật khẩu"
+            required
+            size="default"
+            name="password"
+            className="col-span-full"
+            description="Tối thiểu tối thiểu 6 ký tự, với ít nhất 1 chữ cái thường, 1 chữ cái in hoa, 1 chữ số (0-9) và 1 ký tự đặc biệt."
+          >
+            <PasswordField
+              control={methods.control}
+              name="password"
+              maxLength={128}
+              placeholder="****************"
+              hasStrength
+            />
+          </Field>
+          <Field<TFieldValues>
+            label="Nhập lại mật khẩu"
+            required
+            size="default"
+            name="retypePassword"
+            className="col-span-full"
+          >
+            <PasswordField
+              control={methods.control}
+              name="retypePassword"
+              maxLength={128}
+              placeholder="****************"
             />
           </Field>
         </div>

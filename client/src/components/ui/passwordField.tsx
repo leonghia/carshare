@@ -1,27 +1,13 @@
-import { FieldPath, FieldValues } from "react-hook-form";
-import {
-  containerVariants,
-  FieldControl,
-  Field,
-  FieldItemContext,
-  FieldItemProps,
-  FieldProps,
-  messageAndDescriptionVariants,
-  rootVariants,
-  useFormField,
-  wrapperVariants,
-} from "./fieldContainer";
-import { FieldLabel } from "./label";
-import React from "react";
-import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
-import { Input } from "./input";
+import React from "react";
+import { Control, FieldPath, FieldValues } from "react-hook-form";
+import { useField } from "./field";
+import { cn } from "@/lib/utils";
 import { Eye, EyeSlash } from "iconsax-react";
-import { AnimatePresence } from "motion/react";
-import { MotionFieldDescription } from "./fieldDescription";
-import { MotionFieldMessage } from "./fieldMessage";
+import { FieldLabel } from "./fieldLabel";
+import { FieldInput } from "./fieldInput";
 
-const innerVariants = cva("w-full h-fit flex items-center", {
+const innerVariants = cva("w-full flex items-center", {
   variants: {
     size: {
       default: "gap-6",
@@ -44,7 +30,7 @@ const thermometerVariants = cva(
   }
 );
 
-const indicatorVariants = cva("h-full", {
+const indicatorVariants = cva("h-full block", {
   variants: {
     strength: {
       default: "w-0 bg-background-600",
@@ -58,7 +44,7 @@ const indicatorVariants = cva("h-full", {
   },
 });
 
-const strengtLabelVariants = cva("font-normal w-max", {
+const strengthTextVariants = cva("font-normal w-max", {
   variants: {
     size: {
       default: "text-xs",
@@ -74,13 +60,11 @@ const strengtLabelVariants = cva("font-normal w-max", {
   defaultVariants: { size: "default", strength: "default" },
 });
 
-const calculatePasswordStrength = (
-  password: string
-): [Strength, StrengthText] => {
+const calculatePasswordStrength = (password: string): Strength => {
   let score = 0;
 
-  if (password.length === 0) return strengths.default;
-  if (password.length < 6) return strengths.weak;
+  if (password.length === 0) return "default";
+  if (password.length < 6) return "weak";
   // Check password length
   if (password.length >= 12) score += 1;
   // Contains lowercase
@@ -96,12 +80,12 @@ const calculatePasswordStrength = (
     case 0:
     case 1:
     case 2:
-      return strengths.weak;
+      return "weak";
     case 3:
     case 4:
-      return strengths.average;
+      return "average";
     default:
-      return strengths.strong;
+      return "strong";
   }
 };
 
@@ -117,198 +101,68 @@ const strengths: Record<Strength, [Strength, StrengthText]> = {
 
 interface PasswordFieldProps<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
-> extends Omit<FieldProps<TFieldValues, TName>, "type"> {
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+> extends React.ComponentPropsWithRef<"div"> {
+  control: Control<TFieldValues>;
+  name: TName;
+  visibleIcon?: React.ReactNode;
+  invisibleIcon?: React.ReactNode;
+  maxLength: number;
+  placeholder?: string;
   hasStrength?: boolean;
 }
 
-interface PasswordFieldItemProps<
+const PasswordField = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
-> extends FieldItemProps<TFieldValues, TName> {
-  hasStrength?: boolean;
-}
-
-function PasswordField<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
   control,
   name,
-  state,
-  size,
-  label,
-  required,
-  placeholder,
-  className,
-  description,
-  hasStrength = false,
-}: PasswordFieldProps<TFieldValues, TName>): JSX.Element {
-  return (
-    <Field
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <PasswordFieldItem
-          state={state}
-          size={size}
-          label={label}
-          required={required}
-          placeholder={placeholder}
-          field={field}
-          className={className}
-          description={description}
-          hasStrength={hasStrength}
-        />
-      )}
-    ></Field>
-  );
-}
-
-const PasswordFieldItem = <
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
->({
-  className,
-  size,
-  state,
-  label,
-  required = false,
-  placeholder,
-  field,
-  description,
-  hasStrength = false,
+  visibleIcon = <Eye variant="Bold" />,
+  invisibleIcon = <EyeSlash variant="Bold" />,
   ref,
+  maxLength,
+  placeholder,
+  hasStrength = false,
   ...props
-}: PasswordFieldItemProps<TFieldValues, TName>) => {
-  const id = React.useId();
-  const { error } = useFormField();
-  const [isFocus, setIsFocus] = React.useState(false);
+}: PasswordFieldProps<TFieldValues, TName>) => {
+  const { label, size, fieldInputId } = useField();
   const [isVisible, setIsVisible] = React.useState(false);
-
-  const [strength, strengthText] = calculatePasswordStrength(field.value);
+  const [strength, setStrength] = React.useState<Strength>("default");
 
   return (
-    <FieldItemContext.Provider value={{ id }}>
-      <div
-        ref={ref}
-        className={cn(rootVariants({ size }), className)}
-        {...props}
-      >
-        <div className={cn(containerVariants({ size, state }))}>
-          <div className={cn(wrapperVariants({ size, state }))}>
-            <div className={cn(innerVariants({ size }))}>
-              <div className="flex-1 h-fit space-y-1">
-                <div
-                  className={`w-full flex items-center ${
-                    label ? "justify-between" : "justify-end"
-                  }`}
-                >
-                  {label && (
-                    <FieldLabel size={size} required={required}>
-                      {label}
-                    </FieldLabel>
-                  )}
-                  {hasStrength && (
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={cn(
-                          strengtLabelVariants({
-                            size,
-                            strength,
-                          })
-                        )}
-                      >
-                        {strengthText}
-                      </span>
-                      <div className={cn(thermometerVariants({ size }))}>
-                        <div
-                          className={cn(
-                            indicatorVariants({
-                              strength,
-                            })
-                          )}
-                        ></div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className="w-full flex items-center">
-                  <FieldControl>
-                    <Input
-                      onFocus={(_) => setIsFocus(true)}
-                      type={isVisible ? "text" : "password"}
-                      size={size}
-                      placeholder={placeholder}
-                      {...field}
-                      onBlur={(_) => {
-                        field.onBlur();
-                        setIsFocus(false);
-                      }}
-                    />
-                  </FieldControl>
-                </div>
+    <div ref={ref} className={cn(innerVariants({ size }))} {...props}>
+      <div className="flex-1 space-y-1">
+        <div className="flex items-center justify-between">
+          {label && <FieldLabel />}
+          {hasStrength && (
+            <div className="flex items-center gap-2">
+              <span className={cn(strengthTextVariants({ size, strength }))}>
+                {strengths[strength][1]}
+              </span>
+              <div className={cn(thermometerVariants({ size }))}>
+                <span className={cn(indicatorVariants({ strength }))}></span>
               </div>
-              <button
-                className="block"
-                type="button"
-                onClick={() => {
-                  setIsVisible(!isVisible);
-                  // setIsFocus(true);
-                }}
-              >
-                {isVisible ? (
-                  <EyeSlash variant="Bold" />
-                ) : (
-                  <Eye variant="Bold" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-        <AnimatePresence>
-          {(error || (description && isFocus)) && (
-            <div className={cn(messageAndDescriptionVariants({ size }))}>
-              {error && (
-                <MotionFieldMessage
-                  key={id + "message"}
-                  size={size}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                  transition={{
-                    type: "tween",
-                    duration: 0.3,
-                    ease: "easeOut",
-                  }}
-                >
-                  {String(error.message)}
-                </MotionFieldMessage>
-              )}
-
-              {description && isFocus && (
-                <MotionFieldDescription
-                  key={id + "description"}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                  transition={{
-                    type: "tween",
-                    duration: 0.3,
-                    ease: "easeOut",
-                  }}
-                  size={size}
-                >
-                  {description}
-                </MotionFieldDescription>
-              )}
             </div>
           )}
-        </AnimatePresence>
+        </div>
+        <FieldInput
+          control={control}
+          fieldName={name}
+          id={fieldInputId}
+          type={isVisible ? "text" : "password"}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          onChange={(e) =>
+            setStrength(calculatePasswordStrength(e.target.value))
+          }
+        />
       </div>
-    </FieldItemContext.Provider>
+      <button type="button" onClick={() => setIsVisible(!isVisible)}>
+        {isVisible ? invisibleIcon : visibleIcon}
+      </button>
+    </div>
   );
 };
-PasswordFieldItem.displayName = "FormItemPassword";
 
 export { PasswordField };
