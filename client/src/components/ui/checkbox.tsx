@@ -6,6 +6,26 @@ import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { MotionCheck } from "./motionCheck";
 
+const containerVariants = cva("flex", {
+  variants: {
+    size: {
+      default: "gap-3",
+      small: "gap-2",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
+const rightVariants = cva(undefined, {
+  variants: {
+    size: {
+      default: "space-y-1",
+      small: "space-y-[0.125rem]",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
 const checkboxVariants = cva(
   "group relative flex-none bg-background-900 focus-visible:outline focus-visible:outline-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-500 data-[state=checked]:text-white transition-[background-color] duration-200 ease-out",
   {
@@ -13,7 +33,6 @@ const checkboxVariants = cva(
       size: {
         default: "size-6 rounded-[0.625rem] [&_svg]:size-4",
         small: "size-5 rounded-lg [&_svg]:size-3",
-        extraSmall: "size-4 rounded-md [&_svg]:size-[0.625rem]",
       },
     },
     defaultVariants: {
@@ -22,37 +41,44 @@ const checkboxVariants = cva(
   }
 );
 
-const labelVariants = cva(
-  "block flex-1 pl-2 font-normal text-foreground-400 cursor-pointer",
-  {
-    variants: {
-      size: {
-        default: "text-base",
-        small: "text-sm",
-        extraSmall: "text-xs",
-      },
+const labelVariants = cva("block font-medium text-white cursor-pointer", {
+  variants: {
+    size: {
+      default: "text-base",
+      small: "text-sm",
     },
-    defaultVariants: {
-      size: "default",
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
+
+const descriptionVariants = cva("font-normal text-foreground-600", {
+  variants: {
+    size: {
+      default: "text-sm",
+      small: "text-xs",
     },
-  }
-);
+  },
+  defaultVariants: { size: "default" },
+});
 
 interface Props
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
     VariantProps<typeof checkboxVariants> {
   label?: string;
+  description?: string;
 }
 
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   Props
->(({ className, size, label, id = "field", ...props }, ref) => {
+>(({ className, size, label, description, id = "field", ...props }, ref) => {
   const [checked, setChecked] =
     React.useState<CheckboxPrimitive.CheckedState>(false);
 
   return (
-    <div className="flex w-64">
+    <div className={cn(containerVariants({ size }))}>
       <CheckboxPrimitive.Root
         checked={checked}
         onCheckedChange={setChecked}
@@ -84,11 +110,16 @@ const Checkbox = React.forwardRef<
           className="absolute inset-0 size-[inherit] rounded-[inherit] bg-primary-flat z-0"
         ></motion.div>
       </CheckboxPrimitive.Root>
-      {label && (
-        <label htmlFor={id} className={cn(labelVariants({ size }))}>
-          {label}
-        </label>
-      )}
+      <div className={cn(rightVariants({ size }))}>
+        {label && (
+          <label htmlFor={id} className={cn(labelVariants({ size }))}>
+            {label}
+          </label>
+        )}
+        {description && (
+          <p className={cn(descriptionVariants({ size }))}>{description}</p>
+        )}
+      </div>
     </div>
   );
 });

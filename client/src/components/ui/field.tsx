@@ -1,6 +1,6 @@
 import { VariantProps } from "class-variance-authority";
-import { FieldContainer, field__containerVariants } from "./fieldContainer";
-import React, { ComponentPropsWithRef } from "react";
+import { field__containerVariants } from "./fieldContainer";
+import React from "react";
 import { FieldPath, FieldValues, useFormContext } from "react-hook-form";
 
 interface FieldContextType
@@ -23,8 +23,7 @@ const FieldContext = React.createContext<FieldContextType | null>(null);
 interface FieldProps<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends ComponentPropsWithRef<"div">,
-    Pick<VariantProps<typeof field__containerVariants>, "size"> {
+> extends Pick<VariantProps<typeof field__containerVariants>, "size"> {
   label?: string;
   description?: string;
   required?: boolean;
@@ -38,7 +37,7 @@ const Field = <TFieldValues extends FieldValues>({
   description,
   size,
   name,
-  ...props
+  children,
 }: FieldProps<TFieldValues>) => {
   const [isFocus, setIsFocus] = React.useState(false);
   const id = React.useId();
@@ -60,7 +59,7 @@ const Field = <TFieldValues extends FieldValues>({
         name,
       }}
     >
-      <FieldContainer {...props} />
+      {children}
     </FieldContext.Provider>
   );
 };

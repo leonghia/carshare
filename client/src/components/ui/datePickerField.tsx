@@ -4,7 +4,7 @@ import { useField } from "./field";
 import { FieldInput } from "./fieldInput";
 import { FieldLabel } from "./fieldLabel";
 import { cn } from "@/lib/utils";
-import { field__textVariants } from "./fieldContainer";
+import { field__textVariants, FieldContainer } from "./fieldContainer";
 
 interface DatePickerFieldProps<
   TFieldValues extends FieldValues,
@@ -60,58 +60,60 @@ const DatePickerField = <
   };
 
   return (
-    <div className="w-full flex gap-4 items-center" ref={ref} {...props}>
-      <div className="flex-1 space-y-1">
-        {label && <FieldLabel />}
-        <div className="flex items-center gap-2">
-          <FieldInput
-            handleRef={handleRef}
-            control={control}
-            fieldName={dayName}
-            type="text"
-            inputMode="numeric"
-            maxLength={2}
-            placeholder={dayPlaceholder}
-            id={fieldInputId}
-            className="flex-none w-6 min-w-0"
-            onChange={(e) => {
-              if (e.target.value.length === 2) jumpToInput(monthName);
-            }}
-          />
-          <span className={cn(field__textVariants, "text-foreground-600")}>
-            /
-          </span>
-          <FieldInput
-            handleRef={handleRef}
-            control={control}
-            fieldName={monthName}
-            type="text"
-            inputMode="numeric"
-            maxLength={2}
-            placeholder={monthPlaceholder}
-            id={`${id}-month-field-input`}
-            className="flex-none w-6 min-w-0"
-            onChange={(e) => {
-              if (e.target.value.length === 2) jumpToInput(yearName);
-            }}
-          />
-          <span className={cn(field__textVariants, "text-foreground-600")}>
-            /
-          </span>
-          <FieldInput
-            handleRef={handleRef}
-            control={control}
-            fieldName={yearName}
-            type="text"
-            inputMode="numeric"
-            maxLength={4}
-            placeholder={yearPlaceholder}
-            id={`${id}-year-field-input`}
-            className="flex-1 min-w-0"
-          />
+    <FieldContainer ref={ref} {...props}>
+      <div className="w-full flex gap-4 items-center">
+        <div className="flex-1 space-y-1">
+          {label && <FieldLabel />}
+          <div className="flex items-center gap-2">
+            <FieldInput
+              handleRef={handleRef}
+              control={control}
+              fieldName={dayName}
+              type="text"
+              inputMode="numeric"
+              maxLength={2}
+              placeholder={dayPlaceholder}
+              id={fieldInputId}
+              className="flex-none w-6 min-w-0"
+              onChange={(e) => {
+                if (e.target.value.length === 2) jumpToInput(monthName);
+              }}
+            />
+            <span className={cn(field__textVariants, "text-foreground-600")}>
+              /
+            </span>
+            <FieldInput
+              handleRef={handleRef}
+              control={control}
+              fieldName={monthName}
+              type="text"
+              inputMode="numeric"
+              maxLength={2}
+              placeholder={monthPlaceholder}
+              id={`${id}-month-field-input`}
+              className="flex-none w-6 min-w-0"
+              onChange={(e) => {
+                if (e.target.value.length === 2) jumpToInput(yearName);
+              }}
+            />
+            <span className={cn(field__textVariants, "text-foreground-600")}>
+              /
+            </span>
+            <FieldInput
+              handleRef={handleRef}
+              control={control}
+              fieldName={yearName}
+              type="text"
+              inputMode="numeric"
+              maxLength={4}
+              placeholder={yearPlaceholder}
+              id={`${id}-year-field-input`}
+              className="flex-1 min-w-0"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </FieldContainer>
   );
 };
 

@@ -10,6 +10,7 @@ import { BasicField } from "./ui/basicField";
 import { DatePickerField } from "./ui/datePickerField";
 import { PasswordField } from "./ui/passwordField";
 import { calculatePasswordStrength } from "@/lib/utils";
+import { CheckboxField } from "./ui/checkboxField";
 
 export function Register(): JSX.Element {
   return (
@@ -203,7 +204,6 @@ function SignupForm(): JSX.Element {
             required
             size="default"
             name="fullName"
-            className="col-span-1"
           >
             <BasicField
               control={methods.control}
@@ -213,6 +213,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "Nguyễn Văn A",
                 maxLength: 64,
               }}
+              className="col-span-1"
             />
           </Field>
           <Field<TFieldValues>
@@ -220,7 +221,6 @@ function SignupForm(): JSX.Element {
             required
             size="default"
             name="phoneNumber"
-            className="col-span-1"
           >
             <BasicField
               control={methods.control}
@@ -231,6 +231,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "0123 456 789",
                 maxLength: 12,
               }}
+              className="col-span-1"
             />
           </Field>
           <Field<TFieldValues>
@@ -238,7 +239,6 @@ function SignupForm(): JSX.Element {
             required
             size="default"
             name="email"
-            className="col-span-full"
           >
             <BasicField
               control={methods.control}
@@ -248,6 +248,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "abc@email.com",
                 maxLength: 254,
               }}
+              className="col-span-full"
             />
           </Field>
           <Field<TFieldValues>
@@ -255,7 +256,6 @@ function SignupForm(): JSX.Element {
             required
             size="default"
             name="nationalID"
-            className="col-span-1"
           >
             <BasicField
               control={methods.control}
@@ -266,6 +266,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "000000000000",
                 maxLength: 12,
               }}
+              className="col-span-1"
             />
           </Field>
           <Field<TFieldValues>
@@ -273,7 +274,6 @@ function SignupForm(): JSX.Element {
             required
             size="default"
             name="publishedDay"
-            className="col-span-1"
           >
             <DatePickerField
               control={methods.control}
@@ -283,6 +283,7 @@ function SignupForm(): JSX.Element {
               dayPlaceholder="01"
               monthPlaceholder="01"
               yearPlaceholder="2020"
+              className="col-span-1"
             />
           </Field>
           <Field<TFieldValues>
@@ -290,7 +291,6 @@ function SignupForm(): JSX.Element {
             required
             size="default"
             name="password"
-            className="col-span-full"
             description="Tối thiểu tối thiểu 6 ký tự, với ít nhất 1 chữ cái thường, 1 chữ cái in hoa, 1 chữ số (0-9) và 1 ký tự đặc biệt."
           >
             <PasswordField
@@ -299,6 +299,7 @@ function SignupForm(): JSX.Element {
               maxLength={128}
               placeholder="****************"
               hasStrength
+              className="col-span-full"
             />
           </Field>
           <Field<TFieldValues>
@@ -306,14 +307,21 @@ function SignupForm(): JSX.Element {
             required
             size="default"
             name="retypePassword"
-            className="col-span-full"
           >
             <PasswordField
               control={methods.control}
               name="retypePassword"
               maxLength={128}
               placeholder="****************"
+              className="col-span-full"
             />
+          </Field>
+          <Field<TFieldValues>
+            label="Tôi cam đoan những thông tin trên đây là đúng sự thật"
+            size="default"
+            name="agree"
+          >
+            <CheckboxField control={methods.control} name="agree" />
           </Field>
         </div>
         <Button
