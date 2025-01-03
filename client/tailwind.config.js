@@ -91,7 +91,7 @@ export default {
         900: "#232429",
         950: "#17181B",
       },
-      overlay: "hsl(0deg 0% 0% / 35%)",
+      overlay: "rgba(0,0,0,0.6)",
       divider: "#3B3E4A",
     },
   },

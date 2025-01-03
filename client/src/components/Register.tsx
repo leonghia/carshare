@@ -12,6 +12,9 @@ import { PasswordField } from "./ui/passwordField";
 import { calculatePasswordStrength } from "@/lib/utils";
 import { CheckboxField } from "./ui/checkboxField";
 import React from "react";
+import { Dialog, DialogClose, DialogContent, DialogTitle } from "./ui/dialog";
+import checkEmailIllustrator from "../assets/images/check_email_illustrator.webp";
+import { VisuallyHidden } from "./ui/visuallyHidden";
 
 export function Register(): JSX.Element {
   return (
@@ -178,6 +181,9 @@ type TFieldValues = z.infer<typeof formSchema>;
 
 function SignupForm(): JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isOpenCompleteModal, setIsOpenCompleteModal] = React.useState(false);
+
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -207,8 +213,8 @@ function SignupForm(): JSX.Element {
         issuedDate: `${data.publishedYear}-${data.publishedMonth}-${data.publishedDay}`,
         password: data.password,
       };
-      console.log(dto);
       setIsSubmitting(false);
+      setIsOpenCompleteModal(true);
       clearTimeout(timeout);
     }, 5000);
   };
@@ -355,21 +361,76 @@ function SignupForm(): JSX.Element {
             />
           </Field>
         </motion.div>
-        <Button
-          isLoading={isSubmitting}
-          type="submit"
-          className="px-0 py-0  w-[18.75rem] h-[4.375rem]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            type: "tween",
-            duration: 1,
-            ease: "easeIn",
-            delay: 0.3,
-          }}
+        <Dialog
+          open={isOpenCompleteModal}
+          onOpenChange={setIsOpenCompleteModal}
         >
-          Đăng ký tài khoản
-        </Button>
+          <Button
+            ref={buttonRef}
+            disabled={isSubmitting}
+            isLoading={isSubmitting}
+            type="submit"
+            className="px-0 py-0 w-[18.75rem] h-[4.375rem]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              type: "tween",
+              duration: 1,
+              ease: "easeIn",
+              delay: 0.3,
+            }}
+            onAnimationComplete={() => {
+              requestAnimationFrame(() => {
+                buttonRef.current?.removeAttribute("style");
+              });
+            }}
+          >
+            Đăng ký tài khoản
+          </Button>
+          <DialogContent className="w-[30rem]" aria-describedby={undefined}>
+            <VisuallyHidden asChild>
+              <DialogTitle>
+                Cảm ơn bạn đã đăng ký tài khoản Carshare
+              </DialogTitle>
+            </VisuallyHidden>
+            <div className="w-full h-fit bg-background-950 rounded-4xl overflow-hidden">
+              <div className="w-full h-fit bg-background-900 py-1">
+                <figure>
+                  <img
+                    src={checkEmailIllustrator}
+                    alt="illustrator about checking email"
+                    className="size-[8.75rem] object-contain mx-auto"
+                  />
+                </figure>
+              </div>
+              <div className="w-full h-fit space-y-8 p-8">
+                <div className="w-full h-fit text-center space-y-4">
+                  <h6 className="text-lg font-semibold text-white">
+                    Cảm ơn bạn đã đăng ký tài khoản Carshare!
+                  </h6>
+                  <p className="text-base font-normal text-foreground-500">
+                    Một đường link xác nhận đang được gửi về địa chỉ email{" "}
+                    <span className="text-foreground-100">
+                      l*******cnn@gmail.com
+                    </span>{" "}
+                    của bạn. Bạn vui lòng kiểm tra hòm thư để hoàn tất việc đăng
+                    ký nhé.
+                  </p>
+                </div>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    intent="primary"
+                    size="default"
+                    className="w-full"
+                  >
+                    OK
+                  </Button>
+                </DialogClose>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </form>
     </FormProvider>
   );

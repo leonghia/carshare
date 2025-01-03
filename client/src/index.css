@@ -2,15 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  @media screen(sm) {
-    .rdp-day_button.nghia {
-      width: 2.5rem;
-      height: 2.5rem;
-    }
-  }
-}
-
 @font-face {
   font-family: "Lexend Deca";
   src: url("./assets/fonts/LexendDeca-VariableFont_wght.woff2")

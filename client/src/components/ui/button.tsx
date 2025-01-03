@@ -95,7 +95,6 @@ const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        disabled={isLoading}
         className={cn(buttonVariants({ intent, size, iconOnly, className }))}
         ref={ref}
         {...props}
@@ -141,12 +140,19 @@ const MotionButton = motion.create(UnmotionButton);
 // };
 
 // Instead, use object destructuring like this:
-const Button = ({
-  whileTap = { y: 8 },
-  ...props
-}: ButtonProps & HTMLMotionProps<"button">) => (
-  <MotionButton whileTap={whileTap} {...props} />
-);
+// const Button = ({
+//   whileTap = { y: 8 },
+//   ...props
+// }: ButtonProps & HTMLMotionProps<"button">) => (
+//   <MotionButton whileTap={whileTap} {...props} />
+// );
+
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  ButtonProps & HTMLMotionProps<"button">
+>(({ whileTap = { y: "0.5rem" }, ...props }, ref) => {
+  return <MotionButton ref={ref} whileTap={whileTap} {...props} />;
+});
 
 Button.displayName = "Button";
 
