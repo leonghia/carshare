@@ -15,16 +15,21 @@ import React from "react";
 
 export function Register(): JSX.Element {
   return (
-    <div className="w-full min-h-screen relative">
+    <div className="w-full min-h-screen relative overflow-x-hidden">
       {/* Right */}
-      <div className="absolute z-0 top-0 right-0 w-[58%] h-full bg-[url('/src/assets/images/background_side_default.webp')] bg-cover bg-right"></div>
+      <motion.div
+        initial={{ opacity: 0, x: "6.25rem" }}
+        animate={{ opacity: 1, x: "0rem" }}
+        transition={{ type: "spring", duration: 1, bounce: 0 }}
+        className="absolute z-0 top-0 right-0 w-[58%] h-full bg-[url('/src/assets/images/background_side_default.webp')] bg-cover bg-right"
+      ></motion.div>
       {/* Container */}
       <div className="grid justify-items-center items-center px-16 py-20 overflow-x-hidden relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)]">
         <div className="w-full max-w-7xl h-fit">
           <div className="w-[34rem] h-fit space-y-12">
             <motion.div
-              initial={{ opacity: 0, x: -150 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, x: "-9.375rem" }}
+              animate={{ opacity: 1, x: "0rem" }}
               transition={{ type: "spring", duration: 1 }}
               className="w-full space-y-4"
             >
@@ -58,8 +63,8 @@ export function Register(): JSX.Element {
       </figure>
       {/* Logo */}
       <motion.figure
-        initial={{ opacity: 0, x: 100 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, x: "6.25rem" }}
+        animate={{ opacity: 1, x: "0rem" }}
         transition={{ type: "spring", duration: 1 }}
         className="absolute right-12 bottom-10 z-20"
       >
@@ -214,7 +219,12 @@ function SignupForm(): JSX.Element {
         onSubmit={methods.handleSubmit(onValid)}
         className="w-full space-y-12"
       >
-        <div className="w-full grid grid-cols-2 gap-6">
+        <motion.div
+          className="w-full grid grid-cols-2 gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ type: "tween", duration: 1, ease: "easeIn" }}
+        >
           <Field<TFieldValues>
             label="Họ tên"
             required
@@ -344,11 +354,19 @@ function SignupForm(): JSX.Element {
               labelProps={{ className: "font-normal text-foreground-100" }}
             />
           </Field>
-        </div>
+        </motion.div>
         <Button
           isLoading={isSubmitting}
           type="submit"
           className="px-0 py-0  w-[18.75rem] h-[4.375rem]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            type: "tween",
+            duration: 1,
+            ease: "easeIn",
+            delay: 0.3,
+          }}
         >
           Đăng ký tài khoản
         </Button>
