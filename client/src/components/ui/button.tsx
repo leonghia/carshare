@@ -2,7 +2,8 @@ import React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { HTMLMotionProps, motion } from "motion/react";
+import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
+import { LoaderCircle } from "lucide-react";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0 transition-all duration-300 ease-out",
@@ -30,17 +31,20 @@ const buttonVariants = cva(
       {
         iconOnly: false,
         size: "default",
-        className: "px-8 py-4 rounded-6xl [&_svg]:size-6",
+        className:
+          "px-8 py-4 rounded-6xl [&_svg]:size-6 [&_.icon-loading]:size-7",
       },
       {
         iconOnly: false,
         size: "small",
-        className: "px-8 py-4 rounded-5xl [&_svg]:size-5",
+        className:
+          "px-8 py-4 rounded-5xl [&_svg]:size-5 [&_.icon-loading]:size-6",
       },
       {
         iconOnly: false,
         size: "extraSmall",
-        className: "px-6 py-3 rounded-4xl [&_svg]:size-5",
+        className:
+          "px-6 py-3 rounded-4xl [&_svg]:size-5 [&_.icon-loading]:size-5",
       },
       {
         iconOnly: true,
@@ -70,18 +74,61 @@ interface ButtonProps
   extends React.ComponentPropsWithoutRef<"button">,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  isLoading?: boolean;
 }
 
 const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, intent, size, iconOnly, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      intent,
+      size,
+      iconOnly,
+      asChild = false,
+      isLoading = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : "button";
 
     return (
       <Comp
+        disabled={isLoading}
         className={cn(buttonVariants({ intent, size, iconOnly, className }))}
         ref={ref}
         {...props}
-      />
+      >
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={isLoading ? "loading" : "idle"}
+            initial={{
+              opacity: 0,
+              y: "-1.5rem",
+            }}
+            animate={{
+              opacity: 1,
+              y: "0rem",
+            }}
+            exit={{
+              opacity: 0,
+              y: "1.5rem",
+            }}
+            transition={{
+              type: "spring",
+              bounce: 0,
+              duration: 0.3,
+            }}
+          >
+            {isLoading ? (
+              <LoaderCircle className="text-white animate-spin icon-loading" />
+            ) : (
+              children
+            )}
+          </motion.span>
+        </AnimatePresence>
+      </Comp>
     );
   }
 );
@@ -103,4 +150,4 @@ const Button = ({
 
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export { Button };

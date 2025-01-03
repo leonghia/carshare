@@ -11,6 +11,7 @@ import { DatePickerField } from "./ui/datePickerField";
 import { PasswordField } from "./ui/passwordField";
 import { calculatePasswordStrength } from "@/lib/utils";
 import { CheckboxField } from "./ui/checkboxField";
+import React from "react";
 
 export function Register(): JSX.Element {
   return (
@@ -171,6 +172,8 @@ const formSchema = z
 type TFieldValues = z.infer<typeof formSchema>;
 
 function SignupForm(): JSX.Element {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -189,7 +192,20 @@ function SignupForm(): JSX.Element {
   });
 
   const onValid = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    setIsSubmitting(true);
+    const timeout = setTimeout(() => {
+      const dto = {
+        fullName: data.fullName,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+        nationalID: data.nationalID,
+        issuedDate: `${data.publishedYear}-${data.publishedMonth}-${data.publishedDay}`,
+        password: data.password,
+      };
+      console.log(dto);
+      setIsSubmitting(false);
+      clearTimeout(timeout);
+    }, 5000);
   };
 
   return (
@@ -330,8 +346,9 @@ function SignupForm(): JSX.Element {
           </Field>
         </div>
         <Button
+          isLoading={isSubmitting}
           type="submit"
-          className="block px-0 py-0  w-[18.75rem] h-[4.375rem]"
+          className="px-0 py-0  w-[18.75rem] h-[4.375rem]"
         >
           Đăng ký tài khoản
         </Button>
