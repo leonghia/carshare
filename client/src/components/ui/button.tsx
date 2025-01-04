@@ -6,7 +6,7 @@ import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
 import { LoaderCircle } from "lucide-react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0 transition-all duration-300 ease-out",
   {
     variants: {
       intent: {
@@ -75,6 +75,7 @@ interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
+  hasLoader?: boolean;
 }
 
 const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -87,6 +88,7 @@ const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       asChild = false,
       isLoading = false,
       children,
+      hasLoader = false,
       ...props
     },
     ref
@@ -95,39 +97,43 @@ const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        className={cn(buttonVariants({ intent, size, iconOnly, className }))}
-        ref={ref}
+        // ref={ref}
+        className={cn(buttonVariants({ intent, size, iconOnly }), className)}
         disabled={isLoading}
         {...props}
       >
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
-            key={isLoading ? "loading" : "idle"}
-            initial={{
-              opacity: 0,
-              y: "-1.5rem",
-            }}
-            animate={{
-              opacity: 1,
-              y: "0rem",
-            }}
-            exit={{
-              opacity: 0,
-              y: "1.5rem",
-            }}
-            transition={{
-              type: "spring",
-              bounce: 0,
-              duration: 0.3,
-            }}
-          >
-            {isLoading ? (
-              <LoaderCircle className="text-white animate-spin icon-loading" />
-            ) : (
-              children
-            )}
-          </motion.span>
-        </AnimatePresence>
+        {hasLoader ? (
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={isLoading ? "loading" : "idle"}
+              initial={{
+                opacity: 0,
+                y: "-1.5rem",
+              }}
+              animate={{
+                opacity: 1,
+                y: "0rem",
+              }}
+              exit={{
+                opacity: 0,
+                y: "1.5rem",
+              }}
+              transition={{
+                type: "spring",
+                bounce: 0,
+                duration: 0.3,
+              }}
+            >
+              {isLoading ? (
+                <LoaderCircle className="text-white animate-spin icon-loading" />
+              ) : (
+                children
+              )}
+            </motion.span>
+          </AnimatePresence>
+        ) : (
+          children
+        )}
       </Comp>
     );
   }

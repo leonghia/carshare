@@ -1,6 +1,6 @@
 import { Strength } from "@/components/ui/passwordField";
 import { clsx, type ClassValue } from "clsx";
-import { twMerge, extendTailwindMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
 
 const customTwMerge = extendTailwindMerge({
   extend: {
@@ -59,4 +59,9 @@ export const calculatePasswordStrength = (password: string): Strength => {
     default:
       return "strong";
   }
+};
+
+export const obscureEmail = (email: string): string => {
+  const [name, domain] = email.split("@");
+  return `${name[0]}${new Array(name.length).join("*")}@${domain}`;
 };

@@ -9,13 +9,14 @@ import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
 import { DatePickerField } from "./ui/datePickerField";
 import { PasswordField } from "./ui/passwordField";
-import { calculatePasswordStrength } from "@/lib/utils";
+import { calculatePasswordStrength, obscureEmail } from "@/lib/utils";
 import { CheckboxField } from "./ui/checkboxField";
 import React from "react";
-import { Dialog, DialogClose, DialogContent, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import checkEmailIllustrator from "../assets/images/check_email_illustrator.webp";
 import { VisuallyHidden } from "./ui/visuallyHidden";
 import { useMediaQuery } from "react-responsive";
+import { Link } from "react-router";
 
 export function Register(): JSX.Element {
   return (
@@ -30,7 +31,7 @@ export function Register(): JSX.Element {
       {/* Container */}
       <div className="grid justify-items-center items-center sm:items-start px-16 md:px-8 py-20 md:py-16 sm:px-4 sm:py-8 overflow-x-hidden relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)] xl:bg-[linear-gradient(248deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)] lg:bg-[linear-gradient(218deg,rgba(39,42,55,0.97)0%,rgba(39,42,55,1)50%,rgba(39,42,55,0.97)100%)] sm:bg-[linear-gradient(218deg,rgba(39,42,55,0.99)0%,rgba(39,42,55,1)50%,rgba(39,42,55,0.99)100%)]">
         <div className="w-full max-w-7xl h-fit lg:grid lg:justify-items-center sm:gap-12">
-          <div className="w-[34rem] sm:w-full sm:max-w-[21.875rem] h-fit space-y-12 sm:space-y-8">
+          <div className="w-[34rem] sm:w-full sm:grid sm:justify-items-center h-fit space-y-12 sm:space-y-8">
             <motion.div
               initial={{ opacity: 0, x: "-9.375rem" }}
               animate={{ opacity: 1, x: "0rem" }}
@@ -45,12 +46,12 @@ export function Register(): JSX.Element {
               </div>
               <p className="font-normal text-sm sm:text-xs text-foreground-500">
                 Bạn đã có tài khoản?{" "}
-                <a
-                  href="/login"
-                  className="font-medium text-primary-500 hover:text-primary-300 transition-all duration-300 ease-out"
+                <Link
+                  to="/login"
+                  className="font-medium text-primary-500 hover:text-primary-400 transition-all duration-300 ease-out"
                 >
                   Đăng nhập ngay
-                </a>
+                </Link>
               </p>
             </motion.div>
             <SignupForm />
@@ -231,7 +232,7 @@ function SignupForm(): JSX.Element {
     <FormProvider {...methods}>
       <motion.form
         onSubmit={methods.handleSubmit(onValid)}
-        className="w-full space-y-12 sm:space-y-8"
+        className="w-full sm:max-w-[21.875rem] space-y-12 sm:space-y-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ type: "tween", duration: 1, ease: "easeIn" }}
@@ -373,6 +374,7 @@ function SignupForm(): JSX.Element {
         >
           <Button
             ref={buttonRef}
+            hasLoader
             isLoading={isSubmitting}
             size={isSM ? "small" : "default"}
             type="submit"
@@ -385,13 +387,16 @@ function SignupForm(): JSX.Element {
           >
             Đăng ký tài khoản
           </Button>
-          <DialogContent aria-describedby={undefined}>
+          <DialogContent
+            aria-describedby={undefined}
+            onInteractOutside={(e) => e.preventDefault()}
+          >
             <VisuallyHidden asChild>
               <DialogTitle>
                 Cảm ơn bạn đã đăng ký tài khoản Carshare
               </DialogTitle>
             </VisuallyHidden>
-            <CompleteModal />
+            <CompleteModal email={methods.getValues("email")} />
           </DialogContent>
         </Dialog>
       </motion.form>
@@ -399,7 +404,7 @@ function SignupForm(): JSX.Element {
   );
 }
 
-function CompleteModal(): React.JSX.Element {
+function CompleteModal({ email }: { email: string }): React.JSX.Element {
   const [scope, animate] = useAnimate();
   const isSM = useMediaQuery({ maxWidth: 639 });
 
@@ -444,20 +449,18 @@ function CompleteModal(): React.JSX.Element {
           </h6>
           <p className="text-base sm:text-sm font-normal text-foreground-500">
             Một đường link xác nhận đang được gửi về địa chỉ email{" "}
-            <span className="text-foreground-100">l*******cnn@gmail.com</span>{" "}
+            <span className="text-foreground-100">{obscureEmail(email)}</span>{" "}
             của bạn. Bạn vui lòng kiểm tra hòm thư để hoàn tất việc đăng ký nhé.
           </p>
         </div>
-        <DialogClose asChild>
-          <Button
-            type="button"
-            intent="primary"
-            size={isSM ? "small" : "default"}
-            className="w-full sm:py-0 sm:h-[3.125rem]"
-          >
-            OK
-          </Button>
-        </DialogClose>
+        <Button
+          asChild
+          intent="primary"
+          size={isSM ? "small" : "default"}
+          className="w-full py-0 h-[3.75rem] sm:h-[3.125rem]"
+        >
+          <Link to="/login">OK</Link>
+        </Button>
       </div>
     </div>
   );
