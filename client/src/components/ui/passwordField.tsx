@@ -33,19 +33,22 @@ const thermometerVariants = cva(
   }
 );
 
-const indicatorVariants = cva("h-full block", {
-  variants: {
-    strength: {
-      default: "w-0 bg-background-600",
-      weak: "w-1/3 bg-danger-500",
-      average: "w-2/3 bg-warning-500",
-      strong: "w-full bg-success-500",
+const indicatorVariants = cva(
+  "h-full block transition-all duration-300 ease-out",
+  {
+    variants: {
+      strength: {
+        default: "w-0 bg-background-600",
+        weak: "w-1/3 bg-danger-500",
+        average: "w-2/3 bg-warning-500",
+        strong: "w-full bg-success-500",
+      },
     },
-  },
-  defaultVariants: {
-    strength: "default",
-  },
-});
+    defaultVariants: {
+      strength: "default",
+    },
+  }
+);
 
 const strengthTextVariants = cva("font-normal w-max", {
   variants: {
@@ -127,6 +130,7 @@ const PasswordField = <
               )}
             </div>
             <FieldInput
+              className="w-full"
               control={control}
               fieldName={name}
               id={fieldInputId}

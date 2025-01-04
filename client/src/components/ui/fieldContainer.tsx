@@ -12,7 +12,7 @@ const field__containerVariants = cva(undefined, {
   variants: {
     size: {
       default: "space-y-4",
-      small: "space-y-3",
+      small: "space-y-4",
     },
     state: {
       default: null,

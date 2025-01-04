@@ -1,9 +1,17 @@
 import { Strength } from "@/components/ui/passwordField";
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { twMerge, extendTailwindMerge } from "tailwind-merge";
+
+const customTwMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      "font-size": [{ text: ["xxs"] }],
+    },
+  },
+});
 
 export const cn = (...inputs: ClassValue[]) => {
-  return twMerge(clsx(inputs));
+  return customTwMerge(clsx(inputs));
 };
 
 export const parseNumericValue = (value: string): string => {

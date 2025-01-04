@@ -49,6 +49,7 @@ const BasicField = <
                 control={control}
                 fieldName={name}
                 id={fieldInputId}
+                className="w-full"
                 {...inputProps}
               />
             </div>

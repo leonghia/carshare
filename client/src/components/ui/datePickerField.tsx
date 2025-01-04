@@ -39,7 +39,7 @@ const DatePickerField = <
   ref,
   ...props
 }: DatePickerFieldProps<TFieldValues, TDayName, TMonthName, TYearName>) => {
-  const { label, id, fieldInputId } = useField();
+  const { label, id, fieldInputId, size } = useField();
   const inputsRef = React.useRef<Map<string, HTMLInputElement> | null>(null);
 
   const getInputsMap = () => {
@@ -65,9 +65,9 @@ const DatePickerField = <
     <FieldContainer ref={ref} {...props}>
       <FieldUpper>
         <div className="w-full flex gap-4 items-center">
-          <div className="flex-1 space-y-1">
+          <div className="flex-1 space-y-1 min-w-0">
             {label && <FieldLabel />}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-1">
               <FieldInput
                 handleRef={handleRef}
                 control={control}
@@ -77,12 +77,17 @@ const DatePickerField = <
                 maxLength={2}
                 placeholder={dayPlaceholder}
                 id={fieldInputId}
-                className="flex-none w-6 min-w-0"
+                className="flex-none w-6 sm:w-5 min-w-0"
                 onChange={(e) => {
                   if (e.target.value.length === 2) jumpToInput(monthName);
                 }}
               />
-              <span className={cn(field__textVariants, "text-foreground-600")}>
+              <span
+                className={cn(
+                  field__textVariants({ size }),
+                  "text-foreground-600"
+                )}
+              >
                 /
               </span>
               <FieldInput
@@ -94,12 +99,17 @@ const DatePickerField = <
                 maxLength={2}
                 placeholder={monthPlaceholder}
                 id={`${id}-month-field-input`}
-                className="flex-none w-6 min-w-0"
+                className="flex-none w-6 sm:w-5 min-w-0"
                 onChange={(e) => {
                   if (e.target.value.length === 2) jumpToInput(yearName);
                 }}
               />
-              <span className={cn(field__textVariants, "text-foreground-600")}>
+              <span
+                className={cn(
+                  field__textVariants({ size }),
+                  "text-foreground-600"
+                )}
+              >
                 /
               </span>
               <FieldInput

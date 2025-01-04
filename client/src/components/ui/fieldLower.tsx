@@ -10,7 +10,7 @@ const field__lowerVariants = cva(undefined, {
   variants: {
     size: {
       default: "space-y-2",
-      small: "space-y-1",
+      small: "space-y-2",
     },
   },
   defaultVariants: { size: "default" },
