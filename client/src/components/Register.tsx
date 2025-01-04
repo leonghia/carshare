@@ -221,16 +221,14 @@ function SignupForm(): JSX.Element {
 
   return (
     <FormProvider {...methods}>
-      <form
+      <motion.form
         onSubmit={methods.handleSubmit(onValid)}
         className="w-full space-y-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ type: "tween", duration: 1, ease: "easeIn" }}
       >
-        <motion.div
-          className="w-full grid grid-cols-2 gap-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ type: "tween", duration: 1, ease: "easeIn" }}
-        >
+        <div className="w-full grid grid-cols-2 gap-6">
           <Field<TFieldValues>
             label="Họ tên"
             required
@@ -360,30 +358,21 @@ function SignupForm(): JSX.Element {
               labelProps={{ className: "font-normal text-foreground-100" }}
             />
           </Field>
-        </motion.div>
+        </div>
         <Dialog
           open={isOpenCompleteModal}
           onOpenChange={setIsOpenCompleteModal}
         >
           <Button
             ref={buttonRef}
-            disabled={isSubmitting}
             isLoading={isSubmitting}
             type="submit"
             className="px-0 py-0 w-[18.75rem] h-[4.375rem]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              type: "tween",
-              duration: 1,
-              ease: "easeIn",
-              delay: 0.3,
-            }}
-            onAnimationComplete={() => {
-              requestAnimationFrame(() => {
-                buttonRef.current?.removeAttribute("style");
-              });
-            }}
+            // onAnimationComplete={() => {
+            //   requestAnimationFrame(() => {
+            //     buttonRef.current?.removeAttribute("style");
+            //   });
+            // }}
           >
             Đăng ký tài khoản
           </Button>
@@ -431,7 +420,7 @@ function SignupForm(): JSX.Element {
             </div>
           </DialogContent>
         </Dialog>
-      </form>
+      </motion.form>
     </FormProvider>
   );
 }

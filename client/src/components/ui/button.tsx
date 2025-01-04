@@ -6,7 +6,7 @@ import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
 import { LoaderCircle } from "lucide-react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0 transition-all duration-300 ease-out",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0",
   {
     variants: {
       intent: {
@@ -97,6 +97,7 @@ const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(buttonVariants({ intent, size, iconOnly, className }))}
         ref={ref}
+        disabled={isLoading}
         {...props}
       >
         <AnimatePresence mode="popLayout" initial={false}>
