@@ -4,7 +4,7 @@ import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "motion/react";
+import { motion, useAnimate } from "motion/react";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
 import { DatePickerField } from "./ui/datePickerField";
@@ -382,45 +382,73 @@ function SignupForm(): JSX.Element {
                 Cảm ơn bạn đã đăng ký tài khoản Carshare
               </DialogTitle>
             </VisuallyHidden>
-            <div className="w-full h-fit bg-background-950 rounded-4xl overflow-hidden">
-              <div className="w-full h-fit bg-background-900 py-1">
-                <figure>
-                  <img
-                    src={checkEmailIllustrator}
-                    alt="illustrator about checking email"
-                    className="size-[8.75rem] object-contain mx-auto"
-                  />
-                </figure>
-              </div>
-              <div className="w-full h-fit space-y-8 p-8">
-                <div className="w-full h-fit text-center space-y-4">
-                  <h6 className="text-lg font-semibold text-white">
-                    Cảm ơn bạn đã đăng ký tài khoản Carshare!
-                  </h6>
-                  <p className="text-base font-normal text-foreground-500">
-                    Một đường link xác nhận đang được gửi về địa chỉ email{" "}
-                    <span className="text-foreground-100">
-                      l*******cnn@gmail.com
-                    </span>{" "}
-                    của bạn. Bạn vui lòng kiểm tra hòm thư để hoàn tất việc đăng
-                    ký nhé.
-                  </p>
-                </div>
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    intent="primary"
-                    size="default"
-                    className="w-full"
-                  >
-                    OK
-                  </Button>
-                </DialogClose>
-              </div>
-            </div>
+            <CompleteModal />
           </DialogContent>
         </Dialog>
       </motion.form>
     </FormProvider>
+  );
+}
+
+function CompleteModal(): React.JSX.Element {
+  const [scope, animate] = useAnimate();
+
+  React.useEffect(() => {
+    const animateImage = async () => {
+      await animate(
+        scope.current,
+        { x: 0, opacity: 1 },
+        { type: "spring", duration: 1, bounce: 0.5 }
+      );
+      animate(
+        scope.current,
+        { scale: [1.07, 1.0, 1.08], rotate: [-1, 1.3, 0] },
+        {
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "linear",
+          duration: 1,
+        }
+      );
+    };
+    animateImage();
+  }, []);
+
+  return (
+    <div className="w-full h-fit bg-background-950 rounded-4xl overflow-hidden">
+      <div className="w-full h-fit bg-background-900 py-1">
+        <figure>
+          <motion.img
+            ref={scope}
+            src={checkEmailIllustrator}
+            alt="illustrator about checking email"
+            className="size-[8.75rem] object-contain mx-auto"
+            initial={{ x: "12.5rem", opacity: 0 }}
+          />
+        </figure>
+      </div>
+      <div className="w-full h-fit space-y-8 p-8">
+        <div className="w-full h-fit text-center space-y-4">
+          <h6 className="text-lg font-semibold text-white">
+            Cảm ơn bạn đã đăng ký tài khoản Carshare!
+          </h6>
+          <p className="text-base font-normal text-foreground-500">
+            Một đường link xác nhận đang được gửi về địa chỉ email{" "}
+            <span className="text-foreground-100">l*******cnn@gmail.com</span>{" "}
+            của bạn. Bạn vui lòng kiểm tra hòm thư để hoàn tất việc đăng ký nhé.
+          </p>
+        </div>
+        <DialogClose asChild>
+          <Button
+            type="button"
+            intent="primary"
+            size="default"
+            className="w-full"
+          >
+            OK
+          </Button>
+        </DialogClose>
+      </div>
+    </div>
   );
 }
