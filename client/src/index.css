@@ -2,18 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Lexend Deca";
-  src: url("./assets/fonts/LexendDeca-VariableFont_wght.woff2")
-    format("woff2-variations");
-  font-weight: 100 900;
-  font-stretch: 75% 125%;
-  font-style: normal;
-}
+@layer base {
+  @font-face {
+    font-family: "Lexend Deca";
+    src: url("./assets/fonts/LexendDeca-VariableFont_wght.woff2")
+      format("woff2-variations");
+    font-weight: 100 900;
+    font-stretch: 75% 125%;
+    font-style: normal;
+  }
 
-html {
-  font-family: "Lexend Deca", system-ui, sans-serif;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  html {
+    font-family: "Lexend Deca", system-ui, sans-serif;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media screen("2k") {
+    html {
+      font-size: 150%;
+    }
+  }
+
+  @media screen("4k") {
+    html {
+      font-size: 200%;
+    }
+  }
+
+  @media screen("8k") {
+    html {
+      font-size: 400%;
+    }
+  }
 }

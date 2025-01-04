@@ -7,6 +7,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontSize: {
+        xxs: ["0.625rem", "0.875rem"],
+      },
       borderRadius: {
         "3xl": "1.25rem",
         "4xl": "1.5rem",
@@ -15,25 +18,19 @@ export default {
         "7xl": "3rem",
       },
       boxShadow: {
-        // primary: {
-        //   sm: "0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
-        //   DEFAULT:
-        //     "0 0.063rem 0.125rem 0 rgba(208, 92, 54, 0.05), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
-        //   md: "0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 1)",
-        //   lg: "0 0.5rem 1rem 0 rgba(208, 92, 54, 0.1), 0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1)",
-        //   xl: "0 0.25rem 1rem 0 rgba(208, 92, 54, 0.25), 0 0.5rem 1.5rem 0 rgba(208, 92, 54, 0.1)",
-        //   "2xl": "0 1rem 3rem 0.25rem rgba(208, 92, 54, 0.25)",
-        // },
         sm: "0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
         DEFAULT:
           "0 0.063rem 0.125rem 0 rgba(208, 92, 54, 0.05), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 0.05)",
         md: "0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1), 0 0.125rem 0.25rem 0 rgba(208, 92, 54, 1)",
-        lg: "0 0.5rem 1rem 0 rgba(208, 92, 54, 0.1), 0 0.25rem 0.5rem 0.125rem rgba(208, 92, 54, 0.1)",
+        lg: "0 0.5rem 1rem 0 rgba(29, 144, 245, 0.1), 0 0.25rem 0.5rem 0.125rem rgba(29, 144, 245, 0.1)",
         xl: "0 0.25rem 1rem 0 rgba(29, 144, 245, 0.25), 0 0.5rem 1.5rem 0 rgba(29, 144, 245, 0.1)",
         "2xl": "0 1rem 3rem 0.25rem rgba(208, 92, 54, 0.25)",
       },
     },
     screens: {
+      "8k": { min: "7680px" },
+      "4k": { min: "3840px" },
+      "2k": { min: "2560px" },
       "2xl": { max: "1535px" },
       xl: { max: "1279px" },
       lg: { max: "1023px" },
@@ -88,7 +85,7 @@ export default {
         900: "#232429",
         950: "#17181B",
       },
-      overlay: "hsl(0deg 0% 0% / 35%)",
+      overlay: "rgba(0,0,0,0.6)",
       divider: "#3B3E4A",
     },
   },
