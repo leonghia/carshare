@@ -38,7 +38,7 @@ export function Register(): JSX.Element {
               transition={{ type: "spring", duration: 1 }}
               className="w-full space-y-4 sm:space-y-2"
             >
-              <div className="flex gap-1">
+              <div className="flex gap-2 sm:gap-1">
                 <h1 className="text-4xl sm:text-lg font-bold sm:font-semibold text-white shrink-0">
                   Đăng ký tài khoản
                 </h1>
@@ -194,7 +194,7 @@ function SignupForm(): JSX.Element {
   const isSM = useMediaQuery({ maxWidth: 639 });
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
-  const methods = useForm<z.infer<typeof formSchema>>({
+  const methods = useForm<TFieldValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
@@ -211,7 +211,7 @@ function SignupForm(): JSX.Element {
     shouldFocusError: false,
   });
 
-  const onValid = (data: z.infer<typeof formSchema>) => {
+  const onValid = (data: TFieldValues) => {
     setIsSubmitting(true);
     const timeout = setTimeout(() => {
       const dto = {
@@ -225,7 +225,7 @@ function SignupForm(): JSX.Element {
       setIsSubmitting(false);
       setIsOpenCompleteModal(true);
       clearTimeout(timeout);
-    }, 5000);
+    }, 3000);
   };
 
   return (
