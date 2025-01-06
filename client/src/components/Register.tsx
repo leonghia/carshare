@@ -44,7 +44,7 @@ export function Register(): JSX.Element {
                 </h1>
                 <span className="inline-block translate-y-6 sm:translate-y-[15px] size-[0.625rem] sm:size-[0.375rem] bg-primary-500 rounded-full"></span>
               </div>
-              <p className="font-normal text-sm sm:text-xs text-foreground-500">
+              <p className="font-normal text-base sm:text-xs text-foreground-500">
                 Bạn đã có tài khoản?{" "}
                 <Link
                   to="/login"

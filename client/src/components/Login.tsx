@@ -2,7 +2,7 @@ import React from "react";
 import curvedDivider from "../assets/images/curved_divider_1.svg";
 import logo from "../assets/images/logo.svg";
 import { AnimatePresence, motion } from "motion/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { z } from "zod";
 import { useMediaQuery } from "react-responsive";
 import { FormProvider, useForm } from "react-hook-form";
@@ -15,6 +15,11 @@ import { Button } from "./ui/button";
 
 export function Login(): React.JSX.Element {
   const logoRef = React.useRef<HTMLElement>(null);
+  const navigate = useNavigate();
+
+  const onLoginSuccess = () => {
+    navigate("/");
+  };
 
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden">
@@ -63,7 +68,7 @@ export function Login(): React.JSX.Element {
               </p>
             </div>
             {/* Login form */}
-            <LoginForm />
+            <LoginForm onSuccess={onLoginSuccess} />
           </motion.div>
         </div>
         {/* Logo */}
@@ -110,7 +115,11 @@ const formSchema = z.object({
 
 type TFieldValues = z.infer<typeof formSchema>;
 
-function LoginForm(): React.JSX.Element {
+interface LoginFormProps {
+  onSuccess: () => void;
+}
+
+function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
   const buttonRef = React.useRef<HTMLButtonElement>(null);
@@ -137,11 +146,15 @@ function LoginForm(): React.JSX.Element {
       setIsSubmitting(false);
       const rand = Math.random();
 
-      rand >= 0.8
-        ? setError(null)
-        : setError("Email hoặc mật khẩu không chính xác");
-      // setError("Email hoặc mật khẩu không chính xác");
+      const isError = rand >= 0.8;
+
       clearTimeout(timeout);
+
+      if (isError) {
+        setError("Email hoặc mật khẩu không chính xác");
+      } else {
+        onSuccess();
+      }
     }, 3000);
   };
 

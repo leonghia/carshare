@@ -96,11 +96,14 @@ const Checkbox = React.forwardRef<
       <div className={cn(containerVariants({ size }), className)}>
         <CheckboxPrimitive.Root
           checked={checked}
-          onCheckedChange={setChecked}
           id={id}
           ref={ref}
           className={cn(checkboxVariants({ size }))}
           {...props}
+          onCheckedChange={(checked: boolean) => {
+            setChecked(checked);
+            props.onCheckedChange && props.onCheckedChange(checked);
+          }}
         >
           <CheckboxPrimitive.Indicator
             className={cn(
@@ -113,7 +116,7 @@ const Checkbox = React.forwardRef<
             animate={checked ? "checked" : "unchecked"}
             variants={{
               checked: {
-                scale: [1.25, 1.25],
+                scale: [1.5, 1.5],
                 opacity: [1, 0],
               },
               unchecked: {
