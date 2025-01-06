@@ -10,12 +10,9 @@ const buttonVariants = cva(
   {
     variants: {
       intent: {
-        primary:
-          "bg-primary-500 text-white hover:bg-primary-600 hover:shadow-xl",
-        secondary:
-          "bg-primary-flat text-primary-500 hover:bg-[rgba(29,144,245,0.25)] hover:text-primary-300",
-        danger:
-          "bg-danger-flat text-danger-500 hover:bg-[rgba(239,68,68,0.25)] hover:text-danger-400",
+        primary: null,
+        secondary: null,
+        danger: null,
       },
       size: {
         default: "text-base",
@@ -26,10 +23,43 @@ const buttonVariants = cva(
         false: null,
         true: "rounded-full",
       },
+      asLink: {
+        false: null,
+        true: null,
+      },
     },
     compoundVariants: [
       {
+        asLink: false,
+        intent: "primary",
+        className:
+          "bg-primary-500 text-white hover:bg-primary-600 hover:shadow-xl",
+      },
+      {
+        asLink: false,
+        intent: "secondary",
+        className:
+          "bg-primary-flat text-primary-500 hover:bg-[rgba(29,144,245,0.25)] hover:text-primary-300",
+      },
+      {
+        asLink: false,
+        intent: "danger",
+        className:
+          "bg-danger-flat text-danger-500 hover:bg-[rgba(239,68,68,0.25)] hover:text-danger-400",
+      },
+      {
+        asLink: true,
+        intent: "primary",
+        className: "text-primary-500 hover:text-primary-400",
+      },
+      {
+        asLink: true,
+        intent: "secondary",
+        className: "text-foreground-500 hover:text-foreground-400",
+      },
+      {
         iconOnly: false,
+        asLink: false,
         size: "default",
         className:
           "px-8 py-4 rounded-6xl [&_svg]:size-6 [&_.icon-loading]:size-7",
@@ -37,28 +67,33 @@ const buttonVariants = cva(
       {
         iconOnly: false,
         size: "small",
+        asLink: false,
         className:
           "px-8 py-4 rounded-5xl [&_svg]:size-5 [&_.icon-loading]:size-6",
       },
       {
         iconOnly: false,
         size: "extraSmall",
+        asLink: false,
         className:
           "px-6 py-3 rounded-4xl [&_svg]:size-5 [&_.icon-loading]:size-5",
       },
       {
         iconOnly: true,
         size: "default",
+        asLink: false,
         className: "size-12 [&_svg]:size-6",
       },
       {
         iconOnly: true,
         size: "small",
+        asLink: false,
         className: "size-10 [&_svg]:size-5",
       },
       {
         iconOnly: true,
         size: "extraSmall",
+        asLink: false,
         className: "size-8 [&_svg]:size-4",
       },
     ],
@@ -66,6 +101,7 @@ const buttonVariants = cva(
       size: "default",
       intent: "primary",
       iconOnly: false,
+      asLink: false,
     },
   }
 );
@@ -89,6 +125,7 @@ const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       isLoading = false,
       children,
       hasLoader = false,
+      asLink,
       ...props
     },
     ref
@@ -98,7 +135,10 @@ const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         // ref={ref}
-        className={cn(buttonVariants({ intent, size, iconOnly }), className)}
+        className={cn(
+          buttonVariants({ intent, size, iconOnly, asLink }),
+          className
+        )}
         disabled={isLoading}
         {...props}
       >

@@ -38,13 +38,13 @@ export function Register(): JSX.Element {
               transition={{ type: "spring", duration: 1 }}
               className="w-full space-y-4 sm:space-y-2"
             >
-              <div className="flex gap-1">
+              <div className="flex gap-2 sm:gap-1">
                 <h1 className="text-4xl sm:text-lg font-bold sm:font-semibold text-white shrink-0">
                   Đăng ký tài khoản
                 </h1>
                 <span className="inline-block translate-y-6 sm:translate-y-[15px] size-[0.625rem] sm:size-[0.375rem] bg-primary-500 rounded-full"></span>
               </div>
-              <p className="font-normal text-sm sm:text-xs text-foreground-500">
+              <p className="font-normal text-base sm:text-xs text-foreground-500">
                 Bạn đã có tài khoản?{" "}
                 <Link
                   to="/login"
@@ -194,7 +194,7 @@ function SignupForm(): JSX.Element {
   const isSM = useMediaQuery({ maxWidth: 639 });
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
-  const methods = useForm<z.infer<typeof formSchema>>({
+  const methods = useForm<TFieldValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
@@ -211,7 +211,7 @@ function SignupForm(): JSX.Element {
     shouldFocusError: false,
   });
 
-  const onValid = (data: z.infer<typeof formSchema>) => {
+  const onValid = (data: TFieldValues) => {
     setIsSubmitting(true);
     const timeout = setTimeout(() => {
       const dto = {
@@ -225,7 +225,7 @@ function SignupForm(): JSX.Element {
       setIsSubmitting(false);
       setIsOpenCompleteModal(true);
       clearTimeout(timeout);
-    }, 5000);
+    }, 3000);
   };
 
   return (
