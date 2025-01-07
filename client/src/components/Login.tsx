@@ -229,7 +229,7 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
               <CheckboxField
                 control={methods.control}
                 name="remember"
-                labelProps={{ className: "font-normal text-foreground-100" }}
+                classNames={{ label: "font-normal text-foreground-100" }}
               />
             </Field>
             <Button

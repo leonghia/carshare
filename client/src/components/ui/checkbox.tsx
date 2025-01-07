@@ -63,13 +63,18 @@ const descriptionVariants = cva("font-normal text-foreground-600", {
   defaultVariants: { size: "default" },
 });
 
+export interface CheckboxStyles {
+  container?: string;
+  label?: string;
+  description?: string;
+}
+
 interface CheckboxProps
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
     VariantProps<typeof checkboxVariants> {
   label?: string;
   description?: string;
-  labelProps?: React.ComponentPropsWithRef<"label">;
-  descriptionProps?: React.ComponentPropsWithRef<"p">;
+  classNames?: CheckboxStyles;
 }
 
 const Checkbox = React.forwardRef<
@@ -77,23 +82,20 @@ const Checkbox = React.forwardRef<
   CheckboxProps
 >(
   (
-    {
-      className,
-      size,
-      label,
-      description,
-      id = "field",
-      labelProps,
-      descriptionProps,
-      ...props
-    },
+    { className, size, label, description, id = "field", classNames, ...props },
     ref
   ) => {
     const [checked, setChecked] =
       React.useState<CheckboxPrimitive.CheckedState>(false);
 
     return (
-      <div className={cn(containerVariants({ size }), className)}>
+      <div
+        className={cn(
+          containerVariants({ size }),
+          className,
+          classNames?.container
+        )}
+      >
         <CheckboxPrimitive.Root
           checked={checked}
           id={id}
@@ -132,18 +134,16 @@ const Checkbox = React.forwardRef<
           {label && (
             <label
               htmlFor={id}
-              {...labelProps}
-              className={cn(labelVariants({ size }), labelProps?.className)}
+              className={cn(labelVariants({ size }), classNames?.label)}
             >
               {label}
             </label>
           )}
           {description && (
             <p
-              {...descriptionProps}
               className={cn(
                 descriptionVariants({ size }),
-                descriptionProps?.className
+                classNames?.description
               )}
             >
               {description}

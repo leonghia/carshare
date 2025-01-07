@@ -24,7 +24,7 @@ const field__upperVariants = cva(
 );
 
 const field__upper__innerVariants = cva(
-  "w-full h-fit bg-background-900 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:flex-none [&_svg]:text-foreground-300 focus-within:outline focus-within:outline-2 focus-within:outline-primary-500 focus-within:bg-[#383D4C]",
+  "w-full h-fit bg-background-900 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:flex-none focus-within:outline focus-within:outline-2 focus-within:outline-primary-500 focus-within:bg-[#383D4C]",
   {
     variants: {
       state: {
@@ -32,8 +32,8 @@ const field__upper__innerVariants = cva(
         error: "outline outline-2 outline-danger-500",
       },
       size: {
-        default: "px-6 py-3 rounded-3xl [&_svg]:size-6",
-        small: "px-4 py-2 rounded-2xl [&_svg]:size-5",
+        default: "px-6 py-3 rounded-3xl",
+        small: "px-4 py-2 rounded-2xl",
       },
     },
     defaultVariants: {

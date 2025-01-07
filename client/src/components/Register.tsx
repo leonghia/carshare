@@ -316,10 +316,10 @@ function SignupForm(): JSX.Element {
           >
             <DateField
               control={methods.control}
-              dayName="publishedDay"
+              dateName="publishedDay"
               monthName="publishedMonth"
               yearName="publishedYear"
-              dayPlaceholder="01"
+              datePlaceholder="01"
               monthPlaceholder="01"
               yearPlaceholder="2020"
               className="col-span-1"
@@ -364,7 +364,7 @@ function SignupForm(): JSX.Element {
               control={methods.control}
               name="agree"
               className="col-span-full"
-              labelProps={{ className: "font-normal text-foreground-100" }}
+              classNames={{ label: "font-normal text-foreground-200" }}
             />
           </Field>
         </div>

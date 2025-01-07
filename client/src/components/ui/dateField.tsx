@@ -9,7 +9,7 @@ import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 import { cva } from "class-variance-authority";
 
-const dayVariants = cva("flex-none min-w-0", {
+const dateVariants = cva("flex-none min-w-0 pr-[2px]", {
   variants: {
     size: {
       default: "w-6",
@@ -19,7 +19,7 @@ const dayVariants = cva("flex-none min-w-0", {
   defaultVariants: { size: "default" },
 });
 
-const monthVariants = cva("flex-none min-w-0", {
+const monthVariants = cva("flex-none min-w-0 pl-1", {
   variants: {
     size: {
       default: "w-[1.625rem]",
@@ -29,7 +29,7 @@ const monthVariants = cva("flex-none min-w-0", {
   defaultVariants: { size: "default" },
 });
 
-const yearVariants = cva("flex-none min-w-0", {
+const yearVariants = cva("flex-none min-w-0 pl-1", {
   variants: {
     size: {
       default: "w-12",
@@ -41,14 +41,14 @@ const yearVariants = cva("flex-none min-w-0", {
 
 interface DateFieldProps<
   TFieldValues extends FieldValues,
-  TDayName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TDateName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TMonthName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TYearName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > extends React.ComponentPropsWithRef<"div"> {
-  dayName: TDayName;
+  dateName: TDateName;
   monthName: TMonthName;
   yearName: TYearName;
-  dayPlaceholder?: string;
+  datePlaceholder?: string;
   monthPlaceholder?: string;
   yearPlaceholder?: string;
   control: Control<TFieldValues>;
@@ -56,20 +56,20 @@ interface DateFieldProps<
 
 const DateField = <
   TFieldValues extends FieldValues,
-  TDayName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TDateName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TMonthName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TYearName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
-  dayName,
+  dateName,
   monthName,
   yearName,
-  dayPlaceholder,
+  datePlaceholder,
   monthPlaceholder,
   yearPlaceholder,
   control,
   ref,
   ...props
-}: DateFieldProps<TFieldValues, TDayName, TMonthName, TYearName>) => {
+}: DateFieldProps<TFieldValues, TDateName, TMonthName, TYearName>) => {
   const { label, id, fieldInputId, size } = useField();
   const inputsRef = React.useRef<Map<string, HTMLInputElement> | null>(null);
 
@@ -92,6 +92,14 @@ const DateField = <
     node?.focus();
   };
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: TMonthName | TYearName
+  ) => {
+    if (e.target.value.length === 2 && !isNaN(Number(e.target.value)))
+      jumpToInput(name);
+  };
+
   return (
     <FieldContainer ref={ref} {...props}>
       <FieldUpper>
@@ -102,16 +110,14 @@ const DateField = <
               <FieldInput
                 handleRef={handleRef}
                 control={control}
-                fieldName={dayName}
+                fieldName={dateName}
                 type="text"
                 inputMode="numeric"
                 maxLength={2}
-                placeholder={dayPlaceholder}
+                placeholder={datePlaceholder}
                 id={fieldInputId}
-                className={cn(dayVariants({ size }), "pr-[0.125rem]")}
-                onChange={(e) => {
-                  if (e.target.value.length === 2) jumpToInput(monthName);
-                }}
+                className={cn(dateVariants({ size }))}
+                onChange={(e) => handleChange(e, monthName)}
               />
 
               <span
@@ -132,10 +138,8 @@ const DateField = <
                 maxLength={2}
                 placeholder={monthPlaceholder}
                 id={`${id}-month-field-input`}
-                className={cn(monthVariants({ size }), "pl-1")}
-                onChange={(e) => {
-                  if (e.target.value.length === 2) jumpToInput(yearName);
-                }}
+                className={cn(monthVariants({ size }))}
+                onChange={(e) => handleChange(e, yearName)}
               />
 
               <span
@@ -156,7 +160,7 @@ const DateField = <
                 maxLength={4}
                 placeholder={yearPlaceholder}
                 id={`${id}-year-field-input`}
-                className={cn(yearVariants({ size }), "pl-1")}
+                className={cn(yearVariants({ size }))}
               />
             </div>
           </div>
@@ -167,4 +171,4 @@ const DateField = <
   );
 };
 
-export { DateField };
+export { DateField, dateVariants, monthVariants, yearVariants };

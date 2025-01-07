@@ -5,8 +5,6 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { useField } from "./field";
-import { FieldLower } from "./fieldLower";
-import { FieldUpper } from "./fieldUpper";
 
 const field__containerVariants = cva(undefined, {
   variants: {

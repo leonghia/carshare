@@ -1,6 +1,6 @@
 import React from "react";
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
-import { Checkbox } from "./checkbox";
+import { Checkbox, CheckboxStyles } from "./checkbox";
 import { useField } from "./field";
 import { FieldContainer } from "./fieldContainer";
 import { FieldLower } from "./fieldLower";
@@ -11,8 +11,7 @@ interface CheckboxFieldProps<
 > extends React.ComponentPropsWithRef<"div"> {
   control: Control<TFieldValues>;
   name: TName;
-  labelProps?: React.ComponentPropsWithRef<"label">;
-  descriptionProps?: React.ComponentPropsWithRef<"p">;
+  classNames?: CheckboxStyles;
 }
 
 const CheckboxField = <
@@ -22,8 +21,7 @@ const CheckboxField = <
   control,
   name,
   ref,
-  labelProps,
-  descriptionProps,
+  classNames,
   ...props
 }: CheckboxFieldProps<TFieldValues, TName>) => {
   const { size, label, description, fieldInputId } = useField();
@@ -39,10 +37,9 @@ const CheckboxField = <
             label={label}
             description={description}
             id={fieldInputId}
-            labelProps={labelProps}
-            descriptionProps={descriptionProps}
             checked={field.value}
             onCheckedChange={field.onChange}
+            classNames={classNames}
           />
         )}
       />

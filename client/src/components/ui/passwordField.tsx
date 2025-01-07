@@ -10,15 +10,18 @@ import { FieldContainer } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 
-const innerVariants = cva("w-full flex items-center", {
-  variants: {
-    size: {
-      default: "gap-6",
-      small: "gap-4",
+const innerVariants = cva(
+  "w-full flex items-center [&_svg]:text-foreground-300",
+  {
+    variants: {
+      size: {
+        default: "gap-6 [&_svg]:size-6",
+        small: "gap-4 [&_svg]:size-5",
+      },
     },
-  },
-  defaultVariants: { size: "default" },
-});
+    defaultVariants: { size: "default" },
+  }
+);
 
 const thermometerVariants = cva(
   "h-1 rounded bg-background-600 group-focus-within:bg-background-500 overflow-hidden",
