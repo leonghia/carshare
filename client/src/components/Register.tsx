@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, useAnimate } from "motion/react";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
-import { DatePickerField } from "./ui/datePickerField";
+import { DateField } from "./ui/dateField";
 import { PasswordField } from "./ui/passwordField";
 import { calculatePasswordStrength, obscureEmail } from "@/lib/utils";
 import { CheckboxField } from "./ui/checkboxField";
@@ -31,13 +31,13 @@ export function Register(): JSX.Element {
       {/* Container */}
       <div className="grid justify-items-center items-center sm:items-start px-16 md:px-8 py-20 md:py-16 sm:px-4 sm:py-8 overflow-x-hidden relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)] xl:bg-[linear-gradient(248deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)] lg:bg-[linear-gradient(218deg,rgba(39,42,55,0.97)0%,rgba(39,42,55,1)50%,rgba(39,42,55,0.97)100%)] sm:bg-[linear-gradient(218deg,rgba(39,42,55,0.99)0%,rgba(39,42,55,1)50%,rgba(39,42,55,0.99)100%)]">
         <div className="w-full max-w-7xl h-fit lg:grid lg:justify-items-center sm:gap-12">
-          <div className="w-[34rem] sm:w-full sm:grid sm:justify-items-center h-fit space-y-12 sm:space-y-8">
-            <motion.div
-              initial={{ opacity: 0, x: "-9.375rem" }}
-              animate={{ opacity: 1, x: "0rem" }}
-              transition={{ type: "spring", duration: 1 }}
-              className="w-full space-y-4 sm:space-y-2"
-            >
+          <motion.div
+            initial={{ opacity: 0, x: "-9.375rem" }}
+            animate={{ opacity: 1, x: "0rem" }}
+            transition={{ type: "spring", duration: 1 }}
+            className="w-[34rem] sm:w-full sm:grid sm:justify-items-center h-fit space-y-12 sm:space-y-8"
+          >
+            <div className="w-full space-y-4 sm:space-y-2">
               <div className="flex gap-2 sm:gap-1">
                 <h1 className="text-4xl sm:text-lg font-bold sm:font-semibold text-white shrink-0">
                   Đăng ký tài khoản
@@ -53,9 +53,9 @@ export function Register(): JSX.Element {
                   Đăng nhập ngay
                 </Link>
               </p>
-            </motion.div>
+            </div>
             <SignupForm />
-          </div>
+          </motion.div>
           <figure className="hidden sm:block">
             <img src={logo} alt="logo" className="h-6 object-contain" />
           </figure>
@@ -232,7 +232,7 @@ function SignupForm(): JSX.Element {
     <FormProvider {...methods}>
       <motion.form
         onSubmit={methods.handleSubmit(onValid)}
-        className="w-full sm:max-w-[21.875rem] space-y-12 sm:space-y-8"
+        className="w-full sm:max-w-[27.5rem] space-y-12 sm:space-y-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ type: "tween", duration: 1, ease: "easeIn" }}
@@ -314,7 +314,7 @@ function SignupForm(): JSX.Element {
             size={isSM ? "small" : "default"}
             name="publishedDay"
           >
-            <DatePickerField
+            <DateField
               control={methods.control}
               dayName="publishedDay"
               monthName="publishedMonth"

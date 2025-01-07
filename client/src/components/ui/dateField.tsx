@@ -7,8 +7,39 @@ import { cn } from "@/lib/utils";
 import { field__textVariants, FieldContainer } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
+import { cva } from "class-variance-authority";
 
-interface DatePickerFieldProps<
+const dayVariants = cva("flex-none min-w-0", {
+  variants: {
+    size: {
+      default: "w-6",
+      small: "w-[1.375rem]",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
+const monthVariants = cva("flex-none min-w-0", {
+  variants: {
+    size: {
+      default: "w-[1.625rem]",
+      small: "w-6",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
+const yearVariants = cva("flex-none min-w-0", {
+  variants: {
+    size: {
+      default: "w-12",
+      small: "w-10",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
+interface DateFieldProps<
   TFieldValues extends FieldValues,
   TDayName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TMonthName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -23,7 +54,7 @@ interface DatePickerFieldProps<
   control: Control<TFieldValues>;
 }
 
-const DatePickerField = <
+const DateField = <
   TFieldValues extends FieldValues,
   TDayName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TMonthName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -38,7 +69,7 @@ const DatePickerField = <
   control,
   ref,
   ...props
-}: DatePickerFieldProps<TFieldValues, TDayName, TMonthName, TYearName>) => {
+}: DateFieldProps<TFieldValues, TDayName, TMonthName, TYearName>) => {
   const { label, id, fieldInputId, size } = useField();
   const inputsRef = React.useRef<Map<string, HTMLInputElement> | null>(null);
 
@@ -67,7 +98,7 @@ const DatePickerField = <
         <div className="w-full flex gap-4 items-center">
           <div className="flex-1 space-y-1 min-w-0">
             {label && <FieldLabel />}
-            <div className="flex items-center gap-2 sm:gap-1">
+            <div className="flex items-center gap-0">
               <FieldInput
                 handleRef={handleRef}
                 control={control}
@@ -77,11 +108,12 @@ const DatePickerField = <
                 maxLength={2}
                 placeholder={dayPlaceholder}
                 id={fieldInputId}
-                className="flex-none w-6 sm:w-5 min-w-0"
+                className={cn(dayVariants({ size }), "pr-[0.125rem]")}
                 onChange={(e) => {
                   if (e.target.value.length === 2) jumpToInput(monthName);
                 }}
               />
+
               <span
                 className={cn(
                   field__textVariants({ size }),
@@ -90,6 +122,7 @@ const DatePickerField = <
               >
                 /
               </span>
+
               <FieldInput
                 handleRef={handleRef}
                 control={control}
@@ -99,11 +132,12 @@ const DatePickerField = <
                 maxLength={2}
                 placeholder={monthPlaceholder}
                 id={`${id}-month-field-input`}
-                className="flex-none w-6 sm:w-5 min-w-0"
+                className={cn(monthVariants({ size }), "pl-1")}
                 onChange={(e) => {
                   if (e.target.value.length === 2) jumpToInput(yearName);
                 }}
               />
+
               <span
                 className={cn(
                   field__textVariants({ size }),
@@ -112,6 +146,7 @@ const DatePickerField = <
               >
                 /
               </span>
+
               <FieldInput
                 handleRef={handleRef}
                 control={control}
@@ -121,7 +156,7 @@ const DatePickerField = <
                 maxLength={4}
                 placeholder={yearPlaceholder}
                 id={`${id}-year-field-input`}
-                className="flex-1 min-w-0"
+                className={cn(yearVariants({ size }), "pl-1")}
               />
             </div>
           </div>
@@ -132,4 +167,4 @@ const DatePickerField = <
   );
 };
 
-export { DatePickerField };
+export { DateField };

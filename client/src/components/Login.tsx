@@ -47,7 +47,7 @@ export function Login(): React.JSX.Element {
             initial={{ opacity: 0, x: "-9.375rem" }}
             animate={{ opacity: 1, x: "0rem" }}
             transition={{ type: "spring", duration: 1 }}
-            className="w-[30rem] sm:w-full h-fit space-y-16 sm:space-y-8"
+            className="w-[30rem] sm:w-full h-fit space-y-12 sm:space-y-8"
           >
             {/* Heading */}
             <div className="w-full space-y-4 sm:space-y-1">
