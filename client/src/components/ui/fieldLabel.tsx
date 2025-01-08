@@ -25,13 +25,18 @@ const fieldLabelVariants = cva(
 
 interface FieldLabelProps
   extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>,
-    VariantProps<typeof fieldLabelVariants> {}
+    VariantProps<typeof fieldLabelVariants> {
+  mode?: "combined" | "single";
+  isDirtyCustom?: boolean;
+}
 
 const FieldLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   FieldLabelProps
->(({ className, ...props }, ref) => {
+>(({ className, isDirtyCustom, mode = "single", ...props }, ref) => {
   const { fieldInputId, label, size, required, error, isDirty } = useField();
+
+  const dirty = mode === "single" ? isDirty : isDirtyCustom;
 
   return (
     <Label
@@ -39,7 +44,7 @@ const FieldLabel = React.forwardRef<
       className={cn(
         fieldLabelVariants({
           size,
-          state: error ? "error" : isDirty ? "dirty" : "default",
+          state: error ? "error" : dirty ? "dirty" : "default",
         }),
         className
       )}

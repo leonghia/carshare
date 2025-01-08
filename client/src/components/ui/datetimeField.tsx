@@ -1,5 +1,5 @@
 import React from "react";
-import { Control, FieldPath, FieldValues } from "react-hook-form";
+import { Control, FieldPath, FieldValues, useWatch } from "react-hook-form";
 import { useField } from "./field";
 import { field__textVariants, FieldContainer } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { FieldInput } from "./fieldInput";
 import { dateVariants, monthVariants, yearVariants } from "./dateField";
 import { FieldLower } from "./fieldLower";
+import { z } from "zod";
 
 const innerVariants = cva("flex items-center", {
   variants: {
@@ -41,7 +42,7 @@ const hourVariants = cva("flex-none min-w-0 pr-[2px]", {
   defaultVariants: { size: "default" },
 });
 
-const minuteVariants = cva("flex-none min-w-0 pl-1", {
+const minuteVariants = cva("flex-none min-w-0 pl-[6px]", {
   variants: {
     size: {
       default: "w-[26px]",
@@ -80,6 +81,9 @@ interface DatetimeFieldProps<
   monthPlaceholder?: string;
   yearPlaceholder?: string;
   control: Control<TFieldValues>;
+  revalidate: boolean;
+  invalidMessage: string;
+  requiredMessage: string;
 }
 
 const DatetimeField = <
@@ -102,6 +106,9 @@ const DatetimeField = <
   yearPlaceholder,
   control,
   ref,
+  revalidate,
+  invalidMessage,
+  requiredMessage,
   ...props
 }: DatetimeFieldProps<
   TFieldValues,
@@ -111,8 +118,28 @@ const DatetimeField = <
   TMonthName,
   TYearName
 >) => {
-  const { label, id, fieldInputId, size } = useField();
+  const {
+    label,
+    id,
+    fieldInputId,
+    size,
+    setValue,
+    getFieldState,
+    name,
+    setError,
+    clearErrors,
+    getValues,
+  } = useField();
   const inputsRef = React.useRef<Map<string, HTMLInputElement> | null>(null);
+
+  const { isDirty: isHourDirty } = getFieldState(hourName);
+  const { isDirty: isMinuteDirty } = getFieldState(minuteName);
+  const { isDirty: isDateDirty } = getFieldState(dateName);
+  const { isDirty: isMonthDirty } = getFieldState(monthName);
+  const { isDirty: isYearDirty } = getFieldState(yearName);
+
+  const isDirty =
+    isHourDirty || isMinuteDirty || isDateDirty || isMonthDirty || isYearDirty;
 
   const getInputsMap = () => {
     if (!inputsRef.current) {
@@ -127,20 +154,56 @@ const DatetimeField = <
     return () => map.delete(name);
   };
 
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    itemName?: TMinuteName | TDateName | TMonthName | TYearName
+  ): void => {
+    if (itemName) jumpToInput(event.target.value, itemName);
+
+    // console.log(getValues(name));
+
+    const hourStr = getValues(hourName) as string;
+    const minuteStr = getValues(minuteName) as string;
+    const dateStr = getValues(dateName) as string;
+    const monthStr = getValues(monthName) as string;
+    const yearStr = getValues(yearName) as string;
+
+    const isAllEmpty =
+      hourStr.length === 0 &&
+      minuteStr.length === 0 &&
+      dateStr.length === 0 &&
+      monthStr.length === 0 &&
+      yearStr.length === 0;
+
+    const result = z
+      .string()
+      .datetime({ local: true })
+      .safeParse(
+        `${yearStr}-${monthStr.padStart(2, "0")}-${dateStr.padStart(
+          2,
+          "0"
+        )}T${hourStr.padStart(2, "0")}:${minuteStr.padStart(2, "0")}:00`
+      );
+
+    result.success && clearErrors(name);
+
+    if (!result.success && revalidate) {
+      setError(name, { type: "validate", message: invalidMessage });
+    }
+
+    if (isAllEmpty && revalidate) {
+      setError(name, { type: "required", message: requiredMessage });
+    }
+  };
+
   const jumpToInput = (
+    value: string,
     name: TMinuteName | TDateName | TMonthName | TYearName
   ) => {
+    if (value.length !== 2 || isNaN(Number(value))) return;
     const map = getInputsMap();
     const node = map.get(name);
     node?.focus();
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    name: TMonthName | TYearName | TMinuteName | TDateName
-  ) => {
-    if (e.target.value.length === 2 && !isNaN(Number(e.target.value)))
-      jumpToInput(name);
   };
 
   return (
@@ -148,7 +211,7 @@ const DatetimeField = <
       <FieldUpper>
         <div className="w-full flex gap-4 items-center">
           <div className="flex-1 space-y-1 min-w-0">
-            {label && <FieldLabel />}
+            {label && <FieldLabel mode="combined" isDirtyCustom={isDirty} />}
             <div className={cn(innerVariants({ size }))}>
               <div className={cn(wrapperVariants({ size }))}>
                 <Clock variant="Bold" className={cn(iconVariants({ size }))} />
@@ -163,7 +226,9 @@ const DatetimeField = <
                     placeholder={hourPlaceholder}
                     id={fieldInputId}
                     className={cn(hourVariants({ size }))}
-                    onChange={(e) => handleChange(e, minuteName)}
+                    onChange={(e) => {
+                      handleChange(e, minuteName);
+                    }}
                   />
                   <span
                     className={cn(
@@ -183,7 +248,9 @@ const DatetimeField = <
                     placeholder={minutePlaceholder}
                     id={`${id}-minute-field-input`}
                     className={cn(minuteVariants({ size }))}
-                    onChange={(e) => handleChange(e, dateName)}
+                    onChange={(e) => {
+                      handleChange(e, dateName);
+                    }}
                   />
                 </div>
               </div>
@@ -203,7 +270,9 @@ const DatetimeField = <
                     placeholder={datePlaceholder}
                     id={`${id}-date-field-input`}
                     className={cn(dateVariants({ size }))}
-                    onChange={(e) => handleChange(e, monthName)}
+                    onChange={(e) => {
+                      handleChange(e, monthName);
+                    }}
                   />
 
                   <span
@@ -225,7 +294,9 @@ const DatetimeField = <
                     placeholder={monthPlaceholder}
                     id={`${id}-month-field-input`}
                     className={cn(monthVariants({ size }))}
-                    onChange={(e) => handleChange(e, yearName)}
+                    onChange={(e) => {
+                      handleChange(e, yearName);
+                    }}
                   />
 
                   <span
@@ -247,6 +318,7 @@ const DatetimeField = <
                     placeholder={yearPlaceholder}
                     id={`${id}-year-field-input`}
                     className={cn(yearVariants({ size }))}
+                    onChange={handleChange}
                   />
                 </div>
               </div>

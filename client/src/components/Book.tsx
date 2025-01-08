@@ -4,8 +4,8 @@ import { Link, NavLink } from "react-router";
 import { Notification } from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
-import { z } from "zod";
-import { FormProvider, useForm } from "react-hook-form";
+import { date, z } from "zod";
+import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
@@ -82,44 +82,54 @@ const formSchema = z
       .string()
       .trim()
       .min(1, { message: "Điểm đón không được để trống" }),
-    hour: z.string().trim(),
-    minute: z.string().trim(),
-    day: z.string().trim(),
-    month: z.string().trim(),
-    year: z.string().trim(),
+    departureTime: z.object({
+      hour: z.string().trim(),
+      minute: z.string().trim(),
+      date: z.string().trim(),
+      month: z.string().trim(),
+      year: z.string().trim(),
+    }),
     numbersOfPassengers: z.string().trim(),
   })
-  .superRefine(({ hour, minute, day, month, year }, ctx) => {
+  .superRefine(({ departureTime }, ctx) => {
     if (
-      hour.length === 0 ||
-      minute.length === 0 ||
-      day.length === 0 ||
-      month.length === 0 ||
-      year.length === 0
+      departureTime.hour.length === 0 &&
+      departureTime.minute.length === 0 &&
+      departureTime.date.length === 0 &&
+      departureTime.month.length === 0 &&
+      departureTime.year.length === 0
     ) {
       ctx.addIssue({
         code: "custom",
-        message: "Thời gian khởi hành không được để trống",
-        path: ["hour"],
+        message: "Thời gian không được để trống",
+        path: ["departureTime"],
+        fatal: true,
       });
+
+      return z.NEVER;
     }
 
     if (
       !z
         .string()
-        .date()
-        .safeParse(`${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`)
-        .success ||
-      !z
-        .string()
-        .time()
-        .safeParse(`${hour.padStart(2, "0")}:${minute.padStart(2, "0")}:00`)
-        .success
+        .datetime({ local: true })
+        .safeParse(
+          `${departureTime.year}-${departureTime.month.padStart(
+            2,
+            "0"
+          )}-${departureTime.date.padStart(
+            2,
+            "0"
+          )}T${departureTime.hour.padStart(
+            2,
+            "0"
+          )}:${departureTime.minute.padStart(2, "0")}:00`
+        ).success
     ) {
       ctx.addIssue({
         code: "invalid_date",
         message: "Thời gian không hợp lệ",
-        path: ["hour"],
+        path: ["departureTime"],
       });
     }
   });
@@ -131,6 +141,7 @@ function SearchForm(): React.JSX.Element {
   const isSM = useMediaQuery({ maxWidth: 639 });
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [revalidate, setRevalidate] = React.useState(false);
   const now = new Date();
 
   const methods = useForm<TFieldValues>({
@@ -138,11 +149,13 @@ function SearchForm(): React.JSX.Element {
     defaultValues: {
       destination: "",
       pickup: "",
-      hour: "",
-      minute: "",
-      day: "",
-      month: "",
-      year: "",
+      departureTime: {
+        hour: "",
+        minute: "",
+        date: "",
+        month: "",
+        year: "",
+      },
       numbersOfPassengers: "",
       useCurrentLocation: false,
     },
@@ -157,10 +170,14 @@ function SearchForm(): React.JSX.Element {
     }, 3000);
   };
 
+  const onInvalid = (errors: FieldErrors<TFieldValues>) => {
+    setRevalidate(true);
+  };
+
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onValid)}
+        onSubmit={methods.handleSubmit(onValid, onInvalid)}
         className="w-[400px] space-y-10"
       >
         {/* Fields */}
@@ -215,15 +232,18 @@ function SearchForm(): React.JSX.Element {
             label="Thời gian khởi hành"
             required
             size={isSM ? "small" : "default"}
-            name="hour"
+            name="departureTime"
           >
             <DatetimeField
+              invalidMessage="Thời gian không hợp lệ"
+              requiredMessage="Thời gian khởi hành không được để trống"
+              revalidate={revalidate}
               control={methods.control}
-              hourName="hour"
-              minuteName="minute"
-              dateName="day"
-              monthName="month"
-              yearName="year"
+              hourName="departureTime.hour"
+              minuteName="departureTime.minute"
+              dateName="departureTime.date"
+              monthName="departureTime.month"
+              yearName="departureTime.year"
               hourPlaceholder={String(now.getHours()).padStart(2, "0")}
               minutePlaceholder={String(now.getMinutes()).padStart(2, "0")}
               datePlaceholder={String(now.getDate()).padStart(2, "0")}

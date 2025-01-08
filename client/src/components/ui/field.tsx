@@ -70,10 +70,25 @@ const useField = () => {
     throw new Error("useField must be used within FieldContext.Provider");
   }
 
-  const { getFieldState, formState } = useFormContext();
+  const {
+    getFieldState,
+    formState,
+    setValue,
+    setError,
+    clearErrors,
+    getValues,
+  } = useFormContext();
   const fieldState = getFieldState(fieldContext.name, formState);
 
-  return { ...fieldContext, ...fieldState };
+  return {
+    ...fieldContext,
+    ...fieldState,
+    setValue,
+    getFieldState,
+    setError,
+    clearErrors,
+    getValues,
+  };
 };
 
 export { Field, FieldContext, useField };

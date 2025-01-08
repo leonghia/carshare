@@ -44,7 +44,7 @@ const FieldLower = React.forwardRef<
                 ease: "easeOut",
               }}
             >
-              {String(error.message)}
+              {String(error.message || error.root?.message)}
             </MotionFieldMessage>
           )}
 
