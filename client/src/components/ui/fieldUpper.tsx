@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 import { useField } from "./field";
-import { field__containerVariants } from "./fieldContainer";
+import { containerVariants } from "./fieldContainer";
 
 const field__upperVariants = cva(
   "group peer focus-within:outline focus-within:outline-8 focus-within:outline-primary-flat",
@@ -46,16 +46,17 @@ const field__upper__innerVariants = cva(
 const FieldUpper = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<"div">
->(({ children }, ref) => {
+>(({ children, className }, ref) => {
   const { size, error } = useField();
 
-  const state: Pick<
-    VariantProps<typeof field__containerVariants>,
-    "state"
-  >["state"] = error ? "error" : "default";
+  const state: Pick<VariantProps<typeof containerVariants>, "state">["state"] =
+    error ? "error" : "default";
 
   return (
-    <div ref={ref} className={cn(field__upperVariants({ size, state }))}>
+    <div
+      ref={ref}
+      className={cn(field__upperVariants({ size, state }), className)}
+    >
       <div
         className={cn(
           field__upper__innerVariants({

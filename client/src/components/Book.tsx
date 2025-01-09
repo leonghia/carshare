@@ -90,7 +90,10 @@ const formSchema = z
       month: z.string().trim(),
       year: z.string().trim(),
     }),
-    numbersOfPassengers: z.string().trim(),
+    numbersOfPassengers: z
+      .string()
+      .trim()
+      .min(1, { message: "Số lượng không được để trống" }),
   })
   .superRefine(({ departureTime }, ctx) => {
     if (
@@ -165,6 +168,7 @@ function SearchForm(): React.JSX.Element {
   });
 
   const onValid = (data: TFieldValues) => {
+    console.log(data);
     setIsSearching(true);
     const timeout = setTimeout(() => {
       setIsSearching(false);
@@ -175,6 +179,8 @@ function SearchForm(): React.JSX.Element {
   const onInvalid = (errors: FieldErrors<TFieldValues>) => {
     setRevalidate(true);
   };
+
+  console.log("form re rendered");
 
   return (
     <FormProvider {...methods}>
@@ -257,7 +263,12 @@ function SearchForm(): React.JSX.Element {
             name="numbersOfPassengers"
             control={methods.control}
           >
-            <QuantityField max={20} />
+            <QuantityField
+              max={20}
+              min={0}
+              placeholder="0"
+              classNames={{ upper: "max-w-[240px]" }}
+            />
           </Field>
         </div>
         {/* Search button */}

@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
-import { field__textVariants, FieldContainer } from "./fieldContainer";
+import { textVariants, FieldContainer } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLabel } from "./fieldLabel";
 import { Clock, Calendar } from "iconsax-react";
@@ -230,7 +230,7 @@ const DatetimeField = <
                   />
                   <span
                     className={cn(
-                      field__textVariants({ size }),
+                      textVariants({ size }),
                       "text-foreground-600"
                     )}
                   >
@@ -275,7 +275,7 @@ const DatetimeField = <
 
                   <span
                     className={cn(
-                      field__textVariants({ size }),
+                      textVariants({ size }),
                       "text-foreground-600"
                     )}
                   >
@@ -299,7 +299,7 @@ const DatetimeField = <
 
                   <span
                     className={cn(
-                      field__textVariants({ size }),
+                      textVariants({ size }),
                       "text-foreground-600"
                     )}
                   >

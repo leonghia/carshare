@@ -4,7 +4,7 @@ import { useField } from "./field";
 import { FieldInput } from "./fieldInput";
 import { FieldLabel } from "./fieldLabel";
 import { cn } from "@/lib/utils";
-import { field__textVariants, FieldContainer } from "./fieldContainer";
+import { textVariants, FieldContainer } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 import { cva } from "class-variance-authority";
@@ -165,10 +165,7 @@ const DateField = <
               />
 
               <span
-                className={cn(
-                  field__textVariants({ size }),
-                  "text-foreground-600"
-                )}
+                className={cn(textVariants({ size }), "text-foreground-600")}
               >
                 /
               </span>
@@ -187,10 +184,7 @@ const DateField = <
               />
 
               <span
-                className={cn(
-                  field__textVariants({ size }),
-                  "text-foreground-600"
-                )}
+                className={cn(textVariants({ size }), "text-foreground-600")}
               >
                 /
               </span>
