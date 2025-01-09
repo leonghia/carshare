@@ -123,7 +123,6 @@ const DatetimeField = <
     id,
     fieldInputId,
     size,
-    setValue,
     getFieldState,
     name,
     setError,

@@ -136,13 +136,14 @@ const formSchema = z
 
 type TFieldValues = z.infer<typeof formSchema>;
 
+const now = new Date();
+
 function SearchForm(): React.JSX.Element {
   const [isSearching, setIsSearching] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
   const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const [error, setError] = React.useState<string | null>(null);
+  const [serverError, setServerError] = React.useState<string | null>(null);
   const [revalidate, setRevalidate] = React.useState(false);
-  const now = new Date();
 
   const methods = useForm<TFieldValues>({
     resolver: zodResolver(formSchema),
