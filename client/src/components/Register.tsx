@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { string, z } from "zod";
 import curvedDivider from "../assets/images/curved_divider_1.svg";
 import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
-import { FormProvider, useForm } from "react-hook-form";
+import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, useAnimate } from "motion/react";
 import { Field } from "./ui/field";
@@ -118,9 +118,11 @@ const formSchema = z
       .trim()
       .min(1, { message: "Số CCCD không được để trống" })
       .max(12, { message: "Số CCCD không chứa quá 12 số" }),
-    publishedDay: z.string().trim(),
-    publishedMonth: z.string().trim(),
-    publishedYear: z.string().trim(),
+    issuedAt: z.object({
+      date: z.string().trim(),
+      month: z.string().trim(),
+      year: z.string().trim(),
+    }),
     password: z
       .string()
       .trim()
@@ -134,62 +136,63 @@ const formSchema = z
       message: "Bạn phải đồng ý cam đoan",
     }),
   })
-  .superRefine(
-    (
-      { password, retypePassword, publishedDay, publishedMonth, publishedYear },
-      ctx
-    ) => {
-      if (calculatePasswordStrength(password) === "weak") {
-        ctx.addIssue({
-          code: "custom",
-          message: "Mật khẩu của bạn quá yếu",
-          path: ["password"],
-        });
-      }
-
-      if (password !== retypePassword) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Mật khẩu nhập lại phải trùng khớp",
-          path: ["retypePassword"],
-        });
-      }
-      if (
-        publishedDay.length === 0 ||
-        publishedMonth.length === 0 ||
-        publishedYear.length === 0
-      ) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Ngày cấp CCCD không được để trống",
-          path: ["publishedDay"],
-        });
-      }
-
-      if (
-        !z
-          .string()
-          .date()
-          .safeParse(
-            `${publishedYear}-${publishedMonth.padStart(
-              2,
-              "0"
-            )}-${publishedDay.padStart(2, "0")}`
-          ).success
-      ) {
-        ctx.addIssue({
-          code: "invalid_date",
-          message: "Ngày cấp CCCD không hợp lệ",
-          path: ["publishedDay"],
-        });
-      }
+  .superRefine(({ password, retypePassword, issuedAt }, ctx) => {
+    if (calculatePasswordStrength(password) === "weak") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Mật khẩu của bạn quá yếu",
+        path: ["password"],
+      });
     }
-  );
+
+    if (password !== retypePassword) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Mật khẩu nhập lại phải trùng khớp",
+        path: ["retypePassword"],
+      });
+    }
+    if (
+      issuedAt.date.length === 0 &&
+      issuedAt.month.length === 0 &&
+      issuedAt.year.length === 0
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Ngày cấp không được để trống",
+        path: ["issuedAt"],
+        fatal: true,
+      });
+
+      return z.NEVER;
+    }
+
+    if (
+      !z
+        .string()
+        .date()
+        .safeParse(
+          `${issuedAt.year}-${issuedAt.month.padStart(
+            2,
+            "0"
+          )}-${issuedAt.date.padStart(2, "0")}`
+        ).success
+    ) {
+      ctx.addIssue({
+        code: "invalid_date",
+        message: "Ngày cấp không hợp lệ",
+        path: ["issuedAt"],
+      });
+    }
+  });
 
 type TFieldValues = z.infer<typeof formSchema>;
 
+const now = new Date();
+
 function SignupForm(): JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [revalidate, setRevalidate] = React.useState(false);
   const [isOpenCompleteModal, setIsOpenCompleteModal] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
   const buttonRef = React.useRef<HTMLButtonElement>(null);
@@ -201,9 +204,11 @@ function SignupForm(): JSX.Element {
       phoneNumber: "",
       email: "",
       nationalID: "",
-      publishedDay: "",
-      publishedMonth: "",
-      publishedYear: "",
+      issuedAt: {
+        date: "",
+        month: "",
+        year: "",
+      },
       password: "",
       retypePassword: "",
       agree: false,
@@ -214,24 +219,20 @@ function SignupForm(): JSX.Element {
   const onValid = (data: TFieldValues) => {
     setIsSubmitting(true);
     const timeout = setTimeout(() => {
-      const dto = {
-        fullName: data.fullName,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-        nationalID: data.nationalID,
-        issuedDate: `${data.publishedYear}-${data.publishedMonth}-${data.publishedDay}`,
-        password: data.password,
-      };
       setIsSubmitting(false);
       setIsOpenCompleteModal(true);
       clearTimeout(timeout);
     }, 3000);
   };
 
+  const onInvalid = (errors: FieldErrors<TFieldValues>) => {
+    setRevalidate(true);
+  };
+
   return (
     <FormProvider {...methods}>
       <motion.form
-        onSubmit={methods.handleSubmit(onValid)}
+        onSubmit={methods.handleSubmit(onValid, onInvalid)}
         className="w-full sm:max-w-[27.5rem] space-y-12 sm:space-y-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -312,17 +313,20 @@ function SignupForm(): JSX.Element {
             label="Ngày cấp CCCD"
             required
             size={isSM ? "small" : "default"}
-            name="publishedDay"
+            name="issuedAt"
           >
             <DateField
               control={methods.control}
-              dateName="publishedDay"
-              monthName="publishedMonth"
-              yearName="publishedYear"
-              datePlaceholder="01"
-              monthPlaceholder="01"
-              yearPlaceholder="2020"
+              dateName="issuedAt.date"
+              monthName="issuedAt.month"
+              yearName="issuedAt.year"
+              datePlaceholder={String(now.getDate()).padStart(2, "0")}
+              monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
+              yearPlaceholder={String(now.getFullYear())}
               className="col-span-1"
+              revalidate={revalidate}
+              invalidMessage="Ngày cấp không hợp lệ"
+              requiredMessage="Ngày cấp không được để trống"
             />
           </Field>
           <Field<TFieldValues>
@@ -330,7 +334,7 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="password"
-            description="Tối thiểu tối thiểu 6 ký tự, với ít nhất 1 chữ cái thường, 1 chữ cái in hoa, 1 chữ số (0-9) và 1 ký tự đặc biệt."
+            description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái thường, 1 chữ cái in hoa, 1 chữ số (0-9) và 1 ký tự đặc biệt."
           >
             <PasswordField
               control={methods.control}
