@@ -13,11 +13,16 @@ import { Button } from "./ui/button";
 import { CheckboxField } from "./ui/checkboxField";
 import { DatetimeField } from "./ui/datetimeField";
 import { QuantityField } from "./ui/quantityField";
+import { cn } from "@/lib/utils";
+
+type Step = "search" | "selectService" | "summary";
 
 export function Book(): React.JSX.Element {
+  const [step, setStep] = React.useState<Step>("search");
+
   return (
     <div className="relative w-full min-h-screen bg-background-950 lg:grid lg:grid-rows-[max-content,minmax(0,1fr)]">
-      <div className="w-full min-h-screen lg:min-h-fit px-16 xl:px-10 lg:px-8 py-8 lg:pb-0 lg:pt-8 sm:px-4 sm:pt-4 grid xl:gap-12 sm:gap-10 grid-rows-[max-content,minmax(0,1fr)] justify-items-center">
+      <div className="w-full min-h-screen lg:min-h-fit px-16 xl:px-10 lg:px-8 py-8 lg:pb-0 lg:pt-8 sm:px-4 sm:pt-4 grid grid-rows-[max-content,minmax(0,1fr)] justify-items-center">
         {/* Header */}
         <header className="z-10 w-full grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
           {/* Hamburger button & Logo */}
@@ -76,9 +81,14 @@ export function Book(): React.JSX.Element {
           </div>
         </header>
         {/* Main */}
-        <main className="z-10 w-full max-w-[1400px] lg:max-w-[800px] md:max-w-[600px] sm:max-w-[450px] grid items-center">
-          {/* Search form */}
-          <SearchForm />
+        <main
+          className={cn(
+            "xl:pt-12 sm:pt-10 z-10 w-full max-w-[1500px] lg:max-w-[800px] md:max-w-[600px] sm:max-w-[450px] grid",
+            step === "search" && "items-center"
+          )}
+        >
+          {/* Step */}
+          {step === "search" ? <SearchForm /> : <SelectService />}
         </main>
       </div>
       {/* Map */}
@@ -315,4 +325,8 @@ function SearchForm(): React.JSX.Element {
       </form>
     </FormProvider>
   );
+}
+
+function SelectService(): React.JSX.Element {
+  return <div className="w-[] grid grid-cols-1 gap-12"></div>;
 }
