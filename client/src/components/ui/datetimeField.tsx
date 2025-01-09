@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
-import { textVariants, FieldContainer } from "./fieldContainer";
+import { textVariants, FieldContainer, FieldStyles } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLabel } from "./fieldLabel";
 import { Clock, Calendar } from "iconsax-react";
@@ -69,7 +69,7 @@ interface DatetimeFieldProps<
   TDateName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TMonthName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TYearName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends React.ComponentPropsWithRef<"div"> {
+> extends Omit<React.ComponentPropsWithRef<"div">, "className"> {
   hourName: THourName;
   minuteName: TMinuteName;
   dateName: TDateName;
@@ -83,6 +83,7 @@ interface DatetimeFieldProps<
   revalidate: boolean;
   invalidMessage: string;
   requiredMessage: string;
+  classNames?: FieldStyles & { inner?: string };
 }
 
 const DatetimeField = <
@@ -107,6 +108,7 @@ const DatetimeField = <
   revalidate,
   invalidMessage,
   requiredMessage,
+  classNames,
   ...props
 }: DatetimeFieldProps<
   TFieldValues,
@@ -205,12 +207,12 @@ const DatetimeField = <
   };
 
   return (
-    <FieldContainer ref={ref} {...props}>
-      <FieldUpper>
+    <FieldContainer ref={ref} className={cn(classNames?.container)} {...props}>
+      <FieldUpper className={cn(classNames?.upper)}>
         <div className="w-full flex gap-4 items-center">
           <div className="flex-1 space-y-1 min-w-0">
             {label && <FieldLabel mode="combined" isDirtyCustom={isDirty} />}
-            <div className={cn(innerVariants({ size }))}>
+            <div className={cn(innerVariants({ size }), classNames?.inner)}>
               <div className={cn(wrapperVariants({ size }))}>
                 <Clock variant="Bold" className={cn(iconVariants({ size }))} />
                 <div className="flex items-center gap-0">
@@ -324,7 +326,7 @@ const DatetimeField = <
           </div>
         </div>
       </FieldUpper>
-      <FieldLower />
+      <FieldLower className={cn(classNames?.lower)} />
     </FieldContainer>
   );
 };

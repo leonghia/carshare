@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../assets/images/logo.svg";
 import { Link, NavLink } from "react-router";
-import { Notification } from "iconsax-react";
+import { Notification, HambergerMenu } from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
@@ -16,65 +16,79 @@ import { QuantityField } from "./ui/quantityField";
 
 export function Book(): React.JSX.Element {
   return (
-    <div className="relative w-full min-h-screen bg-background-950 px-16 py-8 grid grid-rows-[max-content,minmax(0,1fr)] justify-items-center ">
-      {/* Header */}
-      <header className="z-10 w-full grid grid-cols-[repeat(3,max-content)] items-center justify-between">
-        {/* Logo */}
-        <Link to="/">
-          <img src={logo} alt="carshare logo" className="h-8 object-cover" />
-        </Link>
-        {/* Navbar */}
-        <nav className="w-[31.25rem] flex items-center justify-between">
-          <NavLink
-            to="/book"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Đặt xe
-          </NavLink>
-          <NavLink
-            to="/rules"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Quy định
-          </NavLink>
-          <NavLink
-            to="/feedback"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Phản ánh
-          </NavLink>
-        </nav>
-        {/* Right */}
-        <div className="flex items-center gap-10">
-          <button type="button" className="relative">
-            <Notification
-              variant="Bold"
-              className="size-8 text-foreground-500"
-            />
-            <span className="block absolute top-[2px] left-[18px] size-3 rounded-full bg-danger-500 border-2 border-white"></span>
-          </button>
-          <button type="button">
-            <img
-              src={pfp}
-              alt="user profile picture"
-              className="size-10 rounded-full border-2 border-primary-500 shadow-xl"
-            />
-          </button>
-        </div>
-      </header>
-      {/* Main */}
-      <main className="z-10 w-full max-w-[1400px] grid items-center">
-        {/* Search form */}
-        <SearchForm />
-      </main>
+    <div className="relative w-full min-h-screen bg-background-950 lg:grid lg:grid-rows-[max-content,minmax(0,1fr)]">
+      <div className="w-full min-h-screen lg:min-h-fit px-16 xl:px-10 lg:px-8 py-8 lg:pb-0 lg:pt-8 sm:px-4 sm:pt-4 grid xl:gap-12 sm:gap-10 grid-rows-[max-content,minmax(0,1fr)] justify-items-center">
+        {/* Header */}
+        <header className="z-10 w-full grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
+          {/* Hamburger button & Logo */}
+          <div className="flex items-center gap-4">
+            <button type="button" className="hidden lg:block">
+              <HambergerMenu
+                variant="Bold"
+                className="size-8 sm:size-6 text-foreground-500"
+              />
+            </button>
+            <Link to="/">
+              <img
+                src={logo}
+                alt="carshare logo"
+                className="h-8 sm:h-5 object-cover"
+              />
+            </Link>
+          </div>
+          {/* Navbar */}
+          <nav className="w-[31.25rem] xl:w-[400px] lg:hidden flex items-center justify-between">
+            <NavLink
+              to="/book"
+              className="text-lg font-medium text-foreground-500 [&.active]:text-white"
+            >
+              Đặt xe
+            </NavLink>
+            <NavLink
+              to="/rules"
+              className="text-lg font-medium text-foreground-500 [&.active]:text-white"
+            >
+              Quy định
+            </NavLink>
+            <NavLink
+              to="/feedback"
+              className="text-lg font-medium text-foreground-500 [&.active]:text-white"
+            >
+              Phản ánh
+            </NavLink>
+          </nav>
+          {/* Right */}
+          <div className="flex items-center gap-10 sm:gap-6">
+            <button type="button" className="relative">
+              <Notification
+                variant="Bold"
+                className="size-8 sm:size-6 text-foreground-500"
+              />
+              <span className="block absolute top-0 right-0 size-3 sm:size-2 rounded-full bg-danger-500 border-2 sm:border border-white"></span>
+            </button>
+            <button type="button">
+              <img
+                src={pfp}
+                alt="user profile picture"
+                className="size-10 sm:size-[30px] rounded-full border-2 sm:border border-primary-500 shadow-xl sm:shadow-md"
+              />
+            </button>
+          </div>
+        </header>
+        {/* Main */}
+        <main className="z-10 w-full max-w-[1400px] lg:max-w-[800px] md:max-w-[600px] sm:max-w-[450px] grid items-center">
+          {/* Search form */}
+          <SearchForm />
+        </main>
+      </div>
       {/* Map */}
-      <div className="absolute z-0 w-full h-full">
+      <div className="absolute inset-0 z-0 lg:relative">
         {/* Vertical gradient */}
-        <div className="absolute w-full h-full bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] lg:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
         {/* Horizontal gradient */}
-        <div className="absolute w-full h-full bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] lg:bg-[linear-gradient(90deg,rgba(39,42,55,0.7)0%,rgba(39,42,55,0)20%,rgba(39,42,55,0)80%,rgba(39,42,55,0.7)100%)]"></div>
         {/* Figmap */}
-        <div className="ml-auto w-[76%] h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
+        <div className="ml-auto w-[76%] 2xl:w-[65%] lg:w-full h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
       </div>
     </div>
   );
@@ -192,10 +206,10 @@ function SearchForm(): React.JSX.Element {
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(onValid, onInvalid)}
-        className="w-[400px] space-y-10"
+        className="w-[400px] 2xl:w-[384px] lg:w-full space-y-10 sm:space-y-8"
       >
         {/* Fields */}
-        <div className="w-full space-y-6">
+        <div className="w-full grid gap-6 grid-cols-1 lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1">
           <Field<TFieldValues>
             label="Điểm đến"
             required
@@ -208,9 +222,12 @@ function SearchForm(): React.JSX.Element {
                 type: "text",
                 placeholder: "Nhập địa chỉ bạn muốn đến...",
               }}
+              classNames={{
+                container: "col-span-full lg:col-span-1 md:col-span-full",
+              }}
             />
           </Field>
-          <div className="space-y-4">
+          <div className="space-y-4 col-span-full lg:col-span-1 lg:row-start-2 md:col-span-full">
             <Field<TFieldValues>
               label="Điểm đón"
               required
@@ -234,7 +251,7 @@ function SearchForm(): React.JSX.Element {
               <CheckboxField
                 classNames={{
                   container: "items-center",
-                  label: "text-sm font-normal text-foreground-200",
+                  label: "text-sm font-normal text-foreground-200 sm:text-xs",
                 }}
               />
             </Field>
@@ -260,6 +277,11 @@ function SearchForm(): React.JSX.Element {
               datePlaceholder={String(now.getDate()).padStart(2, "0")}
               monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
               yearPlaceholder={String(now.getFullYear())}
+              classNames={{
+                container:
+                  "col-span-full lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
+                inner: "gap-8 sm:gap-10",
+              }}
             />
           </Field>
           <Field<TFieldValues>
@@ -273,7 +295,11 @@ function SearchForm(): React.JSX.Element {
               max={20}
               min={0}
               placeholder="0"
-              classNames={{ upper: "max-w-[240px]" }}
+              classNames={{
+                upper: "max-w-[240px]",
+                container:
+                  "col-span-full lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
+              }}
             />
           </Field>
         </div>
@@ -284,7 +310,7 @@ function SearchForm(): React.JSX.Element {
           isLoading={isSearching}
           size={isSM ? "small" : "default"}
           type="submit"
-          className="px-0 py-0 w-full h-[70px]"
+          className="px-0 py-0 w-full h-[70px] lg:w-[320px] lg:h-16 lg:flex lg:mx-auto sm:w-full sm:h-[60px]"
         >
           Tìm cuốc xe
         </Button>

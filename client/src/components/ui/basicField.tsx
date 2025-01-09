@@ -1,5 +1,5 @@
 import React from "react";
-import { textVariants, FieldContainer } from "./fieldContainer";
+import { textVariants, FieldContainer, FieldStyles } from "./fieldContainer";
 import { cn } from "@/lib/utils";
 import { FieldLabel } from "./fieldLabel";
 import { useField } from "./field";
@@ -7,18 +7,24 @@ import { FieldInput } from "./fieldInput";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 
-interface BasicFieldProps extends React.ComponentPropsWithoutRef<"div"> {
+interface BasicFieldProps
+  extends Omit<React.ComponentPropsWithoutRef<"div">, "className"> {
   leftIcon?: React.ReactNode;
   leftText?: string;
   inputProps: React.InputHTMLAttributes<HTMLInputElement>;
+  classNames?: FieldStyles;
 }
 
 const BasicField = React.forwardRef<HTMLDivElement, BasicFieldProps>(
-  ({ leftIcon, leftText, inputProps, ...props }, ref) => {
+  ({ leftIcon, leftText, inputProps, classNames, ...props }, ref) => {
     const { label, size, fieldInputId, name, control } = useField();
     return (
-      <FieldContainer ref={ref} {...props}>
-        <FieldUpper>
+      <FieldContainer
+        ref={ref}
+        className={cn(classNames?.container)}
+        {...props}
+      >
+        <FieldUpper className={cn(classNames?.upper)}>
           <div className="w-full flex gap-4 items-center">
             {leftIcon}
             <div className="flex-1 space-y-1">
@@ -38,7 +44,7 @@ const BasicField = React.forwardRef<HTMLDivElement, BasicFieldProps>(
             </div>
           </div>
         </FieldUpper>
-        <FieldLower />
+        <FieldLower className={cn(classNames?.lower)} />
       </FieldContainer>
     );
   }
