@@ -16,9 +16,9 @@ import { QuantityField } from "./ui/quantityField";
 
 export function Book(): React.JSX.Element {
   return (
-    <div className="w-full min-h-screen bg-background-950 px-16 py-8 grid grid-rows-[max-content,minmax(0,1fr)] justify-items-center ">
+    <div className="relative w-full min-h-screen bg-background-950 px-16 py-8 grid grid-rows-[max-content,minmax(0,1fr)] justify-items-center ">
       {/* Header */}
-      <header className="w-full grid grid-cols-[repeat(3,max-content)] items-center justify-between">
+      <header className="z-10 w-full grid grid-cols-[repeat(3,max-content)] items-center justify-between">
         {/* Logo */}
         <Link to="/">
           <img src={logo} alt="carshare logo" className="h-8 object-cover" />
@@ -63,11 +63,19 @@ export function Book(): React.JSX.Element {
         </div>
       </header>
       {/* Main */}
-      <main className="w-full max-w-[1400px] grid items-center">
+      <main className="z-10 w-full max-w-[1400px] grid items-center">
         {/* Search form */}
         <SearchForm />
       </main>
       {/* Map */}
+      <div className="absolute z-0 w-full h-full">
+        {/* Vertical gradient */}
+        <div className="absolute w-full h-full bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)]"></div>
+        {/* Horizontal gradient */}
+        <div className="absolute w-full h-full bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)]"></div>
+        {/* Figmap */}
+        <div className="ml-auto w-[76%] h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
+      </div>
     </div>
   );
 }
@@ -179,8 +187,6 @@ function SearchForm(): React.JSX.Element {
   const onInvalid = (errors: FieldErrors<TFieldValues>) => {
     setRevalidate(true);
   };
-
-  console.log("form re rendered");
 
   return (
     <FormProvider {...methods}>
