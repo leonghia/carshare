@@ -134,7 +134,7 @@ const UnmotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        // ref={ref}
+        ref={ref}
         className={cn(
           buttonVariants({ intent, size, iconOnly, asLink }),
           className

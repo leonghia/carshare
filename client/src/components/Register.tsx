@@ -195,7 +195,6 @@ function SignupForm(): JSX.Element {
   const [revalidate, setRevalidate] = React.useState(false);
   const [isOpenCompleteModal, setIsOpenCompleteModal] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const methods = useForm<TFieldValues>({
     resolver: zodResolver(formSchema),
@@ -252,7 +251,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "Nguyễn Văn A",
                 maxLength: 64,
               }}
-              className="col-span-1 sm:col-span-full"
+              classNames={{ container: "col-span-1 sm:col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -269,7 +268,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "0123 456 789",
                 maxLength: 12,
               }}
-              className="col-span-1 sm:col-span-full"
+              classNames={{ container: "col-span-1 sm:col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -285,7 +284,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "abc@email.com",
                 maxLength: 254,
               }}
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -302,7 +301,7 @@ function SignupForm(): JSX.Element {
                 placeholder: "000000000000",
                 maxLength: 12,
               }}
-              className="col-span-1"
+              classNames={{ container: "col-span-1" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -319,7 +318,7 @@ function SignupForm(): JSX.Element {
               datePlaceholder={String(now.getDate()).padStart(2, "0")}
               monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
               yearPlaceholder={String(now.getFullYear())}
-              className="col-span-1"
+              classNames={{ container: "col-span-1" }}
               revalidate={revalidate}
               invalidMessage="Ngày cấp không hợp lệ"
               requiredMessage="Ngày cấp không được để trống"
@@ -337,7 +336,7 @@ function SignupForm(): JSX.Element {
               maxLength={128}
               placeholder="****************"
               hasStrength
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -350,7 +349,7 @@ function SignupForm(): JSX.Element {
             <PasswordField
               maxLength={128}
               placeholder="****************"
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -370,7 +369,6 @@ function SignupForm(): JSX.Element {
           onOpenChange={setIsOpenCompleteModal}
         >
           <Button
-            ref={buttonRef}
             hasLoader
             isLoading={isSubmitting}
             size={isSM ? "small" : "default"}

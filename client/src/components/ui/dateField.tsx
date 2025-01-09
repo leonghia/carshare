@@ -4,7 +4,7 @@ import { useField } from "./field";
 import { FieldInput } from "./fieldInput";
 import { FieldLabel } from "./fieldLabel";
 import { cn } from "@/lib/utils";
-import { textVariants, FieldContainer } from "./fieldContainer";
+import { textVariants, FieldContainer, FieldStyles } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 import { cva } from "class-variance-authority";
@@ -45,7 +45,7 @@ interface DateFieldProps<
   TDateName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TMonthName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TYearName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends React.ComponentPropsWithRef<"div"> {
+> extends Omit<React.ComponentPropsWithRef<"div">, "className"> {
   dateName: TDateName;
   monthName: TMonthName;
   yearName: TYearName;
@@ -55,6 +55,7 @@ interface DateFieldProps<
   revalidate: boolean;
   invalidMessage: string;
   requiredMessage: string;
+  classNames?: FieldStyles;
 }
 
 const DateField = <
@@ -73,6 +74,7 @@ const DateField = <
   revalidate,
   invalidMessage,
   requiredMessage,
+  classNames,
   ...props
 }: DateFieldProps<TFieldValues, TDateName, TMonthName, TYearName>) => {
   const {
@@ -145,8 +147,8 @@ const DateField = <
   };
 
   return (
-    <FieldContainer ref={ref} {...props}>
-      <FieldUpper>
+    <FieldContainer ref={ref} className={cn(classNames?.container)} {...props}>
+      <FieldUpper className={cn(classNames?.upper)}>
         <div className="w-full flex gap-4 items-center">
           <div className="flex-1 space-y-1 min-w-0">
             {label && <FieldLabel mode="combined" isDirtyCustom={isDirty} />}
@@ -205,7 +207,7 @@ const DateField = <
           </div>
         </div>
       </FieldUpper>
-      <FieldLower />
+      <FieldLower className={cn(classNames?.lower)} />
     </FieldContainer>
   );
 };

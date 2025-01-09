@@ -122,7 +122,6 @@ interface LoginFormProps {
 function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   const methods = useForm<TFieldValues>({
@@ -202,7 +201,7 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
                 placeholder: "abc@email.com",
                 maxLength: 254,
               }}
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -215,7 +214,7 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
             <PasswordField
               maxLength={128}
               placeholder="****************"
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <div className="flex items-center justify-between">
@@ -240,7 +239,6 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
         </div>
         {/* Submit button */}
         <Button
-          ref={buttonRef}
           hasLoader
           isLoading={isSubmitting}
           size={isSM ? "small" : "default"}

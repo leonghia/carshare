@@ -167,7 +167,6 @@ const now = new Date();
 function SearchForm(): React.JSX.Element {
   const [isSearching, setIsSearching] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [revalidate, setRevalidate] = React.useState(false);
 
@@ -209,7 +208,7 @@ function SearchForm(): React.JSX.Element {
         className="w-[400px] 2xl:w-[384px] lg:w-full space-y-10 sm:space-y-8"
       >
         {/* Fields */}
-        <div className="w-full grid gap-6 grid-cols-1 lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1">
+        <div className="w-full grid gap-8 lg:gap-6 grid-cols-1 lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1">
           <Field<TFieldValues>
             label="Điểm đến"
             required
@@ -227,7 +226,7 @@ function SearchForm(): React.JSX.Element {
               }}
             />
           </Field>
-          <div className="space-y-4 col-span-full lg:col-span-1 lg:row-start-2 md:col-span-full">
+          <div className="space-y-4 sm:space-y-3 col-span-full lg:col-span-1 lg:row-start-2 md:col-span-full">
             <Field<TFieldValues>
               label="Điểm đón"
               required
@@ -305,12 +304,11 @@ function SearchForm(): React.JSX.Element {
         </div>
         {/* Search button */}
         <Button
-          ref={buttonRef}
           hasLoader
           isLoading={isSearching}
           size={isSM ? "small" : "default"}
           type="submit"
-          className="px-0 py-0 w-full h-[70px] lg:w-[320px] lg:h-16 lg:flex lg:mx-auto sm:w-full sm:h-[60px]"
+          className="px-0 py-0 w-full h-[70px] lg:w-[320px] lg:h-16 lg:flex lg:mx-auto sm:w-full sm:h-[56px]"
         >
           Tìm cuốc xe
         </Button>

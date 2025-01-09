@@ -5,7 +5,7 @@ import { calculatePasswordStrength, cn } from "@/lib/utils";
 import { Eye, EyeSlash } from "iconsax-react";
 import { FieldLabel } from "./fieldLabel";
 import { FieldInput } from "./fieldInput";
-import { FieldContainer } from "./fieldContainer";
+import { FieldContainer, FieldStyles } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 
@@ -78,12 +78,14 @@ const strengths: Record<Strength, [Strength, StrengthText]> = {
   strong: ["strong", "Mạnh"],
 };
 
-interface PasswordFieldProps extends React.ComponentPropsWithoutRef<"div"> {
+interface PasswordFieldProps
+  extends Omit<React.ComponentPropsWithoutRef<"div">, "className"> {
   visibleIcon?: React.ReactNode;
   invisibleIcon?: React.ReactNode;
   maxLength: number;
   placeholder?: string;
   hasStrength?: boolean;
+  classNames?: FieldStyles;
 }
 
 const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
@@ -94,6 +96,7 @@ const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
       maxLength,
       placeholder,
       hasStrength = false,
+      classNames,
       ...props
     },
     ref
@@ -103,8 +106,12 @@ const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
     const [strength, setStrength] = React.useState<Strength>("default");
 
     return (
-      <FieldContainer ref={ref} {...props}>
-        <FieldUpper>
+      <FieldContainer
+        ref={ref}
+        className={cn(classNames?.container)}
+        {...props}
+      >
+        <FieldUpper className={cn(classNames?.upper)}>
           <div className={cn(innerVariants({ size }))}>
             <div className="flex-1 space-y-1">
               <div className="flex items-center justify-between">
@@ -142,7 +149,7 @@ const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
             </button>
           </div>
         </FieldUpper>
-        <FieldLower />
+        <FieldLower className={cn(classNames?.lower)} />
       </FieldContainer>
     );
   }
