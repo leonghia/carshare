@@ -1,6 +1,5 @@
 import { cva } from "class-variance-authority";
 import React from "react";
-import { Control, FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
 import { calculatePasswordStrength, cn } from "@/lib/utils";
 import { Eye, EyeSlash } from "iconsax-react";
@@ -79,12 +78,7 @@ const strengths: Record<Strength, [Strength, StrengthText]> = {
   strong: ["strong", "Mạnh"],
 };
 
-interface PasswordFieldProps<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends React.ComponentPropsWithRef<"div"> {
-  control: Control<TFieldValues>;
-  name: TName;
+interface PasswordFieldProps extends React.ComponentPropsWithoutRef<"div"> {
   visibleIcon?: React.ReactNode;
   invisibleIcon?: React.ReactNode;
   maxLength: number;
@@ -92,67 +86,66 @@ interface PasswordFieldProps<
   hasStrength?: boolean;
 }
 
-const PasswordField = <
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
->({
-  control,
-  name,
-  visibleIcon = <Eye variant="Bold" />,
-  invisibleIcon = <EyeSlash variant="Bold" />,
-  ref,
-  maxLength,
-  placeholder,
-  hasStrength = false,
-  ...props
-}: PasswordFieldProps<TFieldValues, TName>) => {
-  const { label, size, fieldInputId } = useField();
-  const [isVisible, setIsVisible] = React.useState(false);
-  const [strength, setStrength] = React.useState<Strength>("default");
+const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
+  (
+    {
+      visibleIcon = <Eye variant="Bold" />,
+      invisibleIcon = <EyeSlash variant="Bold" />,
+      maxLength,
+      placeholder,
+      hasStrength = false,
+      ...props
+    },
+    ref
+  ) => {
+    const { label, size, fieldInputId, name, control } = useField();
+    const [isVisible, setIsVisible] = React.useState(false);
+    const [strength, setStrength] = React.useState<Strength>("default");
 
-  return (
-    <FieldContainer ref={ref} {...props}>
-      <FieldUpper>
-        <div className={cn(innerVariants({ size }))}>
-          <div className="flex-1 space-y-1">
-            <div className="flex items-center justify-between">
-              {label && <FieldLabel />}
-              {hasStrength && (
-                <div className="flex items-center gap-2">
-                  <span
-                    className={cn(strengthTextVariants({ size, strength }))}
-                  >
-                    {strengths[strength][1]}
-                  </span>
-                  <div className={cn(thermometerVariants({ size }))}>
+    return (
+      <FieldContainer ref={ref} {...props}>
+        <FieldUpper>
+          <div className={cn(innerVariants({ size }))}>
+            <div className="flex-1 space-y-1">
+              <div className="flex items-center justify-between">
+                {label && <FieldLabel />}
+                {hasStrength && (
+                  <div className="flex items-center gap-2">
                     <span
-                      className={cn(indicatorVariants({ strength }))}
-                    ></span>
+                      className={cn(strengthTextVariants({ size, strength }))}
+                    >
+                      {strengths[strength][1]}
+                    </span>
+                    <div className={cn(thermometerVariants({ size }))}>
+                      <span
+                        className={cn(indicatorVariants({ strength }))}
+                      ></span>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+              <FieldInput
+                className="w-full"
+                control={control}
+                fieldName={name}
+                id={fieldInputId}
+                type={isVisible ? "text" : "password"}
+                placeholder={placeholder}
+                maxLength={maxLength}
+                onChange={(e) =>
+                  setStrength(calculatePasswordStrength(e.target.value))
+                }
+              />
             </div>
-            <FieldInput
-              className="w-full"
-              control={control}
-              fieldName={name}
-              id={fieldInputId}
-              type={isVisible ? "text" : "password"}
-              placeholder={placeholder}
-              maxLength={maxLength}
-              onChange={(e) =>
-                setStrength(calculatePasswordStrength(e.target.value))
-              }
-            />
+            <button type="button" onClick={() => setIsVisible(!isVisible)}>
+              {isVisible ? invisibleIcon : visibleIcon}
+            </button>
           </div>
-          <button type="button" onClick={() => setIsVisible(!isVisible)}>
-            {isVisible ? invisibleIcon : visibleIcon}
-          </button>
-        </div>
-      </FieldUpper>
-      <FieldLower />
-    </FieldContainer>
-  );
-};
+        </FieldUpper>
+        <FieldLower />
+      </FieldContainer>
+    );
+  }
+);
 
 export { PasswordField, type Strength };

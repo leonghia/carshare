@@ -1,51 +1,40 @@
 import React from "react";
-import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { Checkbox, CheckboxStyles } from "./checkbox";
 import { useField } from "./field";
 import { FieldContainer } from "./fieldContainer";
 import { FieldLower } from "./fieldLower";
 
-interface CheckboxFieldProps<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends React.ComponentPropsWithRef<"div"> {
-  control: Control<TFieldValues>;
-  name: TName;
+interface CheckboxFieldProps extends React.ComponentPropsWithoutRef<"div"> {
   classNames?: CheckboxStyles;
 }
 
-const CheckboxField = <
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
->({
-  control,
-  name,
-  ref,
-  classNames,
-  ...props
-}: CheckboxFieldProps<TFieldValues, TName>) => {
-  const { size, label, description, fieldInputId } = useField();
+const CheckboxField = React.forwardRef<HTMLDivElement, CheckboxFieldProps>(
+  ({ classNames, ...props }, ref) => {
+    const { size, label, description, fieldInputId, control, name } =
+      useField();
 
-  return (
-    <FieldContainer ref={ref} {...props}>
-      <Controller
-        control={control}
-        name={name}
-        render={({ field }) => (
-          <Checkbox
-            size={size}
-            label={label}
-            description={description}
-            id={fieldInputId}
-            checked={field.value}
-            onCheckedChange={field.onChange}
-            classNames={classNames}
-          />
-        )}
-      />
-      <FieldLower />
-    </FieldContainer>
-  );
-};
+    return (
+      <FieldContainer ref={ref} {...props}>
+        <Controller
+          control={control}
+          name={name}
+          render={({ field }) => (
+            <Checkbox
+              size={size}
+              label={label}
+              description={description}
+              id={fieldInputId}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              classNames={classNames}
+            />
+          )}
+        />
+        <FieldLower />
+      </FieldContainer>
+    );
+  }
+);
 
 export { CheckboxField };

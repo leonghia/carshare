@@ -1,5 +1,5 @@
 import React from "react";
-import { Control, FieldPath, FieldValues, useWatch } from "react-hook-form";
+import { FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
 import { field__textVariants, FieldContainer } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
@@ -80,7 +80,6 @@ interface DatetimeFieldProps<
   datePlaceholder?: string;
   monthPlaceholder?: string;
   yearPlaceholder?: string;
-  control: Control<TFieldValues>;
   revalidate: boolean;
   invalidMessage: string;
   requiredMessage: string;
@@ -104,7 +103,6 @@ const DatetimeField = <
   datePlaceholder,
   monthPlaceholder,
   yearPlaceholder,
-  control,
   ref,
   revalidate,
   invalidMessage,
@@ -128,6 +126,7 @@ const DatetimeField = <
     setError,
     clearErrors,
     getValues,
+    control,
   } = useField();
   const inputsRef = React.useRef<Map<string, HTMLInputElement> | null>(null);
 

@@ -4,7 +4,7 @@ import { Link, NavLink } from "react-router";
 import { Notification } from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
-import { date, z } from "zod";
+import { z } from "zod";
 import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
@@ -12,6 +12,7 @@ import { BasicField } from "./ui/basicField";
 import { Button } from "./ui/button";
 import { CheckboxField } from "./ui/checkboxField";
 import { DatetimeField } from "./ui/datetimeField";
+import { QuantityField } from "./ui/quantityField";
 
 export function Book(): React.JSX.Element {
   return (
@@ -188,10 +189,9 @@ function SearchForm(): React.JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="destination"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="destination"
               inputProps={{
                 type: "text",
                 placeholder: "Nhập địa chỉ bạn muốn đến...",
@@ -204,10 +204,9 @@ function SearchForm(): React.JSX.Element {
               required
               size={isSM ? "small" : "default"}
               name="pickup"
+              control={methods.control}
             >
               <BasicField
-                control={methods.control}
-                name="pickup"
                 inputProps={{
                   type: "text",
                   placeholder: "Nhập địa chỉ để tài xế đón bạn...",
@@ -218,10 +217,9 @@ function SearchForm(): React.JSX.Element {
               label="Sử dụng vị trí hiện tại của tôi"
               size={isSM ? "small" : "default"}
               name="useCurrentLocation"
+              control={methods.control}
             >
               <CheckboxField
-                control={methods.control}
-                name="useCurrentLocation"
                 classNames={{
                   container: "items-center",
                   label: "text-sm font-normal text-foreground-200",
@@ -234,12 +232,12 @@ function SearchForm(): React.JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="departureTime"
+            control={methods.control}
           >
             <DatetimeField
               invalidMessage="Thời gian không hợp lệ"
               requiredMessage="Thời gian khởi hành không được để trống"
               revalidate={revalidate}
-              control={methods.control}
               hourName="departureTime.hour"
               minuteName="departureTime.minute"
               dateName="departureTime.date"
@@ -251,6 +249,15 @@ function SearchForm(): React.JSX.Element {
               monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
               yearPlaceholder={String(now.getFullYear())}
             />
+          </Field>
+          <Field<TFieldValues>
+            label="Số lượng hành khách"
+            required
+            size={isSM ? "small" : "default"}
+            name="numbersOfPassengers"
+            control={methods.control}
+          >
+            <QuantityField max={20} />
           </Field>
         </div>
         {/* Search button */}

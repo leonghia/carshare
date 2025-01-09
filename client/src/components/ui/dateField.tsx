@@ -1,5 +1,5 @@
 import React from "react";
-import { Control, FieldPath, FieldValues } from "react-hook-form";
+import { FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
 import { FieldInput } from "./fieldInput";
 import { FieldLabel } from "./fieldLabel";
@@ -52,7 +52,6 @@ interface DateFieldProps<
   datePlaceholder?: string;
   monthPlaceholder?: string;
   yearPlaceholder?: string;
-  control: Control<TFieldValues>;
   revalidate: boolean;
   invalidMessage: string;
   requiredMessage: string;
@@ -70,7 +69,6 @@ const DateField = <
   datePlaceholder,
   monthPlaceholder,
   yearPlaceholder,
-  control,
   ref,
   revalidate,
   invalidMessage,
@@ -87,6 +85,7 @@ const DateField = <
     setError,
     clearErrors,
     getValues,
+    control,
   } = useField();
   const inputsRef = React.useRef<Map<string, HTMLInputElement> | null>(null);
 
@@ -150,7 +149,7 @@ const DateField = <
       <FieldUpper>
         <div className="w-full flex gap-4 items-center">
           <div className="flex-1 space-y-1 min-w-0">
-            {label && <FieldLabel />}
+            {label && <FieldLabel mode="combined" isDirtyCustom={isDirty} />}
             <div className="flex items-center gap-0">
               <FieldInput
                 handleRef={handleRef}
