@@ -8,6 +8,7 @@ import { field__textVariants, FieldContainer } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 import { cva } from "class-variance-authority";
+import { z } from "zod";
 
 const dateVariants = cva("flex-none min-w-0 pr-[2px]", {
   variants: {
@@ -52,6 +53,9 @@ interface DateFieldProps<
   monthPlaceholder?: string;
   yearPlaceholder?: string;
   control: Control<TFieldValues>;
+  revalidate: boolean;
+  invalidMessage: string;
+  requiredMessage: string;
 }
 
 const DateField = <
@@ -68,10 +72,29 @@ const DateField = <
   yearPlaceholder,
   control,
   ref,
+  revalidate,
+  invalidMessage,
+  requiredMessage,
   ...props
 }: DateFieldProps<TFieldValues, TDateName, TMonthName, TYearName>) => {
-  const { label, id, fieldInputId, size } = useField();
+  const {
+    label,
+    id,
+    fieldInputId,
+    size,
+    getFieldState,
+    name,
+    setError,
+    clearErrors,
+    getValues,
+  } = useField();
   const inputsRef = React.useRef<Map<string, HTMLInputElement> | null>(null);
+
+  const { isDirty: isDateDirty } = getFieldState(dateName);
+  const { isDirty: isMonthDirty } = getFieldState(monthName);
+  const { isDirty: isYearDirty } = getFieldState(yearName);
+
+  const isDirty = isDateDirty || isMonthDirty || isYearDirty;
 
   const getInputsMap = () => {
     if (!inputsRef.current) {
@@ -86,18 +109,40 @@ const DateField = <
     return () => map.delete(name);
   };
 
-  const jumpToInput = (name: TMonthName | TYearName) => {
+  const jumpToInput = (value: string, name: TMonthName | TYearName) => {
+    if (value.length !== 2 || isNaN(Number(value))) return;
     const map = getInputsMap();
     const node = map.get(name);
     node?.focus();
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    name: TMonthName | TYearName
+    event: React.ChangeEvent<HTMLInputElement>,
+    itemName?: TMonthName | TYearName
   ) => {
-    if (e.target.value.length === 2 && !isNaN(Number(e.target.value)))
-      jumpToInput(name);
+    if (itemName) jumpToInput(event.target.value, itemName);
+
+    const dateStr = getValues(dateName) as string;
+    const monthStr = getValues(monthName) as string;
+    const yearStr = getValues(yearName) as string;
+
+    const isAllEmpty =
+      dateStr.length === 0 && monthStr.length === 0 && yearStr.length === 0;
+
+    const result = z
+      .string()
+      .date()
+      .safeParse(
+        `${yearStr}-${monthStr.padStart(2, "0")}-${dateStr.padStart(2, "0")}`
+      );
+
+    result.success && clearErrors(name);
+
+    if (!result.success && revalidate)
+      setError(name, { type: "validate", message: invalidMessage });
+
+    if (isAllEmpty && revalidate)
+      setError(name, { type: "required", message: requiredMessage });
   };
 
   return (
@@ -161,6 +206,7 @@ const DateField = <
                 placeholder={yearPlaceholder}
                 id={`${id}-year-field-input`}
                 className={cn(yearVariants({ size }))}
+                onChange={handleChange}
               />
             </div>
           </div>
