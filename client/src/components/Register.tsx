@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 import curvedDivider from "../assets/images/curved_divider_1.svg";
 import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
@@ -244,10 +244,9 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="fullName"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="fullName"
               inputProps={{
                 type: "text",
                 placeholder: "Nguyễn Văn A",
@@ -261,10 +260,9 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="phoneNumber"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="phoneNumber"
               inputProps={{
                 type: "tel",
                 inputMode: "tel",
@@ -279,10 +277,9 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="email"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="email"
               inputProps={{
                 type: "email",
                 placeholder: "abc@email.com",
@@ -296,10 +293,9 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="nationalID"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="nationalID"
               inputProps={{
                 type: "text",
                 inputMode: "numeric",
@@ -314,9 +310,9 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="issuedAt"
+            control={methods.control}
           >
             <DateField
-              control={methods.control}
               dateName="issuedAt.date"
               monthName="issuedAt.month"
               yearName="issuedAt.year"
@@ -334,11 +330,10 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="password"
+            control={methods.control}
             description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái thường, 1 chữ cái in hoa, 1 chữ số (0-9) và 1 ký tự đặc biệt."
           >
             <PasswordField
-              control={methods.control}
-              name="password"
               maxLength={128}
               placeholder="****************"
               hasStrength
@@ -350,10 +345,9 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="retypePassword"
+            control={methods.control}
           >
             <PasswordField
-              control={methods.control}
-              name="retypePassword"
               maxLength={128}
               placeholder="****************"
               className="col-span-full"
@@ -363,10 +357,9 @@ function SignupForm(): JSX.Element {
             label="Tôi cam đoan những thông tin trên đây là đúng sự thật"
             size={isSM ? "small" : "default"}
             name="agree"
+            control={methods.control}
           >
             <CheckboxField
-              control={methods.control}
-              name="agree"
               className="col-span-full"
               classNames={{ label: "font-normal text-foreground-200" }}
             />

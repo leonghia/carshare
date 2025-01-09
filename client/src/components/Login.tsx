@@ -194,10 +194,9 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="email"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="email"
               inputProps={{
                 type: "email",
                 placeholder: "abc@email.com",
@@ -211,10 +210,9 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="password"
+            control={methods.control}
           >
             <PasswordField
-              control={methods.control}
-              name="password"
               maxLength={128}
               placeholder="****************"
               className="col-span-full"
@@ -225,10 +223,9 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
               label="Ghi nhớ tôi"
               size={isSM ? "small" : "default"}
               name="remember"
+              control={methods.control}
             >
               <CheckboxField
-                control={methods.control}
-                name="remember"
                 classNames={{ label: "font-normal text-foreground-100" }}
               />
             </Field>
