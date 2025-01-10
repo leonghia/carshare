@@ -1,11 +1,16 @@
 import React from "react";
 import logo from "../assets/images/logo.svg";
 import { Link, NavLink } from "react-router";
-import { Notification, HambergerMenu } from "iconsax-react";
+import { Notification, HambergerMenu, Money4 } from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
-import { FieldErrors, FormProvider, useForm } from "react-hook-form";
+import {
+  Controller,
+  FieldErrors,
+  FormProvider,
+  useForm,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
@@ -14,6 +19,12 @@ import { CheckboxField } from "./ui/checkboxField";
 import { DatetimeField } from "./ui/datetimeField";
 import { QuantityField } from "./ui/quantityField";
 import { cn } from "@/lib/utils";
+import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import { RadioGroup } from "./ui/radio-group";
+import carshareBasicIllustrator from "../assets/images/carshare_basic_illustrator.webp";
+import carsharePremiumIllustrator from "../assets/images/carshare_premium_illustrator.webp";
+import carshareExtraIllustrator from "../assets/images/carshare_extra_illustrator.webp";
+import { FieldLower } from "./ui/fieldLower";
 
 type Step = "search" | "selectService" | "summary";
 
@@ -83,12 +94,11 @@ export function Book(): React.JSX.Element {
         {/* Main */}
         <main
           className={cn(
-            "xl:pt-12 sm:pt-10 z-10 w-full max-w-[1500px] lg:max-w-[800px] md:max-w-[600px] sm:max-w-[450px] grid",
-            step === "search" && "items-center"
+            "pt-[128px] xl:pt-12 sm:pt-10 z-10 w-full max-w-[1500px] lg:max-w-[800px] md:max-w-[600px] sm:max-w-[450px] grid"
           )}
         >
           {/* Step */}
-          {step === "search" ? <SearchForm /> : <SelectService />}
+          <SelectService />
         </main>
       </div>
       {/* Map */}
@@ -104,7 +114,7 @@ export function Book(): React.JSX.Element {
   );
 }
 
-const formSchema = z
+const SearchFormSchema = z
   .object({
     destination: z
       .string()
@@ -170,7 +180,7 @@ const formSchema = z
     }
   });
 
-type TFieldValues = z.infer<typeof formSchema>;
+type SearchFieldValues = z.infer<typeof SearchFormSchema>;
 
 const now = new Date();
 
@@ -180,8 +190,8 @@ function SearchForm(): React.JSX.Element {
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [revalidate, setRevalidate] = React.useState(false);
 
-  const methods = useForm<TFieldValues>({
-    resolver: zodResolver(formSchema),
+  const methods = useForm<SearchFieldValues>({
+    resolver: zodResolver(SearchFormSchema),
     defaultValues: {
       destination: "",
       pickup: "",
@@ -198,7 +208,7 @@ function SearchForm(): React.JSX.Element {
     shouldFocusError: false,
   });
 
-  const onValid = (data: TFieldValues) => {
+  const onValid = (data: SearchFieldValues) => {
     console.log(data);
     setIsSearching(true);
     const timeout = setTimeout(() => {
@@ -207,7 +217,7 @@ function SearchForm(): React.JSX.Element {
     }, 3000);
   };
 
-  const onInvalid = (errors: FieldErrors<TFieldValues>) => {
+  const onInvalid = (errors: FieldErrors<SearchFieldValues>) => {
     setRevalidate(true);
   };
 
@@ -219,7 +229,7 @@ function SearchForm(): React.JSX.Element {
       >
         {/* Fields */}
         <div className="w-full grid gap-8 lg:gap-6 grid-cols-1 lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1">
-          <Field<TFieldValues>
+          <Field<SearchFieldValues>
             label="Điểm đến"
             required
             size={isSM ? "small" : "default"}
@@ -237,7 +247,7 @@ function SearchForm(): React.JSX.Element {
             />
           </Field>
           <div className="space-y-4 sm:space-y-3 col-span-full lg:col-span-1 lg:row-start-2 md:col-span-full">
-            <Field<TFieldValues>
+            <Field<SearchFieldValues>
               label="Điểm đón"
               required
               size={isSM ? "small" : "default"}
@@ -251,7 +261,7 @@ function SearchForm(): React.JSX.Element {
                 }}
               />
             </Field>
-            <Field<TFieldValues>
+            <Field<SearchFieldValues>
               label="Sử dụng vị trí hiện tại của tôi"
               size={isSM ? "small" : "default"}
               name="useCurrentLocation"
@@ -265,7 +275,7 @@ function SearchForm(): React.JSX.Element {
               />
             </Field>
           </div>
-          <Field<TFieldValues>
+          <Field<SearchFieldValues>
             label="Thời gian khởi hành"
             required
             size={isSM ? "small" : "default"}
@@ -293,7 +303,7 @@ function SearchForm(): React.JSX.Element {
               }}
             />
           </Field>
-          <Field<TFieldValues>
+          <Field<SearchFieldValues>
             label="Số lượng hành khách"
             required
             size={isSM ? "small" : "default"}
@@ -327,6 +337,154 @@ function SearchForm(): React.JSX.Element {
   );
 }
 
+const ServiceFormSchema = z.object({
+  type: z.enum(["basic", "premium", "extra"], {
+    message: "Vui lòng chọn dịch vụ trước khi tiếp tục",
+  }),
+});
+
+type ServiceFieldValues = z.infer<typeof ServiceFormSchema>;
+
+type Service = {
+  id: number;
+  imageUrl: string;
+  name: string;
+  description: string;
+  fee: number;
+  value: ServiceFieldValues["type"];
+};
+
+const services: Service[] = [
+  {
+    id: 1,
+    imageUrl: carshareBasicIllustrator,
+    name: "Carshare Basic",
+    description: "Dịch vụ cơ bản với dòng xe phổ thông, tiết kiệm chi phí",
+    fee: 96000,
+    value: "basic",
+  },
+  {
+    id: 2,
+    imageUrl: carsharePremiumIllustrator,
+    name: "Carshare Premium",
+    description: "Dịch vụ cao cấp với dòng xe hạng sang tiện nghi, hiện đại",
+    fee: 124800,
+    value: "premium",
+  },
+  {
+    id: 3,
+    imageUrl: carshareExtraIllustrator,
+    name: "Carshare Extra",
+    description: "Dòng xe cỡ lớn (7 - 16 chỗ) đủ sức chứa cho nhiều hành khách",
+    fee: 105300,
+    value: "extra",
+  },
+];
+
 function SelectService(): React.JSX.Element {
-  return <div className="w-[] grid grid-cols-1 gap-12"></div>;
+  const methods = useForm<ServiceFieldValues>({
+    resolver: zodResolver(ServiceFormSchema),
+  });
+  const isSM = useMediaQuery({ maxWidth: 639 });
+
+  const onValid = (data: ServiceFieldValues) => {
+    console.log(data);
+  };
+
+  const onInvalid = (error: FieldErrors) => {
+    console.log(error);
+  };
+
+  return (
+    <div className="w-[480px] space-y-12">
+      <Button
+        intent="primary"
+        asLink
+        size={isSM ? "small" : "default"}
+        className={cn(isSM ? "text-sm" : "text-xs")}
+      >
+        Quay về
+      </Button>
+      <div className="w-full space-y-8">
+        <p className="w-full text-sm font-normal text-foreground-600">
+          Vui lòng lựa chọn dịch vụ bạn muốn sử dụng:
+        </p>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={methods.handleSubmit(onValid)}
+            className="w-full space-y-12"
+          >
+            <div className="space-y-6">
+              <Field control={methods.control} name="type">
+                <Controller
+                  control={methods.control}
+                  name="type"
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="space-y-8"
+                    >
+                      {services.map((service) => (
+                        <RadioGroupPrimitive.Item
+                          key={service.id}
+                          value={service.value}
+                          className="block text-left w-full group rounded-3xl data-[state=checked]:outline data-[state=checked]:outline-8 data-[state=checked]:outline-primary-flat"
+                        >
+                          <div className="relative w-full rounded-[inherit] p-4 bg-background-900 group-data-[state=checked]:bg-[rgba(29,144,245,0.05)] group-data-[state=checked]:outline group-data-[state=checked]:outline-2 group-data-[state=checked]:outline-primary-500">
+                            <div className="w-full grid grid-cols-[minmax(0,1fr),110px] gap-6">
+                              <div className="flex items-center gap-4 ">
+                                <figure className="w-16 flex-none">
+                                  <img
+                                    src={service.imageUrl}
+                                    alt={service.name}
+                                    className="size-16 object-contain"
+                                  />
+                                </figure>
+                                <div className="flex-1 min-w-0 space-y-2">
+                                  <h6 className="text-base font-semibold text-white">
+                                    {service.name}
+                                  </h6>
+                                  <p className="text-sm font-normal text-foreground-500">
+                                    {service.description}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="self-end space-y-1">
+                                <div className="text-foreground-500 flex items-center gap-1 justify-end">
+                                  <Money4 variant="Bold" className="size-4" />
+                                  <span className="text-xs font-normal">
+                                    Cước phí
+                                  </span>
+                                </div>
+                                <div className="text-sm font-medium text-[#F59E0B] text-right">
+                                  {service.fee.toLocaleString("en-US")}đ
+                                </div>
+                              </div>
+                            </div>
+                            <div className="absolute size-4 rounded-full bg-background-700 right-4 top-4 flex items-center justify-center group-data-[state=checked]:bg-transparent group-data-[state=checked]:border-2 group-data-[state=checked]:border-primary-500">
+                              <span className="size-2 rounded-full bg-transparent group-data-[state=checked]:bg-primary-500"></span>
+                            </div>
+                          </div>
+                        </RadioGroupPrimitive.Item>
+                      ))}
+                    </RadioGroup>
+                  )}
+                />
+                <FieldLower />
+              </Field>
+            </div>
+            <Button
+              type="submit"
+              intent="primary"
+              size={isSM ? "small" : "default"}
+              className="flex ml-auto py-0 w-[280px] h-[70px]"
+            >
+              Tiếp theo
+            </Button>
+          </form>
+        </FormProvider>
+      </div>
+    </div>
+  );
 }
