@@ -14,7 +14,7 @@ interface QuantityFieldProps
   max: number;
   min: number;
   placeholder?: string;
-  classNames?: FieldStyles;
+  classNames?: FieldStyles & { left?: string };
 }
 
 const upperVariants = cva("flex items-center w-full", {
@@ -49,14 +49,23 @@ const buttonVariants = cva("text-foreground-500", {
 
 const QuantityField = React.forwardRef<HTMLDivElement, QuantityFieldProps>(
   ({ max, min, placeholder, classNames, ...props }, ref) => {
-    const { label, size, fieldInputId, control, name, getValues, setValue } =
-      useField();
+    const {
+      label,
+      size,
+      fieldInputId,
+      control,
+      name,
+      getValues,
+      setValue,
+      clearErrors,
+    } = useField();
 
     const handleIncrease = () => {
       const currentValue = getValues(name);
       if (isNaN(Number(currentValue))) return;
       if (Number(currentValue) + 1 > max) return;
       setValue(name, String(Number(currentValue) + 1), { shouldDirty: true });
+      clearErrors(name);
     };
 
     const handleDecrease = () => {
@@ -76,7 +85,7 @@ const QuantityField = React.forwardRef<HTMLDivElement, QuantityFieldProps>(
         {...props}
       >
         <div className={cn(upperVariants({ size }), classNames?.upper)}>
-          <Left>
+          <Left className={cn(classNames?.left)}>
             <div className="w-full space-y-1">
               {label && <FieldLabel />}
               <FieldInput

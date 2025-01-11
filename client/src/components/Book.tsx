@@ -32,8 +32,13 @@ export function Book(): React.JSX.Element {
   const [step, setStep] = React.useState<Step>("search");
 
   return (
-    <div className="relative w-full min-h-screen bg-background-950 lg:grid lg:grid-rows-[max-content,minmax(0,1fr)]">
-      <div className="w-full min-h-screen lg:min-h-fit px-16 xl:px-10 lg:px-8 py-8 lg:pb-0 lg:pt-8 sm:px-4 sm:pt-4 grid grid-rows-[max-content,minmax(0,1fr)] justify-items-center">
+    <div className="relative w-full min-h-screen bg-background-950">
+      {/* Wrapper */}
+      <div
+        className={cn(
+          "relative z-10 w-full min-h-screen px-16 xl:px-10 pt-8 pb-20 xl:pb-0 grid grid-rows-[max-content,minmax(0,1fr)] xl:grid-rows-[repeat(2,max-content)] justify-items-center"
+        )}
+      >
         {/* Header */}
         <header className="z-10 w-full grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
           {/* Hamburger button & Logo */}
@@ -94,21 +99,28 @@ export function Book(): React.JSX.Element {
         {/* Main */}
         <main
           className={cn(
-            "pt-[128px] xl:pt-12 sm:pt-10 z-10 w-full max-w-[1500px] lg:max-w-[800px] md:max-w-[600px] sm:max-w-[450px] grid"
+            "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] pt-[120px] 2xl:pt-16 xl:justify-items-center xl:items-end",
+            step === "search" && "pt-0 2xl:pt-0 items-center"
           )}
         >
           {/* Step */}
-          <SelectService />
+          {step === "search" ? (
+            <SearchForm onNext={() => setStep("selectService")} />
+          ) : step === "selectService" ? (
+            <SelectService onBack={() => setStep("search")} />
+          ) : (
+            <div>Summary</div>
+          )}
         </main>
       </div>
       {/* Map */}
-      <div className="absolute inset-0 z-0 lg:relative">
+      <div className="absolute xl:grid inset-0 z-0">
         {/* Vertical gradient */}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] lg:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] lg:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
         {/* Horizontal gradient */}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] lg:bg-[linear-gradient(90deg,rgba(39,42,55,0.7)0%,rgba(39,42,55,0)20%,rgba(39,42,55,0)80%,rgba(39,42,55,0.7)100%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)] lg:bg-[linear-gradient(90deg,rgba(39,42,55,0.7)0%,rgba(39,42,55,0)20%,rgba(39,42,55,0)80%,rgba(39,42,55,0.7)100%)]"></div>
         {/* Figmap */}
-        <div className="ml-auto w-[76%] 2xl:w-[65%] lg:w-full h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
+        <div className="ml-auto w-[76%] 2xl:w-[62.5%] xl:w-full h-full xl:h-[65%] xl:self-end bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
       </div>
     </div>
   );
@@ -184,7 +196,7 @@ type SearchFieldValues = z.infer<typeof SearchFormSchema>;
 
 const now = new Date();
 
-function SearchForm(): React.JSX.Element {
+function SearchForm({ onNext }: { onNext: () => void }): React.JSX.Element {
   const [isSearching, setIsSearching] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
   const [serverError, setServerError] = React.useState<string | null>(null);
@@ -214,6 +226,7 @@ function SearchForm(): React.JSX.Element {
     const timeout = setTimeout(() => {
       setIsSearching(false);
       clearTimeout(timeout);
+      onNext();
     }, 3000);
   };
 
@@ -225,10 +238,10 @@ function SearchForm(): React.JSX.Element {
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(onValid, onInvalid)}
-        className="w-[400px] 2xl:w-[384px] lg:w-full space-y-10 sm:space-y-8"
+        className="max-w-[450px] xl:min-w-[800px] lg:w-full space-y-10 sm:space-y-8"
       >
         {/* Fields */}
-        <div className="w-full grid gap-8 lg:gap-6 grid-cols-1 lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1">
+        <div className="w-full grid gap-8 lg:gap-6 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1">
           <Field<SearchFieldValues>
             label="Điểm đến"
             required
@@ -242,11 +255,12 @@ function SearchForm(): React.JSX.Element {
                 placeholder: "Nhập địa chỉ bạn muốn đến...",
               }}
               classNames={{
-                container: "col-span-full lg:col-span-1 md:col-span-full",
+                container:
+                  "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
               }}
             />
           </Field>
-          <div className="space-y-4 sm:space-y-3 col-span-full lg:col-span-1 lg:row-start-2 md:col-span-full">
+          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
             <Field<SearchFieldValues>
               label="Điểm đón"
               required
@@ -298,8 +312,9 @@ function SearchForm(): React.JSX.Element {
               yearPlaceholder={String(now.getFullYear())}
               classNames={{
                 container:
-                  "col-span-full lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
+                  "col-span-full xl:col-span-1 xl:row-start-1 xl:col-start-2 lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
                 inner: "gap-8 sm:gap-10",
+                upper: "w-fit",
               }}
             />
           </Field>
@@ -315,9 +330,9 @@ function SearchForm(): React.JSX.Element {
               min={0}
               placeholder="0"
               classNames={{
-                upper: "max-w-[240px]",
                 container:
-                  "col-span-full lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
+                  "col-span-full xl:col-start-2 xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
+                left: "max-w-[200px]",
               }}
             />
           </Field>
@@ -328,7 +343,7 @@ function SearchForm(): React.JSX.Element {
           isLoading={isSearching}
           size={isSM ? "small" : "default"}
           type="submit"
-          className="px-0 py-0 w-full h-[70px] lg:w-[320px] lg:h-16 lg:flex lg:mx-auto sm:w-full sm:h-[56px]"
+          className="px-0 py-0 w-full h-[70px] xl:max-w-[360px] lg:w-[320px] lg:h-16 xl:flex xl:mx-auto sm:w-full sm:h-[56px]"
         >
           Tìm cuốc xe
         </Button>
@@ -381,7 +396,7 @@ const services: Service[] = [
   },
 ];
 
-function SelectService(): React.JSX.Element {
+function SelectService({ onBack }: { onBack: () => void }): React.JSX.Element {
   const methods = useForm<ServiceFieldValues>({
     resolver: zodResolver(ServiceFormSchema),
   });
@@ -402,6 +417,7 @@ function SelectService(): React.JSX.Element {
         asLink
         size={isSM ? "small" : "default"}
         className={cn(isSM ? "text-sm" : "text-xs")}
+        onClick={onBack}
       >
         Quay về
       </Button>
