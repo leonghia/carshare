@@ -32,17 +32,17 @@ export function Book(): React.JSX.Element {
   const [step, setStep] = React.useState<Step>("search");
 
   return (
-    <div className="relative w-full min-h-screen bg-background-950">
+    <div className="relative w-full min-h-screen bg-background-950 xl:grid xl:grid-rows-[max-content,minmax(0,1fr)]">
       {/* Wrapper */}
       <div
         className={cn(
-          "relative z-10 w-full min-h-screen px-16 xl:px-10 pt-8 pb-20 xl:pb-0 grid grid-rows-[max-content,minmax(0,1fr)] xl:grid-rows-[repeat(2,max-content)] justify-items-center"
+          "relative z-10 w-full min-h-screen xl:min-h-fit px-16 xl:px-10 md:px-8 sm:px-4 pt-8 sm:pt-4 pb-20 xl:pb-0 grid grid-rows-[max-content,minmax(0,1fr)] xl:grid-rows-[repeat(2,max-content)] justify-items-center"
         )}
       >
         {/* Header */}
         <header className="z-10 w-full grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
           {/* Hamburger button & Logo */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 sm:gap-3">
             <button type="button" className="hidden lg:block">
               <HambergerMenu
                 variant="Bold"
@@ -99,7 +99,7 @@ export function Book(): React.JSX.Element {
         {/* Main */}
         <main
           className={cn(
-            "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] pt-[120px] 2xl:pt-16 xl:justify-items-center xl:items-end",
+            "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] lg:min-h-[400px] md:min-h-[480px] sm:min-h-0 pt-[120px] 2xl:pt-16 sm:pt-8 xl:items-end xl:justify-items-center",
             step === "search" && "pt-0 2xl:pt-0 items-center"
           )}
         >
@@ -114,13 +114,13 @@ export function Book(): React.JSX.Element {
         </main>
       </div>
       {/* Map */}
-      <div className="absolute xl:grid inset-0 z-0">
+      <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
         {/* Vertical gradient */}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] lg:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0)25%)]"></div>
         {/* Horizontal gradient */}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)] lg:bg-[linear-gradient(90deg,rgba(39,42,55,0.7)0%,rgba(39,42,55,0)20%,rgba(39,42,55,0)80%,rgba(39,42,55,0.7)100%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
         {/* Figmap */}
-        <div className="ml-auto w-[76%] 2xl:w-[62.5%] xl:w-full h-full xl:h-[65%] xl:self-end bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
+        <div className="ml-auto xl:ml-0 w-[76%] 2xl:w-[62.5%] xl:w-full h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
       </div>
     </div>
   );
@@ -238,10 +238,10 @@ function SearchForm({ onNext }: { onNext: () => void }): React.JSX.Element {
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(onValid, onInvalid)}
-        className="max-w-[450px] xl:min-w-[800px] lg:w-full space-y-10 sm:space-y-8"
+        className="w-full max-w-[450px] md:max-w-[580px] space-y-10 sm:space-y-8"
       >
         {/* Fields */}
-        <div className="w-full grid gap-8 lg:gap-6 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1">
+        <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
           <Field<SearchFieldValues>
             label="Điểm đến"
             required
@@ -314,7 +314,7 @@ function SearchForm({ onNext }: { onNext: () => void }): React.JSX.Element {
                 container:
                   "col-span-full xl:col-span-1 xl:row-start-1 xl:col-start-2 lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
                 inner: "gap-8 sm:gap-10",
-                upper: "w-fit",
+                upper: "w-fit md:w-full",
               }}
             />
           </Field>
@@ -343,7 +343,7 @@ function SearchForm({ onNext }: { onNext: () => void }): React.JSX.Element {
           isLoading={isSearching}
           size={isSM ? "small" : "default"}
           type="submit"
-          className="px-0 py-0 w-full h-[70px] xl:max-w-[360px] lg:w-[320px] lg:h-16 xl:flex xl:mx-auto sm:w-full sm:h-[56px]"
+          className="px-0 py-0 w-full h-[70px] xl:max-w-[360px] lg:w-[320px] xl:flex xl:mx-auto sm:w-full sm:h-[60px]"
         >
           Tìm cuốc xe
         </Button>
