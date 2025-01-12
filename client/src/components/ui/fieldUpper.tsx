@@ -33,7 +33,7 @@ const field__upper__innerVariants = cva(
       },
       size: {
         default: "px-6 py-3 rounded-3xl",
-        small: "px-4 py-2 rounded-2xl",
+        small: "px-4 py-[10px] rounded-2xl",
       },
     },
     defaultVariants: {

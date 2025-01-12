@@ -332,7 +332,7 @@ function SearchForm({ onNext }: { onNext: () => void }): React.JSX.Element {
               classNames={{
                 container:
                   "col-span-full xl:col-start-2 xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
-                left: "max-w-[200px]",
+                left: "max-w-[200px] sm:max-w-[164px]",
               }}
             />
           </Field>
@@ -411,90 +411,91 @@ function SelectService({ onBack }: { onBack: () => void }): React.JSX.Element {
   };
 
   return (
-    <div className="w-[480px] space-y-12">
+    <div className="max-w-[500px] xl:max-w-[520px] sm:max-w-[420px] space-y-12 xl:space-y-10 sm:space-y-8">
       <Button
         intent="primary"
         asLink
-        size={isSM ? "small" : "default"}
-        className={cn(isSM ? "text-sm" : "text-xs")}
+        size={isSM ? "extraSmall" : "small"}
         onClick={onBack}
       >
         Quay về
       </Button>
-      <div className="w-full space-y-8">
-        <p className="w-full text-sm font-normal text-foreground-600">
+      <div className="w-full space-y-8 sm:space-y-6">
+        <p className="w-full text-base sm:text-sm font-normal text-foreground-600">
           Vui lòng lựa chọn dịch vụ bạn muốn sử dụng:
         </p>
         <FormProvider {...methods}>
           <form
             onSubmit={methods.handleSubmit(onValid)}
-            className="w-full space-y-12"
+            className="w-full space-y-12 xl:space-y-10 sm:space-y-8"
           >
-            <div className="space-y-6">
-              <Field control={methods.control} name="type">
-                <Controller
-                  control={methods.control}
-                  name="type"
-                  render={({ field }) => (
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="space-y-8"
-                    >
-                      {services.map((service) => (
-                        <RadioGroupPrimitive.Item
-                          key={service.id}
-                          value={service.value}
-                          className="block text-left w-full group rounded-3xl data-[state=checked]:outline data-[state=checked]:outline-8 data-[state=checked]:outline-primary-flat"
-                        >
-                          <div className="relative w-full rounded-[inherit] p-4 bg-background-900 group-data-[state=checked]:bg-[rgba(29,144,245,0.05)] group-data-[state=checked]:outline group-data-[state=checked]:outline-2 group-data-[state=checked]:outline-primary-500">
-                            <div className="w-full grid grid-cols-[minmax(0,1fr),110px] gap-6">
-                              <div className="flex items-center gap-4 ">
-                                <figure className="w-16 flex-none">
-                                  <img
-                                    src={service.imageUrl}
-                                    alt={service.name}
-                                    className="size-16 object-contain"
-                                  />
-                                </figure>
-                                <div className="flex-1 min-w-0 space-y-2">
-                                  <h6 className="text-base font-semibold text-white">
-                                    {service.name}
-                                  </h6>
-                                  <p className="text-sm font-normal text-foreground-500">
-                                    {service.description}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="self-end space-y-1">
-                                <div className="text-foreground-500 flex items-center gap-1 justify-end">
-                                  <Money4 variant="Bold" className="size-4" />
-                                  <span className="text-xs font-normal">
-                                    Cước phí
-                                  </span>
-                                </div>
-                                <div className="text-sm font-medium text-[#F59E0B] text-right">
-                                  {service.fee.toLocaleString("en-US")}đ
-                                </div>
+            <Field control={methods.control} name="type">
+              <Controller
+                control={methods.control}
+                name="type"
+                render={({ field }) => (
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="space-y-8 sm:space-y-6"
+                  >
+                    {services.map((service) => (
+                      <RadioGroupPrimitive.Item
+                        key={service.id}
+                        value={service.value}
+                        className="block text-left w-full group rounded-3xl sm:rounded-2xl data-[state=checked]:outline data-[state=checked]:outline-8 data-[state=checked]:outline-primary-flat"
+                      >
+                        <div className="relative w-full rounded-[inherit] p-5 xl:px-6 sm:px-4 sm:py-3 bg-background-900 group-data-[state=checked]:bg-[rgba(29,144,245,0.05)] group-data-[state=checked]:outline group-data-[state=checked]:outline-2 group-data-[state=checked]:outline-primary-500">
+                          <div className="w-full grid grid-cols-[minmax(0,1fr),110px] sm:grid-cols-1 gap-6 sm:gap-2">
+                            <div className="flex items-center gap-4 sm:gap-3">
+                              <figure className="w-16 sm:w-[60px] flex-none">
+                                <img
+                                  src={service.imageUrl}
+                                  alt={service.name}
+                                  className="size-16 sm:size-[60px] object-contain"
+                                />
+                              </figure>
+                              <div className="flex-1 min-w-0 space-y-2 sm:space-y-1">
+                                <h6 className="text-lg sm:text-base font-semibold text-white">
+                                  {service.name}
+                                </h6>
+                                <p className="text-base sm:text-sm font-normal text-foreground-500">
+                                  {service.description}
+                                </p>
                               </div>
                             </div>
-                            <div className="absolute size-4 rounded-full bg-background-700 right-4 top-4 flex items-center justify-center group-data-[state=checked]:bg-transparent group-data-[state=checked]:border-2 group-data-[state=checked]:border-primary-500">
-                              <span className="size-2 rounded-full bg-transparent group-data-[state=checked]:bg-primary-500"></span>
+                            <div className="self-end grid grid-cols-1 sm:grid-cols-[max-content,minmax(0,1fr)] gap-1 sm:gap-8">
+                              <div className="text-foreground-500 flex items-center gap-1 justify-end">
+                                <Money4
+                                  variant="Bold"
+                                  className="size-[18px] sm:size-4"
+                                />
+                                <span className="text-sm sm:text-xs font-normal">
+                                  Cước phí{isSM && ":"}
+                                </span>
+                              </div>
+                              <div className="text-base sm:text-sm font-medium text-[#F59E0B] text-right">
+                                {service.fee.toLocaleString("en-US")}đ
+                              </div>
                             </div>
                           </div>
-                        </RadioGroupPrimitive.Item>
-                      ))}
-                    </RadioGroup>
-                  )}
-                />
-                <FieldLower />
-              </Field>
-            </div>
+                          <div className="absolute size-4 sm:size-[14px] rounded-full bg-background-700 right-4 top-4 flex items-center justify-center group-data-[state=checked]:bg-transparent group-data-[state=checked]:border-2 group-data-[state=checked]:border-primary-500">
+                            <span className="size-2 sm:size-[6px] rounded-full bg-transparent group-data-[state=checked]:bg-primary-500"></span>
+                          </div>
+                        </div>
+                      </RadioGroupPrimitive.Item>
+                    ))}
+                  </RadioGroup>
+                )}
+              />
+              <FieldLower />
+            </Field>
+
             <Button
               type="submit"
               intent="primary"
               size={isSM ? "small" : "default"}
-              className="flex ml-auto py-0 w-[280px] h-[70px]"
+              className="flex ml-auto py-0 w-[280px] sm:w-full h-[70px] sm:h-[60px]"
             >
               Tiếp theo
             </Button>
