@@ -33,14 +33,57 @@ import carshareBasicIllustrator from "../assets/images/carshare_basic_illustrato
 import carsharePremiumIllustrator from "../assets/images/carshare_premium_illustrator.webp";
 import carshareExtraIllustrator from "../assets/images/carshare_extra_illustrator.webp";
 import { FieldLower } from "./ui/fieldLower";
+import { AnimatePresence, motion } from "motion/react";
+import { cva } from "class-variance-authority";
 
-type Step = "search" | "selectService" | "summary";
+type Step = "search" | "service" | "summary";
+
+const stepVariants = cva<{ step: Record<Step, string> }>(
+  "w-full xl:mx-auto sm:max-w-[420px] mt-12 sm:mt-8",
+  {
+    variants: {
+      step: {
+        search: "max-w-[450px] md:max-w-[580px]",
+        service: "max-w-[500px] xl:max-w-[520px]",
+        summary: "max-w-[500px] xl:max-w-[520px]",
+      },
+    },
+  }
+);
 
 export function Book(): React.JSX.Element {
-  const [step, setStep] = React.useState<Step>("search");
+  const [currentStep, setCurrentStep] = React.useState<Step>("search");
+  const isSM = useMediaQuery({ maxWidth: 639 });
+
+  const onBack = React.useCallback(() => {
+    switch (currentStep) {
+      case "service":
+        setCurrentStep("search");
+        return;
+      case "summary":
+        setCurrentStep("service");
+        return;
+      default:
+        throw new Error("onBack cannot be used here");
+    }
+  }, [currentStep]);
+
+  const content = React.useMemo(() => {
+    switch (currentStep) {
+      case "search":
+        return <SearchForm onSearch={() => setCurrentStep("service")} />;
+      case "service":
+        return <SelectService onNext={() => setCurrentStep("summary")} />;
+      case "summary":
+        return <Summary onSubmit={() => console.log("submitted")} />;
+      default:
+        const unexpected: never = currentStep;
+        throw new Error("currentStep is invalid");
+    }
+  }, [currentStep]);
 
   return (
-    <div className="relative w-full min-h-screen bg-background-950 xl:grid xl:grid-rows-[max-content,minmax(0,1fr)]">
+    <div className="overflow-hidden relative w-full min-h-screen bg-background-950 xl:grid xl:grid-rows-[max-content,minmax(0,1fr)]">
       {/* Wrapper */}
       <div
         className={cn(
@@ -108,23 +151,46 @@ export function Book(): React.JSX.Element {
         <main
           className={cn(
             "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] lg:min-h-[400px] md:min-h-[480px] sm:min-h-0 pt-[120px] 2xl:pt-20 sm:pt-8 xl:items-end xl:justify-items-center",
-            step === "search" && "pt-0 2xl:pt-0 items-center"
+            currentStep === "search" && "pt-0 2xl:pt-0 items-center"
           )}
         >
-          {/* Step */}
-          {step === "search" ? (
-            <SearchForm onFind={() => setStep("selectService")} />
-          ) : step === "selectService" ? (
-            <SelectService
-              onBack={() => setStep("search")}
-              onNext={() => setStep("summary")}
-            />
-          ) : (
-            <Summary
-              onBack={() => setStep("selectService")}
-              onSubmit={() => console.log("submitted")}
-            />
-          )}
+          <div className="w-[500px] xl:w-full">
+            {currentStep !== "search" && (
+              <Button
+                intent="primary"
+                asLink
+                size={isSM ? "extraSmall" : "small"}
+                onClick={onBack}
+              >
+                Quay về
+              </Button>
+            )}
+
+            {/* Step */}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={currentStep}
+                initial={{ x: "100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "-100%", opacity: 0 }}
+                transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+                className={cn(stepVariants({ step: currentStep }))}
+              >
+                {content}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* <motion.div
+              key={currentStep}
+              initial={{ x: "50%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "-50%", opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+              className={cn(stepVariants({ step: currentStep }))}
+            >
+              {content}
+            </motion.div> */}
+          </div>
         </main>
       </div>
       {/* Map */}
@@ -210,165 +276,168 @@ type SearchFieldValues = z.infer<typeof SearchFormSchema>;
 
 const now = new Date();
 
-interface SearchFormProps {
-  onFind: () => void;
+interface SearchFormProps extends React.ComponentPropsWithoutRef<"form"> {
+  onSearch: () => void;
 }
 
-function SearchForm({ onFind }: SearchFormProps): React.JSX.Element {
-  const [isSearching, setIsSearching] = React.useState(false);
-  const isSM = useMediaQuery({ maxWidth: 639 });
-  const [serverError, setServerError] = React.useState<string | null>(null);
-  const [revalidate, setRevalidate] = React.useState(false);
+const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
+  ({ onSearch }, ref) => {
+    const [isSearching, setIsSearching] = React.useState(false);
+    const isSM = useMediaQuery({ maxWidth: 639 });
+    const [serverError, setServerError] = React.useState<string | null>(null);
+    const [revalidate, setRevalidate] = React.useState(false);
 
-  const methods = useForm<SearchFieldValues>({
-    resolver: zodResolver(SearchFormSchema),
-    defaultValues: {
-      destination: "",
-      pickup: "",
-      departureTime: {
-        hour: "",
-        minute: "",
-        date: "",
-        month: "",
-        year: "",
+    const methods = useForm<SearchFieldValues>({
+      resolver: zodResolver(SearchFormSchema),
+      defaultValues: {
+        destination: "",
+        pickup: "",
+        departureTime: {
+          hour: "",
+          minute: "",
+          date: "",
+          month: "",
+          year: "",
+        },
+        numbersOfPassengers: "",
+        useCurrentLocation: false,
       },
-      numbersOfPassengers: "",
-      useCurrentLocation: false,
-    },
-    shouldFocusError: false,
-  });
+      shouldFocusError: false,
+    });
 
-  const onValid = (data: SearchFieldValues) => {
-    console.log(data);
-    setIsSearching(true);
-    const timeout = setTimeout(() => {
-      setIsSearching(false);
-      clearTimeout(timeout);
-      onFind();
-    }, 3000);
-  };
+    const onValid = (data: SearchFieldValues) => {
+      console.log(data);
+      setIsSearching(true);
+      const timeout = setTimeout(() => {
+        setIsSearching(false);
+        clearTimeout(timeout);
+        onSearch();
+      }, 3000);
+    };
 
-  const onInvalid = (errors: FieldErrors<SearchFieldValues>) => {
-    setRevalidate(true);
-  };
+    const onInvalid = (errors: FieldErrors<SearchFieldValues>) => {
+      setRevalidate(true);
+    };
 
-  return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(onValid, onInvalid)}
-        className="w-full max-w-[450px] md:max-w-[580px] space-y-10 sm:space-y-8"
-      >
-        {/* Fields */}
-        <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
-          <Field<SearchFieldValues>
-            label="Điểm đến"
-            required
-            size={isSM ? "small" : "default"}
-            name="destination"
-            control={methods.control}
-          >
-            <BasicField
-              inputProps={{
-                type: "text",
-                placeholder: "Nhập địa chỉ bạn muốn đến...",
-              }}
-              classNames={{
-                container:
-                  "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
-              }}
-            />
-          </Field>
-          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
+    return (
+      <FormProvider {...methods}>
+        <form
+          ref={ref}
+          onSubmit={methods.handleSubmit(onValid, onInvalid)}
+          className="w-full space-y-10 sm:space-y-8"
+        >
+          {/* Fields */}
+          <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
             <Field<SearchFieldValues>
-              label="Điểm đón"
+              label="Điểm đến"
               required
               size={isSM ? "small" : "default"}
-              name="pickup"
+              name="destination"
               control={methods.control}
             >
               <BasicField
                 inputProps={{
                   type: "text",
-                  placeholder: "Nhập địa chỉ để tài xế đón bạn...",
+                  placeholder: "Nhập địa chỉ bạn muốn đến...",
+                }}
+                classNames={{
+                  container:
+                    "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
+                }}
+              />
+            </Field>
+            <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
+              <Field<SearchFieldValues>
+                label="Điểm đón"
+                required
+                size={isSM ? "small" : "default"}
+                name="pickup"
+                control={methods.control}
+              >
+                <BasicField
+                  inputProps={{
+                    type: "text",
+                    placeholder: "Nhập địa chỉ để tài xế đón bạn...",
+                  }}
+                />
+              </Field>
+              <Field<SearchFieldValues>
+                label="Sử dụng vị trí hiện tại của tôi"
+                size={isSM ? "small" : "default"}
+                name="useCurrentLocation"
+                control={methods.control}
+              >
+                <CheckboxField
+                  classNames={{
+                    container: "items-center",
+                    label: "text-sm font-normal text-foreground-200 sm:text-xs",
+                  }}
+                />
+              </Field>
+            </div>
+            <Field<SearchFieldValues>
+              label="Thời gian khởi hành"
+              required
+              size={isSM ? "small" : "default"}
+              name="departureTime"
+              control={methods.control}
+            >
+              <DatetimeField
+                invalidMessage="Thời gian không hợp lệ"
+                requiredMessage="Thời gian khởi hành không được để trống"
+                revalidate={revalidate}
+                hourName="departureTime.hour"
+                minuteName="departureTime.minute"
+                dateName="departureTime.date"
+                monthName="departureTime.month"
+                yearName="departureTime.year"
+                hourPlaceholder={String(now.getHours()).padStart(2, "0")}
+                minutePlaceholder={String(now.getMinutes()).padStart(2, "0")}
+                datePlaceholder={String(now.getDate()).padStart(2, "0")}
+                monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
+                yearPlaceholder={String(now.getFullYear())}
+                classNames={{
+                  container:
+                    "col-span-full xl:col-span-1 xl:row-start-1 xl:col-start-2 lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
+                  inner: "gap-8 sm:gap-10",
+                  upper: "w-fit md:w-full",
                 }}
               />
             </Field>
             <Field<SearchFieldValues>
-              label="Sử dụng vị trí hiện tại của tôi"
+              label="Số lượng hành khách"
+              required
               size={isSM ? "small" : "default"}
-              name="useCurrentLocation"
+              name="numbersOfPassengers"
               control={methods.control}
             >
-              <CheckboxField
+              <QuantityField
+                max={20}
+                min={0}
+                placeholder="0"
                 classNames={{
-                  container: "items-center",
-                  label: "text-sm font-normal text-foreground-200 sm:text-xs",
+                  container:
+                    "col-span-full xl:col-start-2 xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
+                  left: "max-w-[200px] sm:max-w-[164px]",
                 }}
               />
             </Field>
           </div>
-          <Field<SearchFieldValues>
-            label="Thời gian khởi hành"
-            required
+          {/* Search button */}
+          <Button
+            hasLoader
+            isLoading={isSearching}
             size={isSM ? "small" : "default"}
-            name="departureTime"
-            control={methods.control}
+            type="submit"
+            className="px-0 py-0 w-full h-[70px] xl:max-w-[360px] lg:w-[320px] xl:flex xl:mx-auto sm:w-full sm:h-[60px]"
           >
-            <DatetimeField
-              invalidMessage="Thời gian không hợp lệ"
-              requiredMessage="Thời gian khởi hành không được để trống"
-              revalidate={revalidate}
-              hourName="departureTime.hour"
-              minuteName="departureTime.minute"
-              dateName="departureTime.date"
-              monthName="departureTime.month"
-              yearName="departureTime.year"
-              hourPlaceholder={String(now.getHours()).padStart(2, "0")}
-              minutePlaceholder={String(now.getMinutes()).padStart(2, "0")}
-              datePlaceholder={String(now.getDate()).padStart(2, "0")}
-              monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
-              yearPlaceholder={String(now.getFullYear())}
-              classNames={{
-                container:
-                  "col-span-full xl:col-span-1 xl:row-start-1 xl:col-start-2 lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
-                inner: "gap-8 sm:gap-10",
-                upper: "w-fit md:w-full",
-              }}
-            />
-          </Field>
-          <Field<SearchFieldValues>
-            label="Số lượng hành khách"
-            required
-            size={isSM ? "small" : "default"}
-            name="numbersOfPassengers"
-            control={methods.control}
-          >
-            <QuantityField
-              max={20}
-              min={0}
-              placeholder="0"
-              classNames={{
-                container:
-                  "col-span-full xl:col-start-2 xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
-                left: "max-w-[200px] sm:max-w-[164px]",
-              }}
-            />
-          </Field>
-        </div>
-        {/* Search button */}
-        <Button
-          hasLoader
-          isLoading={isSearching}
-          size={isSM ? "small" : "default"}
-          type="submit"
-          className="px-0 py-0 w-full h-[70px] xl:max-w-[360px] lg:w-[320px] xl:flex xl:mx-auto sm:w-full sm:h-[60px]"
-        >
-          Tìm cuốc xe
-        </Button>
-      </form>
-    </FormProvider>
-  );
-}
+            Tìm cuốc xe
+          </Button>
+        </form>
+      </FormProvider>
+    );
+  }
+);
 
 const ServiceFormSchema = z.object({
   type: z.enum(["basic", "premium", "extra"], {
@@ -414,46 +483,34 @@ const services: Service[] = [
   },
 ];
 
-interface SelectServiceProps {
-  onBack: () => void;
+interface SelectServiceProps extends React.ComponentPropsWithoutRef<"div"> {
   onNext: () => void;
 }
 
-function SelectService({
-  onBack,
-  onNext,
-}: SelectServiceProps): React.JSX.Element {
-  const methods = useForm<ServiceFieldValues>({
-    resolver: zodResolver(ServiceFormSchema),
-  });
-  const isSM = useMediaQuery({ maxWidth: 639 });
+const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
+  ({ onNext }, ref) => {
+    const methods = useForm<ServiceFieldValues>({
+      resolver: zodResolver(ServiceFormSchema),
+    });
+    const isSM = useMediaQuery({ maxWidth: 639 });
 
-  const onValid = (data: ServiceFieldValues) => {
-    console.log(data);
-  };
+    const onValid = (data: ServiceFieldValues) => {
+      console.log(data);
+    };
 
-  const onInvalid = (error: FieldErrors) => {
-    console.log(error);
-  };
+    const onInvalid = (error: FieldErrors) => {
+      console.log(error);
+    };
 
-  return (
-    <div className="w-full max-w-[500px] xl:max-w-[520px] sm:max-w-[420px] space-y-12 xl:space-y-10 sm:space-y-8">
-      <Button
-        intent="primary"
-        asLink
-        size={isSM ? "extraSmall" : "small"}
-        onClick={onBack}
-      >
-        Quay về
-      </Button>
-      <div className="w-full space-y-8 sm:space-y-6">
+    return (
+      <div ref={ref} className="w-full">
         <p className="w-full text-base sm:text-sm font-normal text-foreground-600">
           Vui lòng lựa chọn dịch vụ bạn muốn sử dụng:
         </p>
         <FormProvider {...methods}>
           <form
             onSubmit={methods.handleSubmit(onValid)}
-            className="w-full space-y-12 xl:space-y-10 sm:space-y-8"
+            className="w-full space-y-12 xl:space-y-10 sm:space-y-8 mt-8 sm:mt-6"
           >
             <Field control={methods.control} name="type">
               <Controller
@@ -469,7 +526,7 @@ function SelectService({
                       <RadioGroupPrimitive.Item
                         key={service.id}
                         value={service.value}
-                        className="block text-left w-full group rounded-3xl sm:rounded-2xl data-[state=checked]:outline data-[state=checked]:outline-8 data-[state=checked]:outline-primary-flat"
+                        className="block text-left w-full group rounded-3xl sm:rounded-2xl data-[state=checked]:outline data-[state=checked]:outline-8 data-[state=checked]:outline-primary-flat data-[state=unchecked]:hover:scale-105 transition-all duration-300 ease-out"
                       >
                         <div className="relative w-full rounded-[inherit] p-5 xl:px-6 sm:px-4 sm:py-3 bg-background-900 group-data-[state=checked]:bg-[rgba(29,144,245,0.05)] group-data-[state=checked]:outline group-data-[state=checked]:outline-2 group-data-[state=checked]:outline-primary-500">
                           <div className="w-full grid grid-cols-[minmax(0,1fr),110px] sm:grid-cols-1 gap-6 sm:gap-2">
@@ -529,103 +586,104 @@ function SelectService({
           </form>
         </FormProvider>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
 
-interface SummaryProps {
-  onBack: () => void;
+interface SummaryProps extends React.ComponentPropsWithoutRef<"div"> {
   onSubmit: () => void;
 }
 
-function Summary({ onBack, onSubmit }: SummaryProps): React.JSX.Element {
-  const isSM = useMediaQuery({ maxWidth: 639 });
+const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
+  ({ onSubmit }, ref) => {
+    const isSM = useMediaQuery({ maxWidth: 639 });
 
-  return (
-    <div className="w-full max-w-[500px] xl:max-w-[520px]">
-      <Button
-        intent="primary"
-        asLink
-        size={isSM ? "extraSmall" : "small"}
-        onClick={onBack}
-      >
-        Quay về
-      </Button>
-      <p className="w-full text-base sm:text-sm font-normal text-foreground-600 mt-12 sm:mt-10">
-        Vui lòng kiểm tra lại thông tin dưới đây lần cuối trước khi nhấn đặt xe:
-      </p>
-      <div className="w-full mt-10 sm:mt-8">
-        <h2 className="text-xl sm:text-lg font-bold text-white">
-          Thông tin cuốc xe{" "}
-          <span className="inline-block size-[6px] sm:size-1 rounded-full bg-primary-500"></span>
-        </h2>
-        <div className="w-full space-y-6 sm:space-y-5 mt-8 sm:mt-6">
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-1 sm:gap-5">
+    return (
+      <div ref={ref} className="w-full">
+        <p className="w-full text-base sm:text-sm font-normal text-foreground-600 mt-12 sm:mt-10">
+          Vui lòng kiểm tra lại thông tin dưới đây lần cuối trước khi nhấn đặt
+          xe:
+        </p>
+        <div className="w-full mt-10 sm:mt-8">
+          <h2 className="text-xl sm:text-lg font-bold text-white">
+            Thông tin cuốc xe{" "}
+            <span className="inline-block size-[6px] sm:size-1 rounded-full bg-primary-500"></span>
+          </h2>
+          <div className="w-full space-y-6 sm:space-y-5 mt-8 sm:mt-6">
+            <div className="grid grid-cols-2 gap-10 sm:grid-cols-1 sm:gap-5">
+              <div className="flex gap-2 text-foreground-400">
+                <Calendar
+                  variant="Bold"
+                  className="flex-none size-6 sm:size-5"
+                />
+                <span className="flex-1 text-base sm:text-sm font-normal">
+                  14:33 ngày 26/12/2024
+                </span>
+              </div>
+              <div className="flex gap-2 text-foreground-400">
+                <SmartCar
+                  variant="Bold"
+                  className="flex-none size-6 sm:size-5"
+                />
+                <span className="flex-1 text-base sm:text-sm font-normal">
+                  Carshare Premium
+                </span>
+              </div>
+            </div>
             <div className="flex gap-2 text-foreground-400">
-              <Calendar variant="Bold" className="flex-none size-6 sm:size-5" />
+              <Location variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                14:33 ngày 26/12/2024
+                Điểm đến: 91 Chùa Láng, p. Láng Thượng, q. Đống Đa, Hà Nội
               </span>
             </div>
             <div className="flex gap-2 text-foreground-400">
-              <SmartCar variant="Bold" className="flex-none size-6 sm:size-5" />
+              <Location variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                Carshare Premium
+                Điểm đón: 37 ngõ 73 Giang Văn Minh, p. Đội Cấn, q. Ba Đình, Hà
+                Nội
+              </span>
+            </div>
+            <div className="flex gap-2 text-foreground-400">
+              <People variant="Bold" className="flex-none size-6 sm:size-5" />
+              <span className="flex-1 text-base sm:text-sm font-normal">
+                Số lượng hành khách: 2
               </span>
             </div>
           </div>
-          <div className="flex gap-2 text-foreground-400">
-            <Location variant="Bold" className="flex-none size-6 sm:size-5" />
-            <span className="flex-1 text-base sm:text-sm font-normal">
-              Điểm đến: 91 Chùa Láng, p. Láng Thượng, q. Đống Đa, Hà Nội
-            </span>
-          </div>
-          <div className="flex gap-2 text-foreground-400">
-            <Location variant="Bold" className="flex-none size-6 sm:size-5" />
-            <span className="flex-1 text-base sm:text-sm font-normal">
-              Điểm đón: 37 ngõ 73 Giang Văn Minh, p. Đội Cấn, q. Ba Đình, Hà Nội
-            </span>
-          </div>
-          <div className="flex gap-2 text-foreground-400">
-            <People variant="Bold" className="flex-none size-6 sm:size-5" />
-            <span className="flex-1 text-base sm:text-sm font-normal">
-              Số lượng hành khách: 2
-            </span>
-          </div>
         </div>
-      </div>
-      <svg
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-[2px] text-divider mt-10 sm:mt-8"
-      >
-        <line
-          x1="0"
-          y1="0"
-          x2="100%"
-          y2="0"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeDasharray="12 12"
-        />
-      </svg>
-      <div className="w-full mt-10 sm:mt-8 grid grid-cols-[max-content,minmax(0,1fr)] sm:grid-cols-1 items-center sm:items-start gap-10 sm:gap-4">
-        <div className="sm:justify-self-end">
-          <span className="block sm:inline-block text-sm sm:text-xs font-normal text-foreground-500">
-            Cước phí
-          </span>
-          <span className="mt-2 sm:mt-0 sm:ml-2 block sm:inline-block text-lg sm:text-base font-semibold text-[#F59E0B]">
-            124,800đ
-          </span>
-        </div>
-        <Button
-          intent="primary"
-          className="w-full py-0 h-[70px] sm:h-[60px]"
-          size={isSM ? "small" : "default"}
+        <svg
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-[2px] text-divider mt-10 sm:mt-8"
         >
-          Đặt xe
-        </Button>
+          <line
+            x1="0"
+            y1="0"
+            x2="100%"
+            y2="0"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeDasharray="12 12"
+          />
+        </svg>
+        <div className="w-full mt-10 sm:mt-8 grid grid-cols-[max-content,minmax(0,1fr)] sm:grid-cols-1 items-center sm:items-start gap-10 sm:gap-4">
+          <div className="sm:justify-self-end">
+            <span className="block sm:inline-block text-sm sm:text-xs font-normal text-foreground-500">
+              Cước phí
+            </span>
+            <span className="mt-2 sm:mt-0 sm:ml-2 block sm:inline-block text-lg sm:text-base font-semibold text-[#F59E0B]">
+              124,800đ
+            </span>
+          </div>
+          <Button
+            intent="primary"
+            className="w-full py-0 h-[70px] sm:h-[60px]"
+            size={isSM ? "small" : "default"}
+          >
+            Đặt xe
+          </Button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);

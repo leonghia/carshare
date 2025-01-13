@@ -1,11 +1,12 @@
 import React from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 interface Props extends React.RefAttributes<SVGSVGElement> {}
 
 const MotionCheck = React.forwardRef<SVGSVGElement, Props>((props, ref) => {
   return (
     <svg
+      ref={ref}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -16,16 +17,19 @@ const MotionCheck = React.forwardRef<SVGSVGElement, Props>((props, ref) => {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <motion.path
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{
-          duration: 0.2,
-          type: "tween",
-        }}
-        // d="M20 6 9 17l-5-5"
-        d="M4 12 9 17 l11 -11"
-      />
+      <AnimatePresence initial={true}>
+        <motion.path
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{
+            type: "tween",
+            duration: 0.3,
+            ease: "easeIn",
+          }}
+          // d="M20 6 9 17l-5-5"
+          d="M4 12 9 17 l11 -11"
+        />
+      </AnimatePresence>
     </svg>
   );
 });
