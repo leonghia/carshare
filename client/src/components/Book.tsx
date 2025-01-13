@@ -1,7 +1,15 @@
 import React from "react";
 import logo from "../assets/images/logo.svg";
 import { Link, NavLink } from "react-router";
-import { Notification, HambergerMenu, Money4 } from "iconsax-react";
+import {
+  Notification,
+  HambergerMenu,
+  Money4,
+  Calendar,
+  SmartCar,
+  Location,
+  People,
+} from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
@@ -99,17 +107,23 @@ export function Book(): React.JSX.Element {
         {/* Main */}
         <main
           className={cn(
-            "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] lg:min-h-[400px] md:min-h-[480px] sm:min-h-0 pt-[120px] 2xl:pt-16 sm:pt-8 xl:items-end xl:justify-items-center",
+            "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] lg:min-h-[400px] md:min-h-[480px] sm:min-h-0 pt-[120px] 2xl:pt-20 sm:pt-8 xl:items-end xl:justify-items-center",
             step === "search" && "pt-0 2xl:pt-0 items-center"
           )}
         >
           {/* Step */}
           {step === "search" ? (
-            <SearchForm onNext={() => setStep("selectService")} />
+            <SearchForm onFind={() => setStep("selectService")} />
           ) : step === "selectService" ? (
-            <SelectService onBack={() => setStep("search")} />
+            <SelectService
+              onBack={() => setStep("search")}
+              onNext={() => setStep("summary")}
+            />
           ) : (
-            <div>Summary</div>
+            <Summary
+              onBack={() => setStep("selectService")}
+              onSubmit={() => console.log("submitted")}
+            />
           )}
         </main>
       </div>
@@ -196,7 +210,11 @@ type SearchFieldValues = z.infer<typeof SearchFormSchema>;
 
 const now = new Date();
 
-function SearchForm({ onNext }: { onNext: () => void }): React.JSX.Element {
+interface SearchFormProps {
+  onFind: () => void;
+}
+
+function SearchForm({ onFind }: SearchFormProps): React.JSX.Element {
   const [isSearching, setIsSearching] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
   const [serverError, setServerError] = React.useState<string | null>(null);
@@ -226,7 +244,7 @@ function SearchForm({ onNext }: { onNext: () => void }): React.JSX.Element {
     const timeout = setTimeout(() => {
       setIsSearching(false);
       clearTimeout(timeout);
-      onNext();
+      onFind();
     }, 3000);
   };
 
@@ -396,7 +414,15 @@ const services: Service[] = [
   },
 ];
 
-function SelectService({ onBack }: { onBack: () => void }): React.JSX.Element {
+interface SelectServiceProps {
+  onBack: () => void;
+  onNext: () => void;
+}
+
+function SelectService({
+  onBack,
+  onNext,
+}: SelectServiceProps): React.JSX.Element {
   const methods = useForm<ServiceFieldValues>({
     resolver: zodResolver(ServiceFormSchema),
   });
@@ -411,7 +437,7 @@ function SelectService({ onBack }: { onBack: () => void }): React.JSX.Element {
   };
 
   return (
-    <div className="max-w-[500px] xl:max-w-[520px] sm:max-w-[420px] space-y-12 xl:space-y-10 sm:space-y-8">
+    <div className="w-full max-w-[500px] xl:max-w-[520px] sm:max-w-[420px] space-y-12 xl:space-y-10 sm:space-y-8">
       <Button
         intent="primary"
         asLink
@@ -496,11 +522,109 @@ function SelectService({ onBack }: { onBack: () => void }): React.JSX.Element {
               intent="primary"
               size={isSM ? "small" : "default"}
               className="flex ml-auto py-0 w-[280px] sm:w-full h-[70px] sm:h-[60px]"
+              onClick={onNext}
             >
               Tiếp theo
             </Button>
           </form>
         </FormProvider>
+      </div>
+    </div>
+  );
+}
+
+interface SummaryProps {
+  onBack: () => void;
+  onSubmit: () => void;
+}
+
+function Summary({ onBack, onSubmit }: SummaryProps): React.JSX.Element {
+  const isSM = useMediaQuery({ maxWidth: 639 });
+
+  return (
+    <div className="w-full max-w-[500px] xl:max-w-[520px]">
+      <Button
+        intent="primary"
+        asLink
+        size={isSM ? "extraSmall" : "small"}
+        onClick={onBack}
+      >
+        Quay về
+      </Button>
+      <p className="w-full text-base sm:text-sm font-normal text-foreground-600 mt-12 sm:mt-10">
+        Vui lòng kiểm tra lại thông tin dưới đây lần cuối trước khi nhấn đặt xe:
+      </p>
+      <div className="w-full mt-10 sm:mt-8">
+        <h2 className="text-xl sm:text-lg font-bold text-white">
+          Thông tin cuốc xe{" "}
+          <span className="inline-block size-[6px] sm:size-1 rounded-full bg-primary-500"></span>
+        </h2>
+        <div className="w-full space-y-6 sm:space-y-5 mt-8 sm:mt-6">
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-1 sm:gap-5">
+            <div className="flex gap-2 text-foreground-400">
+              <Calendar variant="Bold" className="flex-none size-6 sm:size-5" />
+              <span className="flex-1 text-base sm:text-sm font-normal">
+                14:33 ngày 26/12/2024
+              </span>
+            </div>
+            <div className="flex gap-2 text-foreground-400">
+              <SmartCar variant="Bold" className="flex-none size-6 sm:size-5" />
+              <span className="flex-1 text-base sm:text-sm font-normal">
+                Carshare Premium
+              </span>
+            </div>
+          </div>
+          <div className="flex gap-2 text-foreground-400">
+            <Location variant="Bold" className="flex-none size-6 sm:size-5" />
+            <span className="flex-1 text-base sm:text-sm font-normal">
+              Điểm đến: 91 Chùa Láng, p. Láng Thượng, q. Đống Đa, Hà Nội
+            </span>
+          </div>
+          <div className="flex gap-2 text-foreground-400">
+            <Location variant="Bold" className="flex-none size-6 sm:size-5" />
+            <span className="flex-1 text-base sm:text-sm font-normal">
+              Điểm đón: 37 ngõ 73 Giang Văn Minh, p. Đội Cấn, q. Ba Đình, Hà Nội
+            </span>
+          </div>
+          <div className="flex gap-2 text-foreground-400">
+            <People variant="Bold" className="flex-none size-6 sm:size-5" />
+            <span className="flex-1 text-base sm:text-sm font-normal">
+              Số lượng hành khách: 2
+            </span>
+          </div>
+        </div>
+      </div>
+      <svg
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-[2px] text-divider mt-10 sm:mt-8"
+      >
+        <line
+          x1="0"
+          y1="0"
+          x2="100%"
+          y2="0"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeDasharray="12 12"
+        />
+      </svg>
+      <div className="w-full mt-10 sm:mt-8 grid grid-cols-[max-content,minmax(0,1fr)] sm:grid-cols-1 items-center sm:items-start gap-10 sm:gap-4">
+        <div className="sm:justify-self-end">
+          <span className="block sm:inline-block text-sm sm:text-xs font-normal text-foreground-500">
+            Cước phí
+          </span>
+          <span className="mt-2 sm:mt-0 sm:ml-2 block sm:inline-block text-lg sm:text-base font-semibold text-[#F59E0B]">
+            124,800đ
+          </span>
+        </div>
+        <Button
+          intent="primary"
+          className="w-full py-0 h-[70px] sm:h-[60px]"
+          size={isSM ? "small" : "default"}
+        >
+          Đặt xe
+        </Button>
       </div>
     </div>
   );
