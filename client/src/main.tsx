@@ -7,6 +7,7 @@ import { Home } from "./components/Home.tsx";
 import { Register } from "./components/Register.tsx";
 import { Login } from "./components/Login.tsx";
 import { Book } from "./components/Book.tsx";
+import { RideStatus } from "./components/RideStatus.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
         <Route path="book" element={<Book />} />
+        <Route path="ride-status" element={<RideStatus />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
