@@ -35,6 +35,8 @@ import carshareExtraIllustrator from "../assets/images/carshare_extra_illustrato
 import { FieldLower } from "./ui/fieldLower";
 import { AnimatePresence, motion } from "motion/react";
 import { cva } from "class-variance-authority";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import { VisuallyHidden } from "./ui/visuallyHidden";
 
 const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
   dateStyle: "short",
@@ -49,7 +51,7 @@ const feeFormatter = new Intl.NumberFormat("vi-VN");
 type Step = "search" | "service" | "summary";
 
 const stepVariants = cva<{ step: Record<Step, string> }>(
-  "w-full xl:mx-auto sm:max-w-[420px] mt-12 sm:mt-8",
+  "w-full xl:mx-auto sm:max-w-[420px]",
   {
     variants: {
       step: {
@@ -577,7 +579,7 @@ const serviceNameText: Record<ServiceFieldValues["service"], string> = {
 
 interface SummaryFieldValues {
   departureTime: Date;
-  service: string;
+  service: ServiceName;
   destination: string;
   pickup: string;
   numbersOfPassengers: number;
@@ -592,6 +594,18 @@ interface SummaryProps extends React.ComponentPropsWithoutRef<"div"> {
 const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
   ({ onSubmit, fieldValues }, ref) => {
     const isSM = useMediaQuery({ maxWidth: 639 });
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const handleBook = React.useCallback(() => {
+      onSubmit();
+      setIsLoading(true);
+      const timeout = setTimeout(() => {
+        setIsLoading(false);
+        setIsModalOpen(true);
+        clearTimeout(timeout);
+      }, 2000);
+    }, []);
 
     return (
       <div ref={ref} className="w-full">
@@ -622,7 +636,7 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
                   className="flex-none size-6 sm:size-5"
                 />
                 <span className="flex-1 text-base sm:text-sm font-normal">
-                  {fieldValues.service}
+                  {serviceNameText[fieldValues.service]}
                 </span>
               </div>
             </div>
@@ -670,13 +684,27 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
               {feeFormatter.format(fieldValues.fee)}đ
             </span>
           </div>
-          <Button
-            intent="primary"
-            className="w-full py-0 h-[70px] sm:h-[60px]"
-            size={isSM ? "small" : "default"}
-          >
-            Đặt xe
-          </Button>
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <Button
+              hasLoader
+              isLoading={isLoading}
+              intent="primary"
+              className="w-full py-0 h-[70px] sm:h-[60px]"
+              size={isSM ? "small" : "default"}
+              onClick={handleBook}
+            >
+              Đặt xe
+            </Button>
+            <DialogContent
+              aria-describedby={undefined}
+              onInteractOutside={(e) => e.preventDefault()}
+            >
+              <VisuallyHidden asChild>
+                <DialogTitle>Cảm ơn bạn đã đặt xe với Carshare!</DialogTitle>
+              </VisuallyHidden>
+              <CompleteModal service={fieldValues.service} />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     );
@@ -794,7 +822,7 @@ const Main = React.forwardRef<
                 Number(searchFieldValues.departureTime.hour),
                 Number(searchFieldValues.departureTime.minute)
               ),
-              service: serviceNameText[serviceFieldValues.service],
+              service: serviceFieldValues.service,
               destination: searchFieldValues.destination,
               pickup: searchFieldValues.pickup,
               numbersOfPassengers: Number(
@@ -821,7 +849,7 @@ const Main = React.forwardRef<
       )}
       {...props}
     >
-      <div className="w-[500px] xl:w-full">
+      <div className="w-[500px] xl:w-full space-y-12 sm:space-y-8">
         {currentStep !== "search" && (
           <Button
             intent="primary"
@@ -852,3 +880,71 @@ const Main = React.forwardRef<
     </main>
   );
 });
+
+interface CompleteModalProps extends React.ComponentPropsWithoutRef<"div"> {
+  service: ServiceName;
+}
+
+const CompleteModal = React.forwardRef<HTMLDivElement, CompleteModalProps>(
+  ({ className, service, ...props }, ref) => {
+    const isSM = useMediaQuery({ maxWidth: 639 });
+    const imageUrl = React.useMemo(() => {
+      switch (service) {
+        case "basic":
+          return carshareBasicIllustrator;
+        case "premium":
+          return carsharePremiumIllustrator;
+        case "extra":
+          return carshareExtraIllustrator;
+        default:
+          const unexpected: never = service;
+          throw new Error("invalid service");
+      }
+    }, [service]);
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "w-full max-w-[450px] sm:max-w-[420px] bg-background-950 rounded-4xl overflow-hidden",
+          className
+        )}
+        {...props}
+      >
+        <div className="w-full bg-background-900 py-1">
+          <figure>
+            <motion.img
+              initial={{ x: "-200%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ type: "spring", duration: 1, bounce: 0.5 }}
+              src={imageUrl}
+              alt={serviceNameText[service]}
+              className="size-[140px] sm:size-[100px] object-contain mx-auto"
+            />
+          </figure>
+        </div>
+        <div className="w-full p-8 sm:p-6 space-y-6 sm:space-y-5">
+          <div className="w-full text-center space-y-4 sm:space-y-2">
+            <h6 className="text-lg sm:text-base font-semibold text-white">
+              Cảm ơn bạn đã đặt xe với Carshare!
+            </h6>
+            <p className="text-base sm:text-sm font-normal text-foreground-500">
+              Cuốc xe của bạn{" "}
+              <span className="font-medium text-foreground-200">#6397180</span>{" "}
+              đã được hệ thống tiếp nhận và đang chờ xử lý. Bạn vui lòng theo
+              dõi thông báo để có những cập nhật mới nhất nhé.
+            </p>
+          </div>
+          <Button
+            asChild
+            intent="primary"
+            size={isSM ? "small" : "default"}
+            className="w-full py-0 h-[60px] sm:h-[50px]"
+          >
+            <Link to="/ride-status">OK</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+);
