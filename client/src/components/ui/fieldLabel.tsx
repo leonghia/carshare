@@ -34,8 +34,7 @@ const FieldLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   FieldLabelProps
 >(({ className, isDirtyCustom, mode = "single", ...props }, ref) => {
-  const { fieldInputId, label, size, required, error, isDirty, name } =
-    useField();
+  const { fieldInputId, label, size, required, error, isDirty } = useField();
 
   const dirty = mode === "single" ? isDirty : isDirtyCustom;
 

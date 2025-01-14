@@ -36,6 +36,16 @@ import { FieldLower } from "./ui/fieldLower";
 import { AnimatePresence, motion } from "motion/react";
 import { cva } from "class-variance-authority";
 
+const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
+  dateStyle: "short",
+});
+
+const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
+  timeStyle: "short",
+});
+
+const feeFormatter = new Intl.NumberFormat("vi-VN");
+
 type Step = "search" | "service" | "summary";
 
 const stepVariants = cva<{ step: Record<Step, string> }>(
@@ -52,36 +62,6 @@ const stepVariants = cva<{ step: Record<Step, string> }>(
 );
 
 export function Book(): React.JSX.Element {
-  const [currentStep, setCurrentStep] = React.useState<Step>("search");
-  const isSM = useMediaQuery({ maxWidth: 639 });
-
-  const onBack = React.useCallback(() => {
-    switch (currentStep) {
-      case "service":
-        setCurrentStep("search");
-        return;
-      case "summary":
-        setCurrentStep("service");
-        return;
-      default:
-        throw new Error("onBack cannot be used here");
-    }
-  }, [currentStep]);
-
-  const content = React.useMemo(() => {
-    switch (currentStep) {
-      case "search":
-        return <SearchForm onSearch={() => setCurrentStep("service")} />;
-      case "service":
-        return <SelectService onNext={() => setCurrentStep("summary")} />;
-      case "summary":
-        return <Summary onSubmit={() => console.log("submitted")} />;
-      default:
-        const unexpected: never = currentStep;
-        throw new Error("currentStep is invalid");
-    }
-  }, [currentStep]);
-
   return (
     <div className="overflow-hidden relative w-full min-h-screen bg-background-950 xl:grid xl:grid-rows-[max-content,minmax(0,1fr)]">
       {/* Wrapper */}
@@ -148,50 +128,7 @@ export function Book(): React.JSX.Element {
           </div>
         </header>
         {/* Main */}
-        <main
-          className={cn(
-            "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] lg:min-h-[400px] md:min-h-[480px] sm:min-h-0 pt-[120px] 2xl:pt-20 sm:pt-8 xl:items-end xl:justify-items-center",
-            currentStep === "search" && "pt-0 2xl:pt-0 items-center"
-          )}
-        >
-          <div className="w-[500px] xl:w-full">
-            {currentStep !== "search" && (
-              <Button
-                intent="primary"
-                asLink
-                size={isSM ? "extraSmall" : "small"}
-                onClick={onBack}
-              >
-                Quay về
-              </Button>
-            )}
-
-            {/* Step */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={currentStep}
-                initial={{ x: "100%", opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: "-100%", opacity: 0 }}
-                transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-                className={cn(stepVariants({ step: currentStep }))}
-              >
-                {content}
-              </motion.div>
-            </AnimatePresence>
-
-            {/* <motion.div
-              key={currentStep}
-              initial={{ x: "50%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-50%", opacity: 0 }}
-              transition={{ type: "spring", duration: 0.5, bounce: 0 }}
-              className={cn(stepVariants({ step: currentStep }))}
-            >
-              {content}
-            </motion.div> */}
-          </div>
-        </main>
+        <Main />
       </div>
       {/* Map */}
       <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
@@ -277,11 +214,12 @@ type SearchFieldValues = z.infer<typeof SearchFormSchema>;
 const now = new Date();
 
 interface SearchFormProps extends React.ComponentPropsWithoutRef<"form"> {
-  onSearch: () => void;
+  onSearch: (values: SearchFieldValues) => void;
+  fieldValues: SearchFieldValues | null;
 }
 
 const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
-  ({ onSearch }, ref) => {
+  ({ onSearch, fieldValues }, ref) => {
     const [isSearching, setIsSearching] = React.useState(false);
     const isSM = useMediaQuery({ maxWidth: 639 });
     const [serverError, setServerError] = React.useState<string | null>(null);
@@ -302,7 +240,25 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
         numbersOfPassengers: "",
         useCurrentLocation: false,
       },
+      values: fieldValues
+        ? {
+            destination: fieldValues.destination,
+            pickup: fieldValues.pickup,
+            departureTime: {
+              hour: fieldValues.departureTime.hour,
+              minute: fieldValues.departureTime.minute,
+              date: fieldValues.departureTime.date,
+              month: fieldValues.departureTime.month,
+              year: fieldValues.departureTime.year,
+            },
+            numbersOfPassengers: fieldValues.numbersOfPassengers,
+            useCurrentLocation: fieldValues.useCurrentLocation,
+          }
+        : undefined,
       shouldFocusError: false,
+      resetOptions: {
+        keepDefaultValues: true,
+      },
     });
 
     const onValid = (data: SearchFieldValues) => {
@@ -311,7 +267,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
       const timeout = setTimeout(() => {
         setIsSearching(false);
         clearTimeout(timeout);
-        onSearch();
+        onSearch(data);
       }, 3000);
     };
 
@@ -440,20 +396,21 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
 );
 
 const ServiceFormSchema = z.object({
-  type: z.enum(["basic", "premium", "extra"], {
+  service: z.enum(["basic", "premium", "extra"], {
     message: "Vui lòng chọn dịch vụ trước khi tiếp tục",
   }),
 });
 
 type ServiceFieldValues = z.infer<typeof ServiceFormSchema>;
 
+type ServiceName = ServiceFieldValues["service"];
+
 type Service = {
   id: number;
   imageUrl: string;
   name: string;
   description: string;
-  fee: number;
-  value: ServiceFieldValues["type"];
+  value: ServiceFieldValues["service"];
 };
 
 const services: Service[] = [
@@ -462,7 +419,6 @@ const services: Service[] = [
     imageUrl: carshareBasicIllustrator,
     name: "Carshare Basic",
     description: "Dịch vụ cơ bản với dòng xe phổ thông, tiết kiệm chi phí",
-    fee: 96000,
     value: "basic",
   },
   {
@@ -470,7 +426,6 @@ const services: Service[] = [
     imageUrl: carsharePremiumIllustrator,
     name: "Carshare Premium",
     description: "Dịch vụ cao cấp với dòng xe hạng sang tiện nghi, hiện đại",
-    fee: 124800,
     value: "premium",
   },
   {
@@ -478,24 +433,51 @@ const services: Service[] = [
     imageUrl: carshareExtraIllustrator,
     name: "Carshare Extra",
     description: "Dòng xe cỡ lớn (7 - 16 chỗ) đủ sức chứa cho nhiều hành khách",
-    fee: 105300,
     value: "extra",
   },
 ];
 
+type Coords = {
+  lng: number;
+  lat: number;
+};
+
 interface SelectServiceProps extends React.ComponentPropsWithoutRef<"div"> {
-  onNext: () => void;
+  onNext: (data: ServiceFieldValuesWithFee) => void;
+  fieldValues: ServiceFieldValues | null;
+  route: { destination: Coords; pickup: Coords };
 }
 
 const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
-  ({ onNext }, ref) => {
+  ({ onNext, fieldValues, route }, ref) => {
     const methods = useForm<ServiceFieldValues>({
       resolver: zodResolver(ServiceFormSchema),
+      values: fieldValues
+        ? {
+            service: fieldValues.service,
+          }
+        : undefined,
     });
     const isSM = useMediaQuery({ maxWidth: 639 });
+    const calculateFee = React.useCallback(
+      (service: ServiceName) => {
+        switch (service) {
+          case "basic":
+            return 96000;
+          case "premium":
+            return 124800;
+          case "extra":
+            return 105300;
+          default:
+            const unexpected: never = service;
+            throw new Error("invalid service");
+        }
+      },
+      [route]
+    );
 
     const onValid = (data: ServiceFieldValues) => {
-      console.log(data);
+      onNext({ service: data.service, fee: calculateFee(data.service) });
     };
 
     const onInvalid = (error: FieldErrors) => {
@@ -512,10 +494,10 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
             onSubmit={methods.handleSubmit(onValid)}
             className="w-full space-y-12 xl:space-y-10 sm:space-y-8 mt-8 sm:mt-6"
           >
-            <Field control={methods.control} name="type">
+            <Field control={methods.control} name="service">
               <Controller
                 control={methods.control}
-                name="type"
+                name="service"
                 render={({ field }) => (
                   <RadioGroup
                     onValueChange={field.onChange}
@@ -558,7 +540,10 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
                                 </span>
                               </div>
                               <div className="text-base sm:text-sm font-medium text-[#F59E0B] text-right">
-                                {service.fee.toLocaleString("en-US")}đ
+                                {feeFormatter.format(
+                                  calculateFee(service.value)
+                                )}
+                                đ
                               </div>
                             </div>
                           </div>
@@ -579,7 +564,6 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
               intent="primary"
               size={isSM ? "small" : "default"}
               className="flex ml-auto py-0 w-[280px] sm:w-full h-[70px] sm:h-[60px]"
-              onClick={onNext}
             >
               Tiếp theo
             </Button>
@@ -590,12 +574,28 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
   }
 );
 
+const serviceNameText: Record<ServiceFieldValues["service"], string> = {
+  basic: "Carshare Basic",
+  premium: "Carshare Premium",
+  extra: "Carshare Extra",
+};
+
+interface SummaryFieldValues {
+  departureTime: Date;
+  service: string;
+  destination: string;
+  pickup: string;
+  numbersOfPassengers: number;
+  fee: number;
+}
+
 interface SummaryProps extends React.ComponentPropsWithoutRef<"div"> {
   onSubmit: () => void;
+  fieldValues: SummaryFieldValues;
 }
 
 const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
-  ({ onSubmit }, ref) => {
+  ({ onSubmit, fieldValues }, ref) => {
     const isSM = useMediaQuery({ maxWidth: 639 });
 
     return (
@@ -617,7 +617,8 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
                   className="flex-none size-6 sm:size-5"
                 />
                 <span className="flex-1 text-base sm:text-sm font-normal">
-                  14:33 ngày 26/12/2024
+                  {timeFormatter.format(fieldValues.departureTime)} ngày{" "}
+                  {dateFormatter.format(fieldValues.departureTime)}
                 </span>
               </div>
               <div className="flex gap-2 text-foreground-400">
@@ -626,27 +627,26 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
                   className="flex-none size-6 sm:size-5"
                 />
                 <span className="flex-1 text-base sm:text-sm font-normal">
-                  Carshare Premium
+                  {fieldValues.service}
                 </span>
               </div>
             </div>
             <div className="flex gap-2 text-foreground-400">
               <Location variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đến: 91 Chùa Láng, p. Láng Thượng, q. Đống Đa, Hà Nội
+                Điểm đến: {fieldValues.destination}
               </span>
             </div>
             <div className="flex gap-2 text-foreground-400">
               <Location variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đón: 37 ngõ 73 Giang Văn Minh, p. Đội Cấn, q. Ba Đình, Hà
-                Nội
+                Điểm đón: {fieldValues.pickup}
               </span>
             </div>
             <div className="flex gap-2 text-foreground-400">
               <People variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                Số lượng hành khách: 2
+                Số lượng hành khách: {fieldValues.numbersOfPassengers}
               </span>
             </div>
           </div>
@@ -672,7 +672,7 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
               Cước phí
             </span>
             <span className="mt-2 sm:mt-0 sm:ml-2 block sm:inline-block text-lg sm:text-base font-semibold text-[#F59E0B]">
-              124,800đ
+              {feeFormatter.format(fieldValues.fee)}đ
             </span>
           </div>
           <Button
@@ -687,3 +687,149 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
     );
   }
 );
+
+interface ServiceFieldValuesWithFee extends ServiceFieldValues {
+  fee: number;
+}
+
+const Main = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<"main">
+>(({ className, ...props }, ref) => {
+  const [searchFieldValues, setSearchFieldValues] =
+    React.useState<SearchFieldValues | null>(null);
+  const [serviceFieldValues, setServiceFieldValues] =
+    React.useState<ServiceFieldValuesWithFee | null>(null);
+  const [currentStep, setCurrentStep] = React.useState<Step>("search");
+  const isSM = useMediaQuery({ maxWidth: 639 });
+
+  const onBack = React.useCallback(() => {
+    switch (currentStep) {
+      case "service":
+        setCurrentStep("search");
+        return;
+      case "summary":
+        setCurrentStep("service");
+        return;
+      default:
+        throw new Error("onBack cannot be used here");
+    }
+  }, [currentStep]);
+
+  const content = React.useMemo(() => {
+    switch (currentStep) {
+      case "search":
+        return (
+          <SearchForm
+            fieldValues={searchFieldValues}
+            onSearch={({
+              destination,
+              pickup,
+              departureTime,
+              numbersOfPassengers,
+              useCurrentLocation,
+            }) => {
+              setSearchFieldValues({
+                destination,
+                pickup,
+                useCurrentLocation,
+                departureTime: {
+                  year: departureTime.year,
+                  month: departureTime.month,
+                  date: departureTime.date,
+                  hour: departureTime.hour,
+                  minute: departureTime.minute,
+                },
+                numbersOfPassengers,
+              });
+              setCurrentStep("service");
+            }}
+          />
+        );
+      case "service":
+        return (
+          <SelectService
+            fieldValues={serviceFieldValues}
+            onNext={({ service, fee }: ServiceFieldValuesWithFee) => {
+              setServiceFieldValues({
+                service,
+                fee,
+              });
+              setCurrentStep("summary");
+            }}
+            route={{
+              destination: { lat: 0, lng: 0 },
+              pickup: { lat: 0, lng: 0 },
+            }}
+          />
+        );
+      case "summary":
+        if (!searchFieldValues)
+          throw new Error("searchFieldValues object is invalid");
+        if (!serviceFieldValues) throw new Error("");
+        return (
+          <Summary
+            fieldValues={{
+              departureTime: new Date(
+                Number(searchFieldValues.departureTime.year),
+                Number(searchFieldValues.departureTime.month) - 1,
+                Number(searchFieldValues.departureTime.date),
+                Number(searchFieldValues.departureTime.hour),
+                Number(searchFieldValues.departureTime.minute)
+              ),
+              service: serviceNameText[serviceFieldValues.service],
+              destination: searchFieldValues.destination,
+              pickup: searchFieldValues.pickup,
+              numbersOfPassengers: Number(
+                searchFieldValues.numbersOfPassengers
+              ),
+              fee: Number(serviceFieldValues.fee),
+            }}
+            onSubmit={() => console.log("submitted")}
+          />
+        );
+      default:
+        const unexpected: never = currentStep;
+        throw new Error("currentStep is invalid");
+    }
+  }, [currentStep]);
+
+  return (
+    <main
+      ref={ref}
+      className={cn(
+        "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] lg:min-h-[400px] md:min-h-[480px] sm:min-h-0 pt-[120px] 2xl:pt-20 sm:pt-8 xl:items-end xl:justify-items-center",
+        currentStep === "search" && "pt-0 2xl:pt-0 items-center",
+        className
+      )}
+      {...props}
+    >
+      <div className="w-[500px] xl:w-full">
+        {currentStep !== "search" && (
+          <Button
+            intent="primary"
+            asLink
+            size={isSM ? "extraSmall" : "small"}
+            onClick={onBack}
+          >
+            Quay về
+          </Button>
+        )}
+
+        {/* Step */}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={currentStep}
+            initial={{ x: "100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "-100%", opacity: 0 }}
+            transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+            className={cn(stepVariants({ step: currentStep }))}
+          >
+            {content}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </main>
+  );
+});
