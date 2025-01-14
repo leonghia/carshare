@@ -437,7 +437,7 @@ const services: Service[] = [
   },
 ];
 
-type Coords = {
+type Coord = {
   lng: number;
   lat: number;
 };
@@ -445,7 +445,7 @@ type Coords = {
 interface SelectServiceProps extends React.ComponentPropsWithoutRef<"div"> {
   onNext: (data: ServiceFieldValuesWithFee) => void;
   fieldValues: ServiceFieldValues | null;
-  route: { destination: Coords; pickup: Coords };
+  route: { destination: Coord; pickup: Coord };
 }
 
 const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
@@ -692,6 +692,23 @@ interface ServiceFieldValuesWithFee extends ServiceFieldValues {
   fee: number;
 }
 
+type Direction = 1 | -1;
+
+const stepAnimationVariants = {
+  initial: (direction: number) => ({
+    x: `${100 * direction}%`,
+    opacity: 0,
+  }),
+  animate: {
+    x: "0%",
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    x: `${-100 * direction}%`,
+    opacity: 0,
+  }),
+};
+
 const Main = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<"main">
@@ -702,8 +719,10 @@ const Main = React.forwardRef<
     React.useState<ServiceFieldValuesWithFee | null>(null);
   const [currentStep, setCurrentStep] = React.useState<Step>("search");
   const isSM = useMediaQuery({ maxWidth: 639 });
+  const [direction, setDirection] = React.useState<Direction>(1);
 
   const onBack = React.useCallback(() => {
+    setDirection(-1);
     switch (currentStep) {
       case "service":
         setCurrentStep("search");
@@ -743,6 +762,7 @@ const Main = React.forwardRef<
                 numbersOfPassengers,
               });
               setCurrentStep("service");
+              setDirection(1);
             }}
           />
         );
@@ -756,6 +776,7 @@ const Main = React.forwardRef<
                 fee,
               });
               setCurrentStep("summary");
+              setDirection(1);
             }}
             route={{
               destination: { lat: 0, lng: 0 },
@@ -817,12 +838,14 @@ const Main = React.forwardRef<
         )}
 
         {/* Step */}
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait" initial={false} custom={direction}>
           <motion.div
             key={currentStep}
-            initial={{ x: "100%", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "-100%", opacity: 0 }}
+            variants={stepAnimationVariants}
+            custom={direction}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
             className={cn(stepVariants({ step: currentStep }))}
           >
