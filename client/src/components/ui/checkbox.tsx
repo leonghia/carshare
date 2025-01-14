@@ -27,7 +27,7 @@ const rightVariants = cva(undefined, {
 });
 
 const checkboxVariants = cva(
-  "group relative flex-none bg-background-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-500 data-[state=checked]:text-white transition-[background-color] duration-200 ease-out",
+  "group relative flex-none bg-background-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-flat focus-visible:ring-offset-2 focus-visible:ring-offset-primary-500 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-500 data-[state=checked]:text-white transition-[background-color] duration-200 ease-out",
   {
     variants: {
       size: {
