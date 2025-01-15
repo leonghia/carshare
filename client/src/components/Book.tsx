@@ -614,7 +614,7 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
           xe:
         </p>
         <div className="w-full mt-10 sm:mt-8">
-          <h2 className="text-xl sm:text-lg font-bold text-white">
+          <h2 className="text-xl sm:text-base font-bold text-white">
             Thông tin cuốc xe{" "}
             <span className="inline-block size-[6px] sm:size-1 rounded-full bg-primary-500"></span>
           </h2>

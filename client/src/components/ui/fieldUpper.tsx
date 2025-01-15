@@ -15,7 +15,7 @@ const variants = cva(
       },
       size: {
         default: "px-6 py-3",
-        small: "px-5 py-3",
+        small: "px-4 py-3",
       },
     },
     defaultVariants: {
