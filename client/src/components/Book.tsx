@@ -16,7 +16,6 @@ import { z } from "zod";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
-import { BasicField } from "./ui/basicField";
 import { Button } from "./ui/button";
 import { CheckboxField } from "./ui/checkboxField";
 import { DatetimeField } from "./ui/datetimeField";
@@ -33,6 +32,7 @@ import { cva } from "class-variance-authority";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { VisuallyHidden } from "./ui/visuallyHidden";
 import { create } from "zustand";
+import { AutoCompleteField } from "./ui/autoCompleteField";
 
 type Route = {
   from: Coord;
@@ -115,7 +115,7 @@ const stepVariants = cva<{ step: Record<Step, string> }>(
   {
     variants: {
       step: {
-        search: "max-w-[450px] md:max-w-[580px]",
+        search: "max-w-[450px] xl:max-w-[800px] md:max-w-[580px]",
         service: "max-w-[500px] xl:max-w-[520px]",
         summary: "max-w-[500px] xl:max-w-[520px]",
       },
@@ -361,7 +361,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
               name="destination"
               control={methods.control}
             >
-              <BasicField
+              <AutoCompleteField
                 inputProps={{
                   type: "text",
                   placeholder: "Nhập địa chỉ bạn muốn đến...",
@@ -372,6 +372,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
                 }}
               />
             </Field>
+
             <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
               <Field<SearchFieldValues>
                 label="Điểm đón"
@@ -380,7 +381,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
                 name="pickup"
                 control={methods.control}
               >
-                <BasicField
+                <AutoCompleteField
                   inputProps={{
                     type: "text",
                     placeholder: "Nhập địa chỉ để tài xế đón bạn...",

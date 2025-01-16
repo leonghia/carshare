@@ -37,7 +37,7 @@ const BasicField = React.forwardRef<HTMLDivElement, BasicFieldProps>(
                   control={control}
                   fieldName={name}
                   id={fieldInputId}
-                  className="w-full"
+                  className="flex-1 min-w-0"
                   {...inputProps}
                 />
               </div>

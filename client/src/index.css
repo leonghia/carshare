@@ -37,3 +37,10 @@
     }
   }
 }
+
+@layer components {
+  .PopoverContent {
+    width: var(--radix-popover-trigger-width);
+    max-height: var(--radix-popover-content-available-height);
+  }
+}

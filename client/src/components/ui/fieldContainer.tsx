@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
@@ -44,7 +44,18 @@ interface FieldContainerProps
 
 const FieldContainer = React.forwardRef<HTMLDivElement, FieldContainerProps>(
   ({ className, children }, ref) => {
-    const { size, error } = useField();
+    const { size, error, isFocus } = useField();
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    React.useImperativeHandle<
+      typeof containerRef.current,
+      typeof containerRef.current
+    >(ref, () => containerRef.current);
+
+    useEffect(() => {
+      if (containerRef.current && isFocus)
+        containerRef.current.scrollIntoView({ behavior: "smooth" });
+    }, [isFocus]);
 
     const state: Pick<
       VariantProps<typeof containerVariants>,
@@ -53,8 +64,12 @@ const FieldContainer = React.forwardRef<HTMLDivElement, FieldContainerProps>(
 
     return (
       <div
-        ref={ref}
-        className={cn(containerVariants({ size, state }), className)}
+        ref={containerRef}
+        className={cn(
+          containerVariants({ size, state }),
+          "scroll-mt-4",
+          className
+        )}
       >
         {children}
       </div>
