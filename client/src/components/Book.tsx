@@ -13,12 +13,7 @@ import {
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
-import {
-  Controller,
-  FieldErrors,
-  FormProvider,
-  useForm,
-} from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
@@ -39,51 +34,68 @@ import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { VisuallyHidden } from "./ui/visuallyHidden";
 import { create } from "zustand";
 
+type Route = {
+  from: Coord;
+  to: Coord;
+};
+
 type BookStoreState = {
-  searchFieldValues: SearchFieldValues;
+  searchFieldValues: SearchFieldValues | null;
   serviceFieldValues: ServiceFieldValuesWithFee | null;
+  currentStep: Step;
+  direction: Direction;
+  route: Route | null;
 };
 
 type BookStoreActions = {
-  updateSearchFieldValues: (newData: SearchFieldValues) => void;
-  updateServiceFieldValues: (newData: ServiceFieldValuesWithFee | null) => void;
+  updateSearchFieldValues: (newValues: SearchFieldValues | null) => void;
+  updateServiceFieldValues: (
+    newValues: ServiceFieldValuesWithFee | null
+  ) => void;
+  updateCurrentStep: (newStep: Step) => void;
+  updateDirection: (newDirection: Direction) => void;
+  updateRoute: (newRoute: Route | null) => void;
 };
 
 type BookStore = BookStoreState & BookStoreActions;
 
 const useBookStore = create<BookStore>()((set) => ({
-  searchFieldValues: {
-    destination: "",
-    pickup: "",
-    useCurrentLocation: false,
-    departureTime: {
-      hour: "",
-      minute: "",
-      date: "",
-      month: "",
-      year: "",
-    },
-    numbersOfPassengers: "",
-    fee: 0,
-  },
+  route: null,
+  direction: 1,
+  currentStep: "search",
+  searchFieldValues: null,
   serviceFieldValues: null,
-  updateSearchFieldValues: (nextSearchFields) =>
+  updateSearchFieldValues: (newValues) =>
     set(
       (state) => ({
         ...state,
-        searchFieldValues: nextSearchFields,
+        searchFieldValues: newValues,
       }),
       true
     ),
 
-  updateServiceFieldValues: (nextServiceFields) =>
+  updateServiceFieldValues: (newValues) =>
     set(
       (state) => ({
         ...state,
-        serviceFieldValues: nextServiceFields,
+        serviceFieldValues: newValues,
       }),
       true
     ),
+  updateCurrentStep: (newStep) =>
+    set(
+      (state) => ({
+        ...state,
+        currentStep: newStep,
+      }),
+      true
+    ),
+  updateDirection: (newDirection) =>
+    set((state) => ({
+      ...state,
+      direction: newDirection,
+    })),
+  updateRoute: (newRoute) => set((state) => ({ ...state, route: newRoute })),
 }));
 
 const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
@@ -263,17 +275,22 @@ type SearchFieldValues = z.infer<typeof SearchFormSchema>;
 
 const now = new Date();
 
-interface SearchFormProps extends React.ComponentPropsWithoutRef<"form"> {
-  onSearch: (values: SearchFieldValues) => void;
-  fieldValues: SearchFieldValues | null;
-}
+interface SearchFormProps extends React.ComponentPropsWithoutRef<"form"> {}
 
 const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
-  ({ onSearch, fieldValues }, ref) => {
+  ({ className, ...props }, ref) => {
     const [isSearching, setIsSearching] = React.useState(false);
     const isSM = useMediaQuery({ maxWidth: 639 });
-    const [serverError, setServerError] = React.useState<string | null>(null);
     const [revalidate, setRevalidate] = React.useState(false);
+    const fieldValues = useBookStore((state) => state.searchFieldValues);
+    const updateFieldValues = useBookStore(
+      (state) => state.updateSearchFieldValues
+    );
+    const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
+    const updateServiceFieldValues = useBookStore(
+      (state) => state.updateServiceFieldValues
+    );
+    const updateDirection = useBookStore((state) => state.updateDirection);
 
     const methods = useForm<SearchFieldValues>({
       resolver: zodResolver(SearchFormSchema),
@@ -316,11 +333,14 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
       const timeout = setTimeout(() => {
         setIsSearching(false);
         clearTimeout(timeout);
-        onSearch(data);
-      }, 3000);
+        updateFieldValues(data);
+        updateServiceFieldValues(null);
+        updateDirection(1);
+        updateCurrentStep("service");
+      }, 1000);
     };
 
-    const onInvalid = (errors: FieldErrors<SearchFieldValues>) => {
+    const onInvalid = () => {
       setRevalidate(true);
     };
 
@@ -329,7 +349,8 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
         <form
           ref={ref}
           onSubmit={methods.handleSubmit(onValid, onInvalid)}
-          className="w-full space-y-10 sm:space-y-8"
+          className={cn("w-full space-y-10 sm:space-y-8", className)}
+          {...props}
         >
           {/* Fields */}
           <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
@@ -491,14 +512,18 @@ type Coord = {
   lat: number;
 };
 
-interface SelectServiceProps extends React.ComponentPropsWithoutRef<"div"> {
-  onNext: (data: ServiceFieldValuesWithFee) => void;
-  fieldValues: ServiceFieldValues | null;
-  route: { destination: Coord; pickup: Coord };
-}
+interface SelectServiceProps extends React.ComponentPropsWithoutRef<"div"> {}
 
 const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
-  ({ onNext, fieldValues, route }, ref) => {
+  ({ className, ...props }, ref) => {
+    const fieldValues = useBookStore((state) => state.serviceFieldValues);
+    const updateFieldValues = useBookStore(
+      (state) => state.updateServiceFieldValues
+    );
+    const route = useBookStore((state) => state.route);
+    const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
+    const updateDirection = useBookStore((state) => state.updateDirection);
+
     const methods = useForm<ServiceFieldValues>({
       resolver: zodResolver(ServiceFormSchema),
       values: fieldValues
@@ -517,7 +542,6 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
             return 124800;
           case "extra":
             return 105300;
-
           default:
             const unexpected: never = service;
             throw new Error("invalid service");
@@ -527,15 +551,16 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
     );
 
     const onValid = (data: ServiceFieldValues) => {
-      onNext({ service: data.service, fee: calculateFee(data.service) });
-    };
-
-    const onInvalid = (error: FieldErrors) => {
-      console.log(error);
+      updateFieldValues({
+        fee: calculateFee(data.service),
+        service: data.service,
+      });
+      updateCurrentStep("summary");
+      updateDirection(1);
     };
 
     return (
-      <div ref={ref} className="w-full">
+      <div ref={ref} className={cn("w-full", className)} {...props}>
         <p className="w-full text-base sm:text-sm font-normal text-foreground-600">
           Vui lòng lựa chọn dịch vụ bạn muốn sử dụng:
         </p>
@@ -626,28 +651,49 @@ const serviceNameText: Record<ServiceFieldValues["service"], string> = {
   extra: "Carshare Extra",
 };
 
-interface SummaryFieldValues {
+interface SummaryProps extends React.ComponentPropsWithoutRef<"div"> {}
+
+type Output = {
   departureTime: Date;
-  service: ServiceName;
+  service: string;
   destination: string;
   pickup: string;
   numbersOfPassengers: number;
   fee: number;
-}
-
-interface SummaryProps extends React.ComponentPropsWithoutRef<"div"> {
-  onSubmit: () => void;
-  fieldValues: SummaryFieldValues;
-}
+};
 
 const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
-  ({ onSubmit, fieldValues }, ref) => {
+  ({ className, ...props }, ref) => {
     const isSM = useMediaQuery({ maxWidth: 639 });
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const searchFieldValues = useBookStore((state) => state.searchFieldValues);
+    const serviceFieldValues = useBookStore(
+      (state) => state.serviceFieldValues
+    );
+
+    if (!searchFieldValues) throw new Error("invalid searchFieldValues");
+    if (!serviceFieldValues) throw new Error("invalid serviceFieldValues");
+
+    const output: Output = React.useMemo(
+      () => ({
+        departureTime: new Date(
+          Number(searchFieldValues.departureTime.year),
+          Number(searchFieldValues.departureTime.month) - 1,
+          Number(searchFieldValues.departureTime.date),
+          Number(searchFieldValues.departureTime.hour),
+          Number(searchFieldValues.departureTime.minute)
+        ),
+        service: serviceNameText[serviceFieldValues.service],
+        destination: searchFieldValues.destination,
+        pickup: searchFieldValues.pickup,
+        numbersOfPassengers: Number(searchFieldValues.numbersOfPassengers),
+        fee: Number(serviceFieldValues.fee),
+      }),
+      [searchFieldValues, serviceFieldValues]
+    );
 
     const handleBook = React.useCallback(() => {
-      onSubmit();
       setIsLoading(true);
       const timeout = setTimeout(() => {
         setIsLoading(false);
@@ -657,7 +703,7 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
     }, []);
 
     return (
-      <div ref={ref} className="w-full">
+      <div ref={ref} className={cn("w-full", className)} {...props}>
         <p className="w-full text-base sm:text-sm font-normal text-foreground-600 mt-12 sm:mt-10">
           Vui lòng kiểm tra lại thông tin dưới đây lần cuối trước khi nhấn đặt
           xe:
@@ -675,8 +721,8 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
                   className="flex-none size-6 sm:size-5"
                 />
                 <span className="flex-1 text-base sm:text-sm font-normal">
-                  {timeFormatter.format(fieldValues.departureTime)} ngày{" "}
-                  {dateFormatter.format(fieldValues.departureTime)}
+                  {timeFormatter.format(output.departureTime)} ngày{" "}
+                  {dateFormatter.format(output.departureTime)}
                 </span>
               </div>
               <div className="flex gap-2 text-foreground-400">
@@ -685,26 +731,26 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
                   className="flex-none size-6 sm:size-5"
                 />
                 <span className="flex-1 text-base sm:text-sm font-normal">
-                  {serviceNameText[fieldValues.service]}
+                  {output.service}
                 </span>
               </div>
             </div>
             <div className="flex gap-2 text-foreground-400">
               <Location variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đến: {fieldValues.destination}
+                Điểm đến: {output.destination}
               </span>
             </div>
             <div className="flex gap-2 text-foreground-400">
               <Location variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đón: {fieldValues.pickup}
+                Điểm đón: {output.pickup}
               </span>
             </div>
             <div className="flex gap-2 text-foreground-400">
               <People variant="Bold" className="flex-none size-6 sm:size-5" />
               <span className="flex-1 text-base sm:text-sm font-normal">
-                Số lượng hành khách: {fieldValues.numbersOfPassengers}
+                Số lượng hành khách: {output.numbersOfPassengers}
               </span>
             </div>
           </div>
@@ -729,8 +775,8 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
             <span className="block sm:inline-block text-sm sm:text-xs font-normal text-foreground-500">
               Cước phí
             </span>
-            <span className="mt-2 sm:mt-0 sm:ml-2 block sm:inline-block text-lg sm:text-base font-semibold text-[#F59E0B]">
-              {feeFormatter.format(fieldValues.fee)}đ
+            <span className="mt-2 sm:mt-0 sm:ml-2 block sm:inline-block text-lg sm:text-base font-medium text-[#F59E0B]">
+              {feeFormatter.format(output.fee)}đ
             </span>
           </div>
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -751,7 +797,7 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
               <VisuallyHidden asChild>
                 <DialogTitle>Cảm ơn bạn đã đặt xe với Carshare!</DialogTitle>
               </VisuallyHidden>
-              <CompleteModal service={fieldValues.service} />
+              <CompleteModal service={serviceFieldValues.service} />
             </DialogContent>
           </Dialog>
         </div>
@@ -785,28 +831,20 @@ const Main = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<"main">
 >(({ className, ...props }, ref) => {
-  const [currentStep, setCurrentStep] = React.useState<Step>("search");
+  const currentStep = useBookStore((state) => state.currentStep);
+  const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
+  const direction = useBookStore((state) => state.direction);
+  const updateDirection = useBookStore((state) => state.updateDirection);
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const [direction, setDirection] = React.useState<Direction>(1);
-
-  const searchFieldValues = useBookStore((state) => state.searchFieldValues);
-  const updateSearchFieldValues = useBookStore(
-    (state) => state.updateSearchFieldValues
-  );
-
-  const serviceFieldValues = useBookStore((state) => state.serviceFieldValues);
-  const updateServiceFieldValues = useBookStore(
-    (state) => state.updateServiceFieldValues
-  );
 
   const onBack = () => {
-    setDirection(-1);
+    updateDirection(-1);
     switch (currentStep) {
       case "service":
-        setCurrentStep("search");
+        updateCurrentStep("search");
         return;
       case "summary":
-        setCurrentStep("service");
+        updateCurrentStep("service");
         return;
       default:
         throw new Error("onBack cannot be used here");
@@ -816,78 +854,11 @@ const Main = React.forwardRef<
   const content = React.useMemo(() => {
     switch (currentStep) {
       case "search":
-        return (
-          <SearchForm
-            fieldValues={searchFieldValues}
-            onSearch={({
-              destination,
-              pickup,
-              departureTime,
-              numbersOfPassengers,
-              useCurrentLocation,
-            }) => {
-              updateSearchFieldValues({
-                destination,
-                pickup,
-                useCurrentLocation,
-                departureTime: {
-                  year: departureTime.year,
-                  month: departureTime.month,
-                  date: departureTime.date,
-                  hour: departureTime.hour,
-                  minute: departureTime.minute,
-                },
-                numbersOfPassengers,
-              });
-              setCurrentStep("service");
-              updateServiceFieldValues(null);
-              setDirection(1);
-            }}
-          />
-        );
+        return <SearchForm />;
       case "service":
-        return (
-          <SelectService
-            fieldValues={serviceFieldValues}
-            onNext={({ service, fee }: ServiceFieldValuesWithFee) => {
-              updateServiceFieldValues({
-                service,
-                fee,
-              });
-              setCurrentStep("summary");
-              setDirection(1);
-            }}
-            route={{
-              destination: { lat: 0, lng: 0 },
-              pickup: { lat: 0, lng: 0 },
-            }}
-          />
-        );
+        return <SelectService />;
       case "summary":
-        if (!searchFieldValues)
-          throw new Error("searchFieldValues object is invalid");
-        if (!serviceFieldValues) throw new Error("");
-        return (
-          <Summary
-            fieldValues={{
-              departureTime: new Date(
-                Number(searchFieldValues.departureTime.year),
-                Number(searchFieldValues.departureTime.month) - 1,
-                Number(searchFieldValues.departureTime.date),
-                Number(searchFieldValues.departureTime.hour),
-                Number(searchFieldValues.departureTime.minute)
-              ),
-              service: serviceFieldValues.service,
-              destination: searchFieldValues.destination,
-              pickup: searchFieldValues.pickup,
-              numbersOfPassengers: Number(
-                searchFieldValues.numbersOfPassengers
-              ),
-              fee: Number(serviceFieldValues.fee),
-            }}
-            onSubmit={() => console.log("submitted")}
-          />
-        );
+        return <Summary />;
       default:
         const unexpected: never = currentStep;
         throw new Error("currentStep is invalid");
