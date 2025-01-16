@@ -37,6 +37,54 @@ import { AnimatePresence, motion } from "motion/react";
 import { cva } from "class-variance-authority";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { VisuallyHidden } from "./ui/visuallyHidden";
+import { create } from "zustand";
+
+type BookStoreState = {
+  searchFieldValues: SearchFieldValues;
+  serviceFieldValues: ServiceFieldValuesWithFee | null;
+};
+
+type BookStoreActions = {
+  updateSearchFieldValues: (newData: SearchFieldValues) => void;
+  updateServiceFieldValues: (newData: ServiceFieldValuesWithFee | null) => void;
+};
+
+type BookStore = BookStoreState & BookStoreActions;
+
+const useBookStore = create<BookStore>()((set) => ({
+  searchFieldValues: {
+    destination: "",
+    pickup: "",
+    useCurrentLocation: false,
+    departureTime: {
+      hour: "",
+      minute: "",
+      date: "",
+      month: "",
+      year: "",
+    },
+    numbersOfPassengers: "",
+    fee: 0,
+  },
+  serviceFieldValues: null,
+  updateSearchFieldValues: (nextSearchFields) =>
+    set(
+      (state) => ({
+        ...state,
+        searchFieldValues: nextSearchFields,
+      }),
+      true
+    ),
+
+  updateServiceFieldValues: (nextServiceFields) =>
+    set(
+      (state) => ({
+        ...state,
+        serviceFieldValues: nextServiceFields,
+      }),
+      true
+    ),
+}));
 
 const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
   dateStyle: "short",
@@ -469,6 +517,7 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
             return 124800;
           case "extra":
             return 105300;
+
           default:
             const unexpected: never = service;
             throw new Error("invalid service");
@@ -736,15 +785,21 @@ const Main = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<"main">
 >(({ className, ...props }, ref) => {
-  const [searchFieldValues, setSearchFieldValues] =
-    React.useState<SearchFieldValues | null>(null);
-  const [serviceFieldValues, setServiceFieldValues] =
-    React.useState<ServiceFieldValuesWithFee | null>(null);
   const [currentStep, setCurrentStep] = React.useState<Step>("search");
   const isSM = useMediaQuery({ maxWidth: 639 });
   const [direction, setDirection] = React.useState<Direction>(1);
 
-  const onBack = React.useCallback(() => {
+  const searchFieldValues = useBookStore((state) => state.searchFieldValues);
+  const updateSearchFieldValues = useBookStore(
+    (state) => state.updateSearchFieldValues
+  );
+
+  const serviceFieldValues = useBookStore((state) => state.serviceFieldValues);
+  const updateServiceFieldValues = useBookStore(
+    (state) => state.updateServiceFieldValues
+  );
+
+  const onBack = () => {
     setDirection(-1);
     switch (currentStep) {
       case "service":
@@ -756,7 +811,7 @@ const Main = React.forwardRef<
       default:
         throw new Error("onBack cannot be used here");
     }
-  }, [currentStep]);
+  };
 
   const content = React.useMemo(() => {
     switch (currentStep) {
@@ -771,7 +826,7 @@ const Main = React.forwardRef<
               numbersOfPassengers,
               useCurrentLocation,
             }) => {
-              setSearchFieldValues({
+              updateSearchFieldValues({
                 destination,
                 pickup,
                 useCurrentLocation,
@@ -785,7 +840,7 @@ const Main = React.forwardRef<
                 numbersOfPassengers,
               });
               setCurrentStep("service");
-              setServiceFieldValues(null);
+              updateServiceFieldValues(null);
               setDirection(1);
             }}
           />
@@ -795,7 +850,7 @@ const Main = React.forwardRef<
           <SelectService
             fieldValues={serviceFieldValues}
             onNext={({ service, fee }: ServiceFieldValuesWithFee) => {
-              setServiceFieldValues({
+              updateServiceFieldValues({
                 service,
                 fee,
               });
