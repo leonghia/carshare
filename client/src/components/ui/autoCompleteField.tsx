@@ -70,14 +70,14 @@ interface AutoCompleteFieldProps
   leftText?: string;
   inputProps: React.InputHTMLAttributes<HTMLInputElement>;
   classNames?: FieldStyles;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const AutoCompleteField = React.forwardRef<
   HTMLDivElement,
   AutoCompleteFieldProps
->(({ classNames, leftIcon, leftText, inputProps, ...props }, ref) => {
+>(({ classNames, leftIcon, leftText, inputProps, onChange, ...props }, ref) => {
   const { isFocus } = useField();
-  const [selectedPlace, setSelectedPlace] = React.useState<Place | null>(null);
   const is2K = useMediaQuery({ minWidth: 2560 });
   const is4K = useMediaQuery({ minWidth: 3840 });
   const is8K = useMediaQuery({ minWidth: 7680 });
@@ -109,6 +109,7 @@ const AutoCompleteField = React.forwardRef<
                     fieldName={name}
                     id={fieldInputId}
                     className="flex-1 min-w-0"
+                    onChange={onChange}
                     {...inputProps}
                   />
                 </div>

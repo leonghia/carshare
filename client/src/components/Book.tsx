@@ -33,6 +33,7 @@ import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { VisuallyHidden } from "./ui/visuallyHidden";
 import { create } from "zustand";
 import { AutoCompleteField } from "./ui/autoCompleteField";
+import { useDebounceValue } from "usehooks-ts";
 
 type Route = {
   from: Coord;
@@ -283,6 +284,10 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
     const isSM = useMediaQuery({ maxWidth: 639 });
     const [revalidate, setRevalidate] = React.useState(false);
     const fieldValues = useBookStore((state) => state.searchFieldValues);
+    const [debouncedDestination, setDestination] = useDebounceValue(
+      fieldValues?.departureTime || "",
+      1000
+    );
     const updateFieldValues = useBookStore(
       (state) => state.updateSearchFieldValues
     );
@@ -291,6 +296,10 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
       (state) => state.updateServiceFieldValues
     );
     const updateDirection = useBookStore((state) => state.updateDirection);
+
+    React.useEffect(() => {
+      console.log(debouncedDestination);
+    }, [debouncedDestination]);
 
     const methods = useForm<SearchFieldValues>({
       resolver: zodResolver(SearchFormSchema),
@@ -370,6 +379,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
                   container:
                     "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
                 }}
+                onChange={(e) => setDestination(e.target.value)}
               />
             </Field>
 
