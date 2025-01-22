@@ -32,8 +32,9 @@ import { cva } from "class-variance-authority";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { VisuallyHidden } from "./ui/visuallyHidden";
 import { create } from "zustand";
-import { AutoCompleteField } from "./ui/autoCompleteField";
+import { AutoCompleteField, Item } from "./ui/autoCompleteField";
 import { useDebounceValue } from "usehooks-ts";
+import axios from "axios";
 
 type Route = {
   from: Coord;
@@ -284,10 +285,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
     const isSM = useMediaQuery({ maxWidth: 639 });
     const [revalidate, setRevalidate] = React.useState(false);
     const fieldValues = useBookStore((state) => state.searchFieldValues);
-    const [debouncedDestination, setDestination] = useDebounceValue(
-      fieldValues?.departureTime || "",
-      1000
-    );
+
     const updateFieldValues = useBookStore(
       (state) => state.updateSearchFieldValues
     );
@@ -296,10 +294,6 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
       (state) => state.updateServiceFieldValues
     );
     const updateDirection = useBookStore((state) => state.updateDirection);
-
-    React.useEffect(() => {
-      console.log(debouncedDestination);
-    }, [debouncedDestination]);
 
     const methods = useForm<SearchFieldValues>({
       resolver: zodResolver(SearchFormSchema),
@@ -370,17 +364,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
               name="destination"
               control={methods.control}
             >
-              <AutoCompleteField
-                inputProps={{
-                  type: "text",
-                  placeholder: "Nhập địa chỉ bạn muốn đến...",
-                }}
-                classNames={{
-                  container:
-                    "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
-                }}
-                onChange={(e) => setDestination(e.target.value)}
-              />
+              <DestinationField />
             </Field>
 
             <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
@@ -391,12 +375,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
                 name="pickup"
                 control={methods.control}
               >
-                <AutoCompleteField
-                  inputProps={{
-                    type: "text",
-                    placeholder: "Nhập địa chỉ để tài xế đón bạn...",
-                  }}
-                />
+                <PickupField />
               </Field>
               <Field<SearchFieldValues>
                 label="Sử dụng vị trí hiện tại của tôi"
@@ -475,6 +454,125 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
     );
   }
 );
+
+interface AutoCompletetServiceResponse {
+  predictions: Place[];
+  status: "OK";
+}
+
+interface AutoCompleteRequestParams {
+  api_key: string;
+  location: string;
+  limit: number;
+  radius: number;
+  input: string;
+  more_compound: boolean;
+}
+
+interface Place {
+  description: string;
+  place_id: string;
+}
+
+function usePlaces(
+  query: string
+): [Place[], React.Dispatch<React.SetStateAction<Place[]>>] {
+  const [places, setPlaces] = React.useState<Place[]>([]);
+
+  React.useEffect(() => {
+    let ignore = false;
+
+    if (query.trim().length > 0) {
+      const requestParams: AutoCompleteRequestParams = {
+        api_key: import.meta.env.VITE_GGMAPS_API_KEY,
+        location: "21.026678444340764,105.8538045213328",
+        limit: 10,
+        radius: 50,
+        input: query,
+        more_compound: false,
+      };
+      axios
+        .get<AutoCompletetServiceResponse>(import.meta.env.VITE_GGPLACES_URL, {
+          params: requestParams,
+        })
+        .then((res) => {
+          if (res.data.status === "OK" && !ignore)
+            setPlaces(res.data.predictions);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      setPlaces([]);
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, [query]);
+
+  return [places, setPlaces];
+}
+
+function DestinationField(): React.JSX.Element {
+  const fieldValues = useBookStore((state) => state.searchFieldValues);
+  const [debouncedQuery, setQuery] = useDebounceValue(
+    fieldValues?.destination || "",
+    1000
+  );
+
+  const [places, setPlaces] = usePlaces(debouncedQuery);
+
+  const items: Item[] = places.map((place) => ({
+    id: place.place_id,
+    content: place.description,
+  }));
+
+  return (
+    <AutoCompleteField
+      inputProps={{
+        type: "text",
+        placeholder: "Nhập địa chỉ bạn muốn đến...",
+      }}
+      classNames={{
+        container: "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
+      }}
+      onChange={(e) => setQuery(e.target.value)}
+      items={items}
+      onClear={() => setPlaces([])}
+    />
+  );
+}
+
+function PickupField(): React.JSX.Element {
+  const fieldValues = useBookStore((state) => state.searchFieldValues);
+  const [debouncedQuery, setQuery] = useDebounceValue(
+    fieldValues?.pickup || "",
+    1000
+  );
+
+  const [places, setPlaces] = usePlaces(debouncedQuery);
+
+  const items: Item[] = places.map((place) => ({
+    id: place.place_id,
+    content: place.description,
+  }));
+
+  return (
+    <AutoCompleteField
+      inputProps={{
+        type: "text",
+        placeholder: "Nhập địa chỉ để tài xế đón bạn...",
+      }}
+      classNames={{
+        container: "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
+      }}
+      onChange={(e) => setQuery(e.target.value)}
+      items={items}
+      onClear={() => setPlaces([])}
+    />
+  );
+}
 
 const ServiceFormSchema = z.object({
   service: z.enum(["basic", "premium", "extra"], {

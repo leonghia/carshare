@@ -86,6 +86,7 @@ const useField = () => {
     clearErrors,
     getValues,
     setValue,
+    resetField,
   } = useFormContext();
   const fieldState = getFieldState(fieldContext.name, formState);
 
@@ -97,6 +98,7 @@ const useField = () => {
     clearErrors,
     getValues,
     setValue,
+    resetField,
   };
 };
 

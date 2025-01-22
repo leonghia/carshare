@@ -10,6 +10,16 @@ import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 import { FieldInner } from "./fieldInner";
 
+const innerVariants = cva(undefined, {
+  variants: {
+    size: {
+      default: "gap-6",
+      small: "gap-5",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
 const thermometerVariants = cva(
   "h-1 rounded bg-background-600 group-focus-within:bg-background-500 overflow-hidden",
   {
@@ -100,7 +110,7 @@ const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
         {...props}
       >
         <FieldUpper className={cn(classNames?.upper)}>
-          <FieldInner>
+          <FieldInner className={cn(innerVariants({ size }))}>
             <div className="flex-1 space-y-1">
               <div className="flex items-center justify-between">
                 {label && <FieldLabel />}

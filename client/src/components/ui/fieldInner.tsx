@@ -4,12 +4,12 @@ import { useField } from "./field";
 import { cva } from "class-variance-authority";
 
 const innerVariants = cva(
-  "w-full flex items-center [&_svg]:text-foreground-300",
+  "gap-4 w-full flex items-center [&_svg]:text-foreground-300",
   {
     variants: {
       size: {
-        default: "gap-6 [&_svg]:size-6",
-        small: "gap-4 [&_svg]:size-5",
+        default: "[&_svg]:size-6",
+        small: "[&_svg]:size-5",
       },
     },
     defaultVariants: { size: "default" },
@@ -19,10 +19,16 @@ const innerVariants = cva(
 const FieldInner = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<"div">
->((props, ref) => {
+>(({ className, ...props }, ref) => {
   const { size } = useField();
 
-  return <div ref={ref} className={cn(innerVariants, size)} {...props} />;
+  return (
+    <div
+      ref={ref}
+      className={cn(innerVariants({ size }), className)}
+      {...props}
+    />
+  );
 });
 
 export { FieldInner, innerVariants };

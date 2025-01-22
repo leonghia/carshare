@@ -45,17 +45,17 @@
   }
 
   .dropdown-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   .dropdown-scrollbar::-webkit-scrollbar-track {
     background-color: transparent;
-    border-radius: 100px;
+    /* border-radius: 100px; */
   }
 
   .dropdown-scrollbar::-webkit-scrollbar-thumb {
     background-color: theme(colors.divider);
-    border-radius: 100px;
+    /* border-radius: 100px; */
   }
 
   @media screen(sm) {

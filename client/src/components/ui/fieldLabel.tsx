@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useField } from "./field";
 
 const fieldLabelVariants = cva(
-  "block font-normal group-focus-within:text-primary-500",
+  "inline-block font-normal group-focus-within:text-primary-500",
   {
     variants: {
       size: {
