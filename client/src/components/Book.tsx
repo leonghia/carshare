@@ -35,6 +35,11 @@ import { create } from "zustand";
 import { AutoCompleteField, Item } from "./ui/autoCompleteField";
 import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
+import { StaticMap, type ViewportProps } from "@goongmaps/goong-map-react";
+
+const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
+const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
+const GGMAPS_URL = import.meta.env.VITE_GGMAPS_URL;
 
 type BookStoreState = {
   searchFieldValues: SearchFieldValues | null;
@@ -205,11 +210,41 @@ export function Book(): React.JSX.Element {
 }
 
 function Map(): React.JSX.Element {
+  const [viewport, setViewport] = React.useState<ViewportProps>({
+    latitude: 21.02686595596347,
+    longitude: 105.85375738102857,
+  });
+  const is8K = useMediaQuery({ minWidth: 7680 });
+  const is4K = useMediaQuery({ minWidth: 3840 });
+  const is2XL = useMediaQuery({ maxWidth: 1535 });
+  const isXL = useMediaQuery({ maxWidth: 1279 });
+  const isSM = useMediaQuery({ maxWidth: 639 });
   const pickupID = useBookStore((state) => state.pickupID);
   const destinationID = useBookStore((state) => state.destinationID);
 
   const pickupDetail = usePlaceDetail(pickupID);
   const destinationDetail = usePlaceDetail(destinationID);
+
+  const mapInlineStyles: React.CSSProperties = React.useMemo(() => {
+    let styles: React.CSSProperties = { marginLeft: "auto" };
+    if (isXL) styles.marginLeft = 0;
+    return styles;
+  }, [isXL]);
+
+  const width: string = React.useMemo(() => {
+    let temp = "76%";
+    if (is2XL) temp = "62.5%";
+    if (isXL) temp = "100%";
+    return temp;
+  }, [is2XL, isXL]);
+
+  const zoom: number = React.useMemo(() => {
+    let temp = 14;
+    if (isSM) temp = 13;
+    if (is4K) temp = 15;
+    if (is8K) temp = 16;
+    return temp;
+  }, [is8K, is4K, isSM]);
 
   if (pickupDetail) {
     console.log(pickupDetail.formatted_address);
@@ -222,11 +257,19 @@ function Map(): React.JSX.Element {
   return (
     <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
       {/* Vertical gradient */}
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0)25%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.99)10%,rgba(39,42,55,0)40%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0)25%)]"></div>
       {/* Horizontal gradient */}
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
-      {/* Figmap */}
-      <div className="ml-auto xl:ml-0 w-[76%] 2xl:w-[62.5%] xl:w-full h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
+      {/* Actual map */}
+      <StaticMap
+        {...viewport}
+        width={width}
+        height="100%"
+        zoom={zoom}
+        style={mapInlineStyles}
+        mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
+        goongApiAccessToken={GGMAPS_MAPTILES_KEY}
+      />
     </div>
   );
 }
@@ -565,7 +608,7 @@ function usePlacesSearch(
 
     if (query.trim().length > 0) {
       const requestParams: PlacesSearchRequestParams = {
-        api_key: import.meta.env.VITE_MAPAPI_KEY,
+        api_key: GGMAPS_API_KEY,
         location: "21.026678444340764,105.8538045213328",
         limit: 10,
         radius: 50,
@@ -573,12 +616,9 @@ function usePlacesSearch(
         more_compound: false,
       };
       axios
-        .get<PlacesSearchServiceResponse>(
-          import.meta.env.VITE_GGMAPS_URL + "/Place/AutoComplete",
-          {
-            params: requestParams,
-          }
-        )
+        .get<PlacesSearchServiceResponse>(GGMAPS_URL + "/Place/AutoComplete", {
+          params: requestParams,
+        })
         .then((res) => {
           if (res.data.status === "OK" && !ignore)
             setPlaces(res.data.predictions);
@@ -606,17 +646,14 @@ function usePlaceDetail(placeID: string | null) {
 
     if (placeID) {
       const requestParams: PlaceDetailRequestParams = {
-        api_key: import.meta.env.VITE_MAPAPI_KEY,
+        api_key: GGMAPS_API_KEY,
         place_id: placeID,
       };
 
       axios
-        .get<PlaceDetailServiceResponse>(
-          import.meta.env.VITE_GGMAPS_URL + "/Place/Detail",
-          {
-            params: requestParams,
-          }
-        )
+        .get<PlaceDetailServiceResponse>(GGMAPS_URL + "/Place/Detail", {
+          params: requestParams,
+        })
         .then((res) => {
           if (res.data.status === "OK" && !ignore) setData(res.data.result);
         })
