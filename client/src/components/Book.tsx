@@ -40,7 +40,7 @@ type BookStoreState = {
   searchFieldValues: SearchFieldValues | null;
   serviceFieldValues: ServiceFieldValuesWithFee | null;
   currentStep: Step;
-  direction: Direction;
+  stepDirection: -1 | 1;
   destinationID: string | null;
   pickupID: string | null;
 };
@@ -51,9 +51,9 @@ type BookStoreActions = {
     newValues: ServiceFieldValuesWithFee | null
   ) => void;
   updateCurrentStep: (newStep: Step) => void;
-  updateDirection: (newDirection: Direction) => void;
-  updateDestinationID: (newDestinationID: string) => void;
-  updatePickupID: (newPickupID: string) => void;
+  updateStepDirection: (newStepDirection: -1 | 1) => void;
+  updateDestinationID: (newDestinationID: string | null) => void;
+  updatePickupID: (newPickupID: string | null) => void;
 };
 
 type BookStore = BookStoreState & BookStoreActions;
@@ -62,7 +62,7 @@ const useBookStore = create<BookStore>()((set) => ({
   destinationID: null,
   pickupID: null,
   route: null,
-  direction: 1,
+  stepDirection: 1,
   currentStep: "search",
   searchFieldValues: null,
   serviceFieldValues: null,
@@ -91,10 +91,10 @@ const useBookStore = create<BookStore>()((set) => ({
       }),
       true
     ),
-  updateDirection: (newDirection) =>
+  updateStepDirection: (newStepDirection) =>
     set((state) => ({
       ...state,
-      direction: newDirection,
+      stepDirection: newStepDirection,
     })),
   updateDestinationID: (newDestinationID) => {
     set((state) => ({ ...state, destinationID: newDestinationID }));
@@ -205,10 +205,19 @@ export function Book(): React.JSX.Element {
 }
 
 function Map(): React.JSX.Element {
-  const destinationID = useBookStore((state) => state.destinationID);
   const pickupID = useBookStore((state) => state.pickupID);
+  const destinationID = useBookStore((state) => state.destinationID);
 
-  console.log(destinationID, pickupID);
+  const pickupDetail = usePlaceDetail(pickupID);
+  const destinationDetail = usePlaceDetail(destinationID);
+
+  if (pickupDetail) {
+    console.log(pickupDetail.formatted_address);
+  }
+
+  if (destinationDetail) {
+    console.log(destinationDetail.formatted_address);
+  }
 
   return (
     <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
@@ -263,28 +272,33 @@ const SearchFormSchema = z
       return z.NEVER;
     }
 
-    if (
-      !z
-        .string()
-        .datetime({ local: true })
-        .safeParse(
-          `${departureTime.year}-${departureTime.month.padStart(
-            2,
-            "0"
-          )}-${departureTime.date.padStart(
-            2,
-            "0"
-          )}T${departureTime.hour.padStart(
-            2,
-            "0"
-          )}:${departureTime.minute.padStart(2, "0")}:00`
-        ).success
-    ) {
+    const parseResult = z
+      .string()
+      .datetime({ local: true })
+      .safeParse(
+        `${departureTime.year}-${departureTime.month.padStart(
+          2,
+          "0"
+        )}-${departureTime.date.padStart(2, "0")}T${departureTime.hour.padStart(
+          2,
+          "0"
+        )}:${departureTime.minute.padStart(2, "0")}:00`
+      );
+
+    if (!parseResult.success) {
       ctx.addIssue({
         code: "invalid_date",
         message: "Thời gian không hợp lệ",
         path: ["departureTime"],
       });
+    } else {
+      const isLaterThanNow = new Date(parseResult.data).getTime() > Date.now();
+      !isLaterThanNow &&
+        ctx.addIssue({
+          code: "invalid_date",
+          message: "Thời gian phải ở tương lai",
+          path: ["departureTime"],
+        });
     }
   });
 
@@ -300,6 +314,8 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
     const isSM = useMediaQuery({ maxWidth: 639 });
     const [revalidate, setRevalidate] = React.useState(false);
     const fieldValues = useBookStore((state) => state.searchFieldValues);
+    const destinationID = useBookStore((state) => state.destinationID);
+    const pickupID = useBookStore((state) => state.pickupID);
 
     const updateFieldValues = useBookStore(
       (state) => state.updateSearchFieldValues
@@ -308,7 +324,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
     const updateServiceFieldValues = useBookStore(
       (state) => state.updateServiceFieldValues
     );
-    const updateDirection = useBookStore((state) => state.updateDirection);
+    const updateDirection = useBookStore((state) => state.updateStepDirection);
 
     const methods = useForm<SearchFieldValues>({
       resolver: zodResolver(SearchFormSchema),
@@ -346,16 +362,34 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
       },
     });
 
-    const onValid = (data: SearchFieldValues) => {
+    const onSubmit = async (data: SearchFieldValues) => {
+      const addressNotFoundMessage = "Không tìm thấy địa chỉ này";
+      if (!destinationID) {
+        methods.setError("destination", {
+          type: "manual",
+          message: addressNotFoundMessage,
+        });
+      }
+
+      if (!pickupID) {
+        methods.setError("pickup", {
+          type: "manual",
+          message: addressNotFoundMessage,
+        });
+        return;
+      }
+
       setIsSearching(true);
-      const timeout = setTimeout(() => {
-        setIsSearching(false);
-        clearTimeout(timeout);
-        updateFieldValues(data);
-        updateServiceFieldValues(null);
-        updateDirection(1);
-        updateCurrentStep("service");
-      }, 1000);
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("foo");
+        }, 1000);
+      });
+      setIsSearching(false);
+      updateFieldValues(data);
+      updateServiceFieldValues(null);
+      updateDirection(1);
+      updateCurrentStep("service");
     };
 
     const onInvalid = () => {
@@ -366,7 +400,7 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
       <FormProvider {...methods}>
         <form
           ref={ref}
-          onSubmit={methods.handleSubmit(onValid, onInvalid)}
+          onSubmit={methods.handleSubmit(onSubmit, onInvalid)}
           className={cn("w-full space-y-10 sm:space-y-8", className)}
           {...props}
         >
@@ -379,7 +413,10 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
               name="destination"
               control={methods.control}
             >
-              <DestinationField />
+              <LocationField
+                locationType="Destination"
+                onSelectLocation={() => methods.clearErrors("destination")}
+              />
             </Field>
 
             <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
@@ -390,7 +427,10 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
                 name="pickup"
                 control={methods.control}
               >
-                <PickupField />
+                <LocationField
+                  locationType="Pickup"
+                  onSelectLocation={() => methods.clearErrors("pickup")}
+                />
               </Field>
               <Field<SearchFieldValues>
                 label="Sử dụng vị trí hiện tại của tôi"
@@ -534,7 +574,7 @@ function usePlacesSearch(
       };
       axios
         .get<PlacesSearchServiceResponse>(
-          import.meta.env.VITE_PLACESSEARCH_URL,
+          import.meta.env.VITE_GGMAPS_URL + "/Place/AutoComplete",
           {
             params: requestParams,
           }
@@ -558,25 +598,30 @@ function usePlacesSearch(
   return [places, setPlaces];
 }
 
-function usePlaceDetail(placeID: string) {
+function usePlaceDetail(placeID: string | null) {
   const [data, setData] = React.useState<PlaceDetail | null>(null);
 
   React.useEffect(() => {
     let ignore = false;
 
-    const requestParams: PlaceDetailRequestParams = {
-      api_key: import.meta.env.VITE_MAPAPI_KEY,
-      place_id: placeID,
-    };
+    if (placeID) {
+      const requestParams: PlaceDetailRequestParams = {
+        api_key: import.meta.env.VITE_MAPAPI_KEY,
+        place_id: placeID,
+      };
 
-    axios
-      .get<PlaceDetailServiceResponse>(import.meta.env.VITE_PLACEDETAIL_URL, {
-        params: requestParams,
-      })
-      .then((res) => {
-        if (res.data.status === "OK" && !ignore) setData(res.data.result);
-      })
-      .catch((err) => console.error(err));
+      axios
+        .get<PlaceDetailServiceResponse>(
+          import.meta.env.VITE_GGMAPS_URL + "/Place/Detail",
+          {
+            params: requestParams,
+          }
+        )
+        .then((res) => {
+          if (res.data.status === "OK" && !ignore) setData(res.data.result);
+        })
+        .catch((err) => console.error(err));
+    }
 
     return () => {
       ignore = true;
@@ -586,76 +631,57 @@ function usePlaceDetail(placeID: string) {
   return data;
 }
 
-function DestinationField(): React.JSX.Element {
+function LocationField({
+  locationType,
+  onSelectLocation,
+}: {
+  locationType: "Destination" | "Pickup";
+  onSelectLocation: () => void;
+}): React.JSX.Element {
   const fieldValues = useBookStore((state) => state.searchFieldValues);
-  const updateDestinationID = useBookStore(
-    (state) => state.updateDestinationID
+  const updateLocationID = useBookStore((state) =>
+    locationType === "Destination"
+      ? state.updateDestinationID
+      : state.updatePickupID
   );
-  const [debouncedQuery, setQuery] = useDebounceValue(
-    fieldValues?.destination || "",
-    1000
-  );
-
+  const stepDirection = useBookStore((state) => state.stepDirection);
+  const value =
+    locationType === "Destination"
+      ? fieldValues?.destination
+      : fieldValues?.pickup;
+  const initialValue = stepDirection === 1 ? value || "" : "";
+  const [debouncedQuery, setQuery] = useDebounceValue(initialValue, 1000);
   const [places, setPlaces] = usePlacesSearch(debouncedQuery);
-
   const items: Item[] = places.map((place) => ({
     id: place.place_id,
     content: place.description,
   }));
+  const handleSelectLocation = (placeID: string) => {
+    onSelectLocation();
+    updateLocationID(placeID);
+  };
 
-  const handleSelectDestination = (placeID: string) => {
-    updateDestinationID(placeID);
+  const handleClear = () => {
+    setPlaces([]);
+    updateLocationID(null);
   };
 
   return (
     <AutoCompleteField
       inputProps={{
         type: "text",
-        placeholder: "Nhập địa chỉ bạn muốn đến...",
+        placeholder:
+          locationType === "Destination"
+            ? "Nhập địa chỉ bạn muốn đến..."
+            : "Nhập địa chỉ để tài xế đón bạn",
       }}
       classNames={{
         container: "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
       }}
       onChange={(e) => setQuery(e.target.value)}
       items={items}
-      onClear={() => setPlaces([])}
-      onSelectItem={handleSelectDestination}
-    />
-  );
-}
-
-function PickupField(): React.JSX.Element {
-  const fieldValues = useBookStore((state) => state.searchFieldValues);
-  const updatePickupID = useBookStore((state) => state.updatePickupID);
-  const [debouncedQuery, setQuery] = useDebounceValue(
-    fieldValues?.pickup || "",
-    1000
-  );
-
-  const [places, setPlaces] = usePlacesSearch(debouncedQuery);
-
-  const items: Item[] = places.map((place) => ({
-    id: place.place_id,
-    content: place.description,
-  }));
-
-  const handleSelectPickup = (placeID: string) => {
-    updatePickupID(placeID);
-  };
-
-  return (
-    <AutoCompleteField
-      inputProps={{
-        type: "text",
-        placeholder: "Nhập địa chỉ để tài xế đón bạn...",
-      }}
-      classNames={{
-        container: "col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full",
-      }}
-      onChange={(e) => setQuery(e.target.value)}
-      items={items}
-      onClear={() => setPlaces([])}
-      onSelectItem={handleSelectPickup}
+      onClear={handleClear}
+      onSelectItem={handleSelectLocation}
     />
   );
 }
@@ -702,9 +728,25 @@ const services: Service[] = [
   },
 ];
 
-type Coord = {
-  lng: number;
-  lat: number;
+const calculateFare = ({
+  serviceName,
+  distance,
+}: {
+  serviceName: ServiceName;
+  distance: number;
+}) => {
+  const baseFare = 10_000;
+  switch (serviceName) {
+    case "basic":
+      return baseFare + distance * 7_000;
+    case "premium":
+      return baseFare + distance * 12_000;
+    case "extra":
+      return baseFare + distance * 9_000;
+    default:
+      const unexpected: never = serviceName;
+      throw new Error("invalid serviceName");
+  }
 };
 
 interface SelectServiceProps extends React.ComponentPropsWithoutRef<"div"> {}
@@ -718,7 +760,7 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
     const destinationID = useBookStore((state) => state.destinationID);
     const pickupID = useBookStore((state) => state.pickupID);
     const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
-    const updateDirection = useBookStore((state) => state.updateDirection);
+    const updateDirection = useBookStore((state) => state.updateStepDirection);
 
     const methods = useForm<ServiceFieldValues>({
       resolver: zodResolver(ServiceFormSchema),
@@ -1006,8 +1048,6 @@ interface ServiceFieldValuesWithFee extends ServiceFieldValues {
   fee: number;
 }
 
-type Direction = 1 | -1;
-
 const stepAnimationVariants = {
   initial: (direction: number) => ({
     x: `${100 * direction}%`,
@@ -1029,8 +1069,8 @@ const Main = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const currentStep = useBookStore((state) => state.currentStep);
   const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
-  const direction = useBookStore((state) => state.direction);
-  const updateDirection = useBookStore((state) => state.updateDirection);
+  const direction = useBookStore((state) => state.stepDirection);
+  const updateDirection = useBookStore((state) => state.updateStepDirection);
   const isSM = useMediaQuery({ maxWidth: 639 });
 
   const onBack = () => {
