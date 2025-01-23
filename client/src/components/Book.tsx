@@ -36,17 +36,13 @@ import { AutoCompleteField, Item } from "./ui/autoCompleteField";
 import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
 
-type Route = {
-  from: Coord;
-  to: Coord;
-};
-
 type BookStoreState = {
   searchFieldValues: SearchFieldValues | null;
   serviceFieldValues: ServiceFieldValuesWithFee | null;
   currentStep: Step;
   direction: Direction;
-  route: Route | null;
+  destinationID: string | null;
+  pickupID: string | null;
 };
 
 type BookStoreActions = {
@@ -56,12 +52,15 @@ type BookStoreActions = {
   ) => void;
   updateCurrentStep: (newStep: Step) => void;
   updateDirection: (newDirection: Direction) => void;
-  updateRoute: (newRoute: Route | null) => void;
+  updateDestinationID: (newDestinationID: string) => void;
+  updatePickupID: (newPickupID: string) => void;
 };
 
 type BookStore = BookStoreState & BookStoreActions;
 
 const useBookStore = create<BookStore>()((set) => ({
+  destinationID: null,
+  pickupID: null,
   route: null,
   direction: 1,
   currentStep: "search",
@@ -97,7 +96,12 @@ const useBookStore = create<BookStore>()((set) => ({
       ...state,
       direction: newDirection,
     })),
-  updateRoute: (newRoute) => set((state) => ({ ...state, route: newRoute })),
+  updateDestinationID: (newDestinationID) => {
+    set((state) => ({ ...state, destinationID: newDestinationID }));
+  },
+  updatePickupID: (newPickupID) => {
+    set((state) => ({ ...state, pickupID: newPickupID }));
+  },
 }));
 
 const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
@@ -195,14 +199,25 @@ export function Book(): React.JSX.Element {
         <Main />
       </div>
       {/* Map */}
-      <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
-        {/* Vertical gradient */}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0)25%)]"></div>
-        {/* Horizontal gradient */}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
-        {/* Figmap */}
-        <div className="ml-auto xl:ml-0 w-[76%] 2xl:w-[62.5%] xl:w-full h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
-      </div>
+      <Map />
+    </div>
+  );
+}
+
+function Map(): React.JSX.Element {
+  const destinationID = useBookStore((state) => state.destinationID);
+  const pickupID = useBookStore((state) => state.pickupID);
+
+  console.log(destinationID, pickupID);
+
+  return (
+    <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
+      {/* Vertical gradient */}
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.95)10%,rgba(39,42,55,0)20%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0)25%)]"></div>
+      {/* Horizontal gradient */}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
+      {/* Figmap */}
+      <div className="ml-auto xl:ml-0 w-[76%] 2xl:w-[62.5%] xl:w-full h-full bg-[url('/src/assets/images/map_default.webp')] bg-cover"></div>
     </div>
   );
 }
@@ -455,12 +470,15 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
   }
 );
 
-interface AutoCompletetServiceResponse {
-  predictions: Place[];
+interface ServiceResponse {
   status: "OK";
 }
 
-interface AutoCompleteRequestParams {
+interface PlacesSearchServiceResponse extends ServiceResponse {
+  predictions: PlaceAutoComplete[];
+}
+
+interface PlacesSearchRequestParams {
   api_key: string;
   location: string;
   limit: number;
@@ -469,22 +487,45 @@ interface AutoCompleteRequestParams {
   more_compound: boolean;
 }
 
-interface Place {
+interface PlaceDetailRequestParams {
+  api_key: string;
+  place_id: string;
+}
+
+interface PlaceAutoComplete {
   description: string;
   place_id: string;
 }
 
-function usePlaces(
+interface PlaceDetailServiceResponse extends ServiceResponse {
+  result: PlaceDetail;
+}
+
+interface Location {
+  lat: number;
+  lng: number;
+}
+
+interface PlaceDetail {
+  place_id: string;
+  formatted_address: string;
+  geometry: { location: Location };
+}
+
+function usePlacesSearch(
   query: string
-): [Place[], React.Dispatch<React.SetStateAction<Place[]>>] {
-  const [places, setPlaces] = React.useState<Place[]>([]);
+): [
+  PlaceAutoComplete[],
+  React.Dispatch<React.SetStateAction<PlaceAutoComplete[]>>
+] {
+  const [places, setPlaces] = React.useState<PlaceAutoComplete[]>([]);
 
   React.useEffect(() => {
     let ignore = false;
 
     if (query.trim().length > 0) {
-      const requestParams: AutoCompleteRequestParams = {
-        api_key: import.meta.env.VITE_GGMAPS_API_KEY,
+      const requestParams: PlacesSearchRequestParams = {
+        api_key: import.meta.env.VITE_MAPAPI_KEY,
         location: "21.026678444340764,105.8538045213328",
         limit: 10,
         radius: 50,
@@ -492,9 +533,12 @@ function usePlaces(
         more_compound: false,
       };
       axios
-        .get<AutoCompletetServiceResponse>(import.meta.env.VITE_GGPLACES_URL, {
-          params: requestParams,
-        })
+        .get<PlacesSearchServiceResponse>(
+          import.meta.env.VITE_PLACESSEARCH_URL,
+          {
+            params: requestParams,
+          }
+        )
         .then((res) => {
           if (res.data.status === "OK" && !ignore)
             setPlaces(res.data.predictions);
@@ -514,19 +558,54 @@ function usePlaces(
   return [places, setPlaces];
 }
 
+function usePlaceDetail(placeID: string) {
+  const [data, setData] = React.useState<PlaceDetail | null>(null);
+
+  React.useEffect(() => {
+    let ignore = false;
+
+    const requestParams: PlaceDetailRequestParams = {
+      api_key: import.meta.env.VITE_MAPAPI_KEY,
+      place_id: placeID,
+    };
+
+    axios
+      .get<PlaceDetailServiceResponse>(import.meta.env.VITE_PLACEDETAIL_URL, {
+        params: requestParams,
+      })
+      .then((res) => {
+        if (res.data.status === "OK" && !ignore) setData(res.data.result);
+      })
+      .catch((err) => console.error(err));
+
+    return () => {
+      ignore = true;
+    };
+  }, [placeID]);
+
+  return data;
+}
+
 function DestinationField(): React.JSX.Element {
   const fieldValues = useBookStore((state) => state.searchFieldValues);
+  const updateDestinationID = useBookStore(
+    (state) => state.updateDestinationID
+  );
   const [debouncedQuery, setQuery] = useDebounceValue(
     fieldValues?.destination || "",
     1000
   );
 
-  const [places, setPlaces] = usePlaces(debouncedQuery);
+  const [places, setPlaces] = usePlacesSearch(debouncedQuery);
 
   const items: Item[] = places.map((place) => ({
     id: place.place_id,
     content: place.description,
   }));
+
+  const handleSelectDestination = (placeID: string) => {
+    updateDestinationID(placeID);
+  };
 
   return (
     <AutoCompleteField
@@ -540,23 +619,29 @@ function DestinationField(): React.JSX.Element {
       onChange={(e) => setQuery(e.target.value)}
       items={items}
       onClear={() => setPlaces([])}
+      onSelectItem={handleSelectDestination}
     />
   );
 }
 
 function PickupField(): React.JSX.Element {
   const fieldValues = useBookStore((state) => state.searchFieldValues);
+  const updatePickupID = useBookStore((state) => state.updatePickupID);
   const [debouncedQuery, setQuery] = useDebounceValue(
     fieldValues?.pickup || "",
     1000
   );
 
-  const [places, setPlaces] = usePlaces(debouncedQuery);
+  const [places, setPlaces] = usePlacesSearch(debouncedQuery);
 
   const items: Item[] = places.map((place) => ({
     id: place.place_id,
     content: place.description,
   }));
+
+  const handleSelectPickup = (placeID: string) => {
+    updatePickupID(placeID);
+  };
 
   return (
     <AutoCompleteField
@@ -570,6 +655,7 @@ function PickupField(): React.JSX.Element {
       onChange={(e) => setQuery(e.target.value)}
       items={items}
       onClear={() => setPlaces([])}
+      onSelectItem={handleSelectPickup}
     />
   );
 }
@@ -629,7 +715,8 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
     const updateFieldValues = useBookStore(
       (state) => state.updateServiceFieldValues
     );
-    const route = useBookStore((state) => state.route);
+    const destinationID = useBookStore((state) => state.destinationID);
+    const pickupID = useBookStore((state) => state.pickupID);
     const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
     const updateDirection = useBookStore((state) => state.updateDirection);
 
@@ -656,7 +743,7 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
             throw new Error("invalid service");
         }
       },
-      [route]
+      [destinationID, pickupID]
     );
 
     const onValid = (data: ServiceFieldValues) => {

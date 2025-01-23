@@ -35,6 +35,7 @@ interface AutoCompleteFieldProps
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   items: Item[];
   onClear: () => void;
+  onSelectItem: (id: any) => void;
 }
 
 const AutoCompleteField = React.forwardRef<
@@ -50,6 +51,7 @@ const AutoCompleteField = React.forwardRef<
       onChange,
       items,
       onClear,
+      onSelectItem,
       ...props
     },
     ref
@@ -138,11 +140,14 @@ const AutoCompleteField = React.forwardRef<
                       <CommandItem
                         value={item.id}
                         onSelect={(value) => {
-                          const place = items.find((item) => item.id === value);
-                          place &&
+                          const selected = items.find(
+                            (item) => item.id === value
+                          );
+                          selected &&
                             setValue(name, item.content, {
                               shouldDirty: true,
                             });
+                          onSelectItem(value);
                         }}
                       >
                         {item.content}
