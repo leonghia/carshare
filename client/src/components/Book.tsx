@@ -214,8 +214,7 @@ function Map(): React.JSX.Element {
     latitude: 21.02686595596347,
     longitude: 105.85375738102857,
   });
-  const is8K = useMediaQuery({ minWidth: 7680 });
-  const is4K = useMediaQuery({ minWidth: 3840 });
+
   const is2XL = useMediaQuery({ maxWidth: 1535 });
   const isXL = useMediaQuery({ maxWidth: 1279 });
   const isSM = useMediaQuery({ maxWidth: 639 });
@@ -241,10 +240,8 @@ function Map(): React.JSX.Element {
   const zoom: number = React.useMemo(() => {
     let temp = 14;
     if (isSM) temp = 13;
-    if (is4K) temp = 15;
-    if (is8K) temp = 16;
     return temp;
-  }, [is8K, is4K, isSM]);
+  }, [isSM]);
 
   if (pickupDetail) {
     console.log(pickupDetail.formatted_address);
