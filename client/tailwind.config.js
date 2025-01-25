@@ -28,6 +28,9 @@ export default {
       },
     },
     screens: {
+      "8k": { min: "7680px" },
+      "4k": { min: "3840px" },
+      qhd: { min: "2560px" },
       "2xl": { max: "1535px" },
       xl: { max: "1279px" },
       lg: { max: "1023px" },

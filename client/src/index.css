@@ -18,6 +18,24 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  @media screen("qhd") {
+    html {
+      font-size: 133%;
+    }
+  }
+
+  @media screen("4k") {
+    html {
+      font-size: 200%;
+    }
+  }
+
+  @media screen("8k") {
+    html {
+      font-size: 400%;
+    }
+  }
 }
 
 @layer components {
