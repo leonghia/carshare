@@ -35,7 +35,11 @@ import { create } from "zustand";
 import { AutoCompleteField, Item } from "./ui/autoCompleteField";
 import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
-import { StaticMap, type ViewportProps } from "@goongmaps/goong-map-react";
+import ReactMapGL, {
+  FlyToInterpolator,
+  type ViewportProps,
+} from "@goongmaps/goong-map-react";
+import d3 from "d3-ease";
 
 const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
 const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
@@ -247,12 +251,28 @@ function Map(): React.JSX.Element {
     return temp;
   }, [isSM, is4K, is8K]);
 
-  if (pickupDetail) {
-    console.log(pickupDetail.formatted_address);
+  if (destinationDetail && !pickupDetail) {
+    setViewport({
+      ...viewport,
+      longitude: destinationDetail.geometry.location.lng,
+      latitude: destinationDetail.geometry.location.lat,
+      zoom: zoom,
+      transitionDuration: 5000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: d3.easeCubic,
+    });
   }
 
-  if (destinationDetail) {
-    console.log(destinationDetail.formatted_address);
+  if (pickupDetail && !destinationDetail) {
+    setViewport({
+      ...viewport,
+      longitude: pickupDetail.geometry.location.lng,
+      latitude: pickupDetail.geometry.location.lat,
+      zoom: zoom,
+      transitionDuration: 1000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: d3.easeCubic,
+    });
   }
 
   return (
@@ -262,7 +282,7 @@ function Map(): React.JSX.Element {
       {/* Horizontal gradient */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
       {/* Actual map */}
-      <StaticMap
+      <ReactMapGL
         {...viewport}
         width={width}
         height="100%"
