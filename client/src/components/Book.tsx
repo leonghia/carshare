@@ -9,6 +9,7 @@ import {
   SmartCar,
   Location,
   People,
+  Flag,
 } from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
@@ -36,10 +37,10 @@ import { AutoCompleteField, Item } from "./ui/autoCompleteField";
 import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
 import ReactMapGL, {
-  FlyToInterpolator,
+  Marker,
   type ViewportProps,
 } from "@goongmaps/goong-map-react";
-import d3 from "d3-ease";
+import { easeCubic } from "d3-ease";
 
 const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
 const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
@@ -214,21 +215,28 @@ export function Book(): React.JSX.Element {
 }
 
 function Map(): React.JSX.Element {
-  const [viewport, setViewport] = React.useState<ViewportProps>({
-    latitude: 21.02686595596347,
-    longitude: 105.85375738102857,
-  });
-
   const is8K = useMediaQuery({ minWidth: 7680 });
   const is4K = useMediaQuery({ minWidth: 3840 });
   const is2XL = useMediaQuery({ maxWidth: 1535 });
   const isXL = useMediaQuery({ maxWidth: 1279 });
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const pickupID = useBookStore((state) => state.pickupID);
+  const zoom: number = React.useMemo(() => {
+    let temp = 14;
+    if (isSM) temp = 13;
+    if (is4K) temp = 15;
+    if (is8K) temp = 16;
+    return temp;
+  }, [isSM, is4K, is8K]);
+  const [viewport, setViewport] = React.useState<ViewportProps>({
+    latitude: 21.02686595596347,
+    longitude: 105.85375738102857,
+    zoom: zoom,
+  });
   const destinationID = useBookStore((state) => state.destinationID);
+  const pickupID = useBookStore((state) => state.pickupID);
 
-  const pickupDetail = usePlaceDetail(pickupID);
   const destinationDetail = usePlaceDetail(destinationID);
+  const pickupDetail = usePlaceDetail(pickupID);
 
   const mapInlineStyles: React.CSSProperties = React.useMemo(() => {
     let styles: React.CSSProperties = { marginLeft: "auto" };
@@ -243,37 +251,78 @@ function Map(): React.JSX.Element {
     return temp;
   }, [is2XL, isXL]);
 
-  const zoom: number = React.useMemo(() => {
-    let temp = 14;
-    if (isSM) temp = 13;
-    if (is4K) temp = 15;
-    if (is8K) temp = 16;
-    return temp;
-  }, [isSM, is4K, is8K]);
+  let destinationIDfromDetail = destinationDetail
+    ? destinationDetail.place_id
+    : null;
+  let pickupIDfromDetail = pickupDetail ? pickupDetail.place_id : null;
 
-  if (destinationDetail && !pickupDetail) {
-    setViewport({
-      ...viewport,
-      longitude: destinationDetail.geometry.location.lng,
-      latitude: destinationDetail.geometry.location.lat,
-      zoom: zoom,
-      transitionDuration: 5000,
-      transitionInterpolator: new FlyToInterpolator(),
-      transitionEasing: d3.easeCubic,
-    });
-  }
+  React.useEffect(() => {
+    if (destinationDetail && !pickupDetail) {
+      setViewport({
+        ...viewport,
+        longitude: destinationDetail.geometry.location.lng,
+        latitude: destinationDetail.geometry.location.lat,
+        zoom,
+        transitionDuration: 1000,
+        transitionEasing: easeCubic,
+      });
+    }
 
-  if (pickupDetail && !destinationDetail) {
-    setViewport({
-      ...viewport,
-      longitude: pickupDetail.geometry.location.lng,
-      latitude: pickupDetail.geometry.location.lat,
-      zoom: zoom,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator(),
-      transitionEasing: d3.easeCubic,
-    });
-  }
+    if (pickupDetail && !destinationDetail) {
+      setViewport({
+        ...viewport,
+        longitude: pickupDetail.geometry.location.lng,
+        latitude: pickupDetail.geometry.location.lat,
+        zoom,
+        transitionDuration: 1000,
+        transitionEasing: easeCubic,
+      });
+    }
+  }, [destinationIDfromDetail, pickupIDfromDetail]);
+
+  const destinationMarker = React.useMemo(
+    () =>
+      destinationDetail && (
+        <Marker
+          latitude={destinationDetail.geometry.location.lat}
+          longitude={destinationDetail.geometry.location.lng}
+          offsetLeft={-20}
+          offsetTop={-20}
+        >
+          <div className="relative">
+            <div className="absolute left-0 top-0 -translate-y-[calc(100%+8px)] -translate-x-[calc(50%-20px)] w-max max-w-[260px] bg-background-950 rounded-xl px-4 py-4">
+              <div className="w-full flex items-center gap-3">
+                <div className="flex flex-none size-[34px] rounded-full items-center justify-center bg-[#EF4444]/15">
+                  <Location variant="Bold" className="size-4 text-[#EF4444]" />
+                </div>
+                <div className="flex-1 min-w-0 space-y-1">
+                  <p className="text-xxs font-normal text-foreground-600 w-full truncate">
+                    {destinationDetail.compound.district},{" "}
+                    {destinationDetail.compound.province}
+                  </p>
+                  <p className="text-xs font-normal text-white w-full truncate">
+                    {destinationDetail.name}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <motion.div
+              animate={{ scale: [1.2, 1, 1.25] }}
+              transition={{
+                type: "tween",
+                ease: "linear",
+                repeat: Infinity,
+                duration: 0.7,
+              }}
+              className="mx-auto size-10 rounded-full bg-[#1D90F5]/40 shadow-xl flex items-center justify-center"
+            >
+              <div className="size-[40%] rounded-full bg-primary-500"></div>
+            </motion.div>
+          </div>
+        </Marker>
+      ),
+    [destinationIDfromDetail]
+  );
 
   return (
     <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
@@ -284,13 +333,17 @@ function Map(): React.JSX.Element {
       {/* Actual map */}
       <ReactMapGL
         {...viewport}
+        onViewportChange={(viewState: Object) =>
+          setViewport({ ...viewState, zoom })
+        }
         width={width}
         height="100%"
-        zoom={zoom}
         style={mapInlineStyles}
         mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
         goongApiAccessToken={GGMAPS_MAPTILES_KEY}
-      />
+      >
+        {destinationMarker}
+      </ReactMapGL>
     </div>
   );
 }
@@ -614,6 +667,11 @@ interface PlaceDetail {
   place_id: string;
   formatted_address: string;
   geometry: { location: Location };
+  name: string;
+  compound: {
+    district: string;
+    province: string;
+  };
 }
 
 function usePlacesSearch(
