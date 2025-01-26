@@ -38,7 +38,9 @@ import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
 import ReactMapGL, {
   Marker,
-  type ViewportProps,
+  ViewportProps,
+  MapRef,
+  WebMercatorViewport,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
 
@@ -51,8 +53,8 @@ type BookStoreState = {
   serviceFieldValues: ServiceFieldValuesWithFee | null;
   currentStep: Step;
   stepDirection: -1 | 1;
-  destinationID: string | null;
-  pickupID: string | null;
+  destinationDetail: PlaceDetail | null;
+  pickupDetail: PlaceDetail | null;
 };
 
 type BookStoreActions = {
@@ -62,15 +64,15 @@ type BookStoreActions = {
   ) => void;
   updateCurrentStep: (newStep: Step) => void;
   updateStepDirection: (newStepDirection: -1 | 1) => void;
-  updateDestinationID: (newDestinationID: string | null) => void;
-  updatePickupID: (newPickupID: string | null) => void;
+  updateDestinationDetail: (newDestinationDetail: PlaceDetail | null) => void;
+  updatePickupDetail: (newPickupDetail: PlaceDetail | null) => void;
 };
 
 type BookStore = BookStoreState & BookStoreActions;
 
 const useBookStore = create<BookStore>()((set) => ({
-  destinationID: null,
-  pickupID: null,
+  destinationDetail: null,
+  pickupDetail: null,
   route: null,
   stepDirection: 1,
   currentStep: "search",
@@ -102,15 +104,21 @@ const useBookStore = create<BookStore>()((set) => ({
       true
     ),
   updateStepDirection: (newStepDirection) =>
-    set((state) => ({
-      ...state,
-      stepDirection: newStepDirection,
-    })),
-  updateDestinationID: (newDestinationID) => {
-    set((state) => ({ ...state, destinationID: newDestinationID }));
+    set(
+      (state) => ({
+        ...state,
+        stepDirection: newStepDirection,
+      }),
+      true
+    ),
+  updateDestinationDetail: (newDestinationDetail) => {
+    set(
+      (state) => ({ ...state, destinationDetail: newDestinationDetail }),
+      true
+    );
   },
-  updatePickupID: (newPickupID) => {
-    set((state) => ({ ...state, pickupID: newPickupID }));
+  updatePickupDetail: (newPickupDetail) => {
+    set((state) => ({ ...state, pickupDetail: newPickupDetail }), true);
   },
 }));
 
@@ -214,36 +222,85 @@ export function Book(): React.JSX.Element {
   );
 }
 
+function CustomMarker({
+  locationType,
+}: {
+  locationType: "Destination" | "Pickup";
+}): React.JSX.Element | null {
+  const placeDetail = useBookStore((state) =>
+    locationType === "Destination"
+      ? state.destinationDetail
+      : state.pickupDetail
+  );
+
+  if (!placeDetail?.geometry || !placeDetail.compound) return null;
+  return (
+    <Marker
+      latitude={placeDetail.geometry.location.lat}
+      longitude={placeDetail.geometry.location.lng}
+      offsetLeft={-20}
+      offsetTop={-20}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          type: "spring",
+          delay: 2,
+          duration: 1,
+        }}
+        className="relative"
+      >
+        <div className="absolute left-0 top-0 -translate-y-[calc(100%+8px)] -translate-x-[calc(50%-20px)] w-max max-w-[260px] bg-background-950 rounded-xl px-4 py-4">
+          <div className="w-full flex items-center gap-3">
+            <div
+              className={cn(
+                "flex flex-none size-[34px] rounded-full items-center justify-center",
+                locationType === "Destination"
+                  ? "bg-[#22C55E]/15"
+                  : "bg-[#EF4444]/15"
+              )}
+            >
+              {locationType === "Destination" ? (
+                <Flag variant="Bold" className="size-4 text-[#22C55E]" />
+              ) : (
+                <Location variant="Bold" className="size-4 text-[#EF4444]" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0 space-y-1">
+              <p className="text-xxs font-normal text-foreground-500 w-full truncate">
+                {placeDetail.compound.district}, {placeDetail.compound.province}
+              </p>
+              <p className="text-xs font-normal text-white w-full truncate">
+                {placeDetail.name}
+              </p>
+            </div>
+          </div>
+        </div>
+        <motion.div
+          animate={{ scale: [1.2, 1, 1.25] }}
+          transition={{
+            type: "tween",
+            ease: "linear",
+            repeat: Infinity,
+            duration: 0.7,
+          }}
+          className="mx-auto size-10 rounded-full bg-[#1D90F5]/40 shadow-xl flex items-center justify-center"
+        >
+          <div className="size-[40%] rounded-full bg-primary-500"></div>
+        </motion.div>
+      </motion.div>
+    </Marker>
+  );
+}
+
 function Map(): React.JSX.Element {
+  const mapRef = React.useRef<MapRef>(null);
   const is8K = useMediaQuery({ minWidth: 7680 });
   const is4K = useMediaQuery({ minWidth: 3840 });
   const is2XL = useMediaQuery({ maxWidth: 1535 });
   const isXL = useMediaQuery({ maxWidth: 1279 });
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const zoom: number = React.useMemo(() => {
-    let temp = 14;
-    if (isSM) temp = 13;
-    if (is4K) temp = 15;
-    if (is8K) temp = 16;
-    return temp;
-  }, [isSM, is4K, is8K]);
-  const [viewport, setViewport] = React.useState<ViewportProps>({
-    latitude: 21.02686595596347,
-    longitude: 105.85375738102857,
-    zoom: zoom,
-  });
-  const destinationID = useBookStore((state) => state.destinationID);
-  const pickupID = useBookStore((state) => state.pickupID);
-
-  const destinationDetail = usePlaceDetail(destinationID);
-  const pickupDetail = usePlaceDetail(pickupID);
-
-  const mapInlineStyles: React.CSSProperties = React.useMemo(() => {
-    let styles: React.CSSProperties = { marginLeft: "auto" };
-    if (isXL) styles.marginLeft = 0;
-    return styles;
-  }, [isXL]);
-
   const width: string = React.useMemo(() => {
     let temp = "76%";
     if (is2XL) temp = "62.5%";
@@ -251,78 +308,121 @@ function Map(): React.JSX.Element {
     return temp;
   }, [is2XL, isXL]);
 
-  let destinationIDfromDetail = destinationDetail
-    ? destinationDetail.place_id
-    : null;
-  let pickupIDfromDetail = pickupDetail ? pickupDetail.place_id : null;
+  const zoom: number = React.useMemo(() => {
+    let temp = 14;
+    if (isSM) temp = 13;
+    if (is4K) temp = 15;
+    if (is8K) temp = 16;
+    return temp;
+  }, [isSM, is4K, is8K]);
+
+  const [viewport, setViewport] = React.useState({
+    width,
+    height: "100%",
+    latitude: 21.02686595596347,
+    longitude: 105.85375738102857,
+    zoom,
+  });
+
+  const destinationDetail = useBookStore((state) => state.destinationDetail);
+  const pickupDetail = useBookStore((state) => state.pickupDetail);
+
+  const mapInlineStyles: React.CSSProperties = React.useMemo(() => {
+    let styles: React.CSSProperties = { marginLeft: "auto" };
+    if (isXL) styles.marginLeft = 0;
+    return styles;
+  }, [isXL]);
 
   React.useEffect(() => {
     if (destinationDetail && !pickupDetail) {
-      setViewport({
-        ...viewport,
-        longitude: destinationDetail.geometry.location.lng,
-        latitude: destinationDetail.geometry.location.lat,
+      mapRef.current?.getMap().flyTo({
+        center: [
+          destinationDetail.geometry.location.lng,
+          destinationDetail.geometry.location.lat,
+        ],
         zoom,
-        transitionDuration: 1000,
-        transitionEasing: easeCubic,
+        duration: 1500,
+        easing: easeCubic,
       });
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("foo");
+        }, 1600);
+      }).then((_) =>
+        setViewport({
+          ...viewport,
+          longitude: destinationDetail.geometry.location.lng,
+          latitude: destinationDetail.geometry.location.lat,
+          zoom,
+        })
+      );
     }
 
     if (pickupDetail && !destinationDetail) {
-      setViewport({
-        ...viewport,
-        longitude: pickupDetail.geometry.location.lng,
-        latitude: pickupDetail.geometry.location.lat,
+      mapRef.current?.getMap().flyTo({
+        center: [
+          pickupDetail.geometry.location.lng,
+          pickupDetail.geometry.location.lat,
+        ],
         zoom,
-        transitionDuration: 1000,
-        transitionEasing: easeCubic,
+        duration: 1500,
+        easing: easeCubic,
+      });
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("foo");
+        }, 1600);
+      }).then((_) =>
+        setViewport({
+          ...viewport,
+          longitude: pickupDetail.geometry.location.lng,
+          latitude: pickupDetail.geometry.location.lat,
+          zoom,
+        })
+      );
+    }
+
+    if (destinationDetail && pickupDetail) {
+      const { longitude, latitude, zoom } = new WebMercatorViewport(
+        viewport
+      ).fitBounds(
+        [
+          [
+            pickupDetail.geometry.location.lng,
+            pickupDetail.geometry.location.lat,
+          ],
+          [
+            destinationDetail.geometry.location.lng,
+            destinationDetail.geometry.location.lat,
+          ],
+        ],
+        {
+          padding: 20,
+          offset: [0, 0],
+        }
+      );
+      mapRef.current?.getMap().flyTo({
+        center: [longitude, latitude],
+        zoom: 13,
+        duration: 1500,
+        easing: easeCubic,
+      });
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("foo");
+        }, 1600);
+      }).then((_) => {
+        setViewport({
+          ...viewport,
+          longitude,
+          latitude,
+          zoom: 13,
+        });
       });
     }
-  }, [destinationIDfromDetail, pickupIDfromDetail]);
+  }, [destinationDetail?.place_id, pickupDetail?.place_id]);
 
-  const destinationMarker = React.useMemo(
-    () =>
-      destinationDetail && (
-        <Marker
-          latitude={destinationDetail.geometry.location.lat}
-          longitude={destinationDetail.geometry.location.lng}
-          offsetLeft={-20}
-          offsetTop={-20}
-        >
-          <div className="relative">
-            <div className="absolute left-0 top-0 -translate-y-[calc(100%+8px)] -translate-x-[calc(50%-20px)] w-max max-w-[260px] bg-background-950 rounded-xl px-4 py-4">
-              <div className="w-full flex items-center gap-3">
-                <div className="flex flex-none size-[34px] rounded-full items-center justify-center bg-[#EF4444]/15">
-                  <Location variant="Bold" className="size-4 text-[#EF4444]" />
-                </div>
-                <div className="flex-1 min-w-0 space-y-1">
-                  <p className="text-xxs font-normal text-foreground-600 w-full truncate">
-                    {destinationDetail.compound.district},{" "}
-                    {destinationDetail.compound.province}
-                  </p>
-                  <p className="text-xs font-normal text-white w-full truncate">
-                    {destinationDetail.name}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <motion.div
-              animate={{ scale: [1.2, 1, 1.25] }}
-              transition={{
-                type: "tween",
-                ease: "linear",
-                repeat: Infinity,
-                duration: 0.7,
-              }}
-              className="mx-auto size-10 rounded-full bg-[#1D90F5]/40 shadow-xl flex items-center justify-center"
-            >
-              <div className="size-[40%] rounded-full bg-primary-500"></div>
-            </motion.div>
-          </div>
-        </Marker>
-      ),
-    [destinationIDfromDetail]
-  );
+  console.log("map re-rendered");
 
   return (
     <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
@@ -332,17 +432,17 @@ function Map(): React.JSX.Element {
       <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
       {/* Actual map */}
       <ReactMapGL
+        ref={mapRef}
         {...viewport}
-        onViewportChange={(viewState: Object) =>
-          setViewport({ ...viewState, zoom })
-        }
-        width={width}
-        height="100%"
+        onViewportChange={setViewport}
+        // width={width}
+        // height="100%"
         style={mapInlineStyles}
         mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
         goongApiAccessToken={GGMAPS_MAPTILES_KEY}
       >
-        {destinationMarker}
+        <CustomMarker locationType="Destination" />
+        <CustomMarker locationType="Pickup" />
       </ReactMapGL>
     </div>
   );
@@ -431,8 +531,8 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
     const isSM = useMediaQuery({ maxWidth: 639 });
     const [revalidate, setRevalidate] = React.useState(false);
     const fieldValues = useBookStore((state) => state.searchFieldValues);
-    const destinationID = useBookStore((state) => state.destinationID);
-    const pickupID = useBookStore((state) => state.pickupID);
+    const destinationDetail = useBookStore((state) => state.destinationDetail);
+    const pickupDetail = useBookStore((state) => state.pickupDetail);
 
     const updateFieldValues = useBookStore(
       (state) => state.updateSearchFieldValues
@@ -481,14 +581,14 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
 
     const onSubmit = async (data: SearchFieldValues) => {
       const addressNotFoundMessage = "Không tìm thấy địa chỉ này";
-      if (!destinationID) {
+      if (!destinationDetail?.place_id) {
         methods.setError("destination", {
           type: "manual",
           message: addressNotFoundMessage,
         });
       }
 
-      if (!pickupID) {
+      if (!pickupDetail?.place_id) {
         methods.setError("pickup", {
           type: "manual",
           message: addressNotFoundMessage,
@@ -523,19 +623,6 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
         >
           {/* Fields */}
           <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
-            <Field<SearchFieldValues>
-              label="Điểm đến"
-              required
-              size={isSM ? "small" : "default"}
-              name="destination"
-              control={methods.control}
-            >
-              <LocationField
-                locationType="Destination"
-                onSelectLocation={() => methods.clearErrors("destination")}
-              />
-            </Field>
-
             <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
               <Field<SearchFieldValues>
                 label="Điểm đón"
@@ -563,6 +650,18 @@ const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
                 />
               </Field>
             </div>
+            <Field<SearchFieldValues>
+              label="Điểm đến"
+              required
+              size={isSM ? "small" : "default"}
+              name="destination"
+              control={methods.control}
+            >
+              <LocationField
+                locationType="Destination"
+                onSelectLocation={() => methods.clearErrors("destination")}
+              />
+            </Field>
             <Field<SearchFieldValues>
               label="Thời gian khởi hành"
               required
@@ -717,36 +816,6 @@ function usePlacesSearch(
   return [places, setPlaces];
 }
 
-function usePlaceDetail(placeID: string | null) {
-  const [data, setData] = React.useState<PlaceDetail | null>(null);
-
-  React.useEffect(() => {
-    let ignore = false;
-
-    if (placeID) {
-      const requestParams: PlaceDetailRequestParams = {
-        api_key: GGMAPS_API_KEY,
-        place_id: placeID,
-      };
-
-      axios
-        .get<PlaceDetailServiceResponse>(GGMAPS_URL + "/Place/Detail", {
-          params: requestParams,
-        })
-        .then((res) => {
-          if (res.data.status === "OK" && !ignore) setData(res.data.result);
-        })
-        .catch((err) => console.error(err));
-    }
-
-    return () => {
-      ignore = true;
-    };
-  }, [placeID]);
-
-  return data;
-}
-
 function LocationField({
   locationType,
   onSelectLocation,
@@ -754,12 +823,12 @@ function LocationField({
   locationType: "Destination" | "Pickup";
   onSelectLocation: () => void;
 }): React.JSX.Element {
-  const fieldValues = useBookStore((state) => state.searchFieldValues);
-  const updateLocationID = useBookStore((state) =>
+  const updatePlaceDetail = useBookStore((state) =>
     locationType === "Destination"
-      ? state.updateDestinationID
-      : state.updatePickupID
+      ? state.updateDestinationDetail
+      : state.updatePickupDetail
   );
+  const fieldValues = useBookStore((state) => state.searchFieldValues);
   const stepDirection = useBookStore((state) => state.stepDirection);
   const value =
     locationType === "Destination"
@@ -772,14 +841,34 @@ function LocationField({
     id: place.place_id,
     content: place.description,
   }));
+
   const handleSelectLocation = (placeID: string) => {
+    let ignore = false;
     onSelectLocation();
-    updateLocationID(placeID);
+    const requestParams: PlaceDetailRequestParams = {
+      api_key: GGMAPS_API_KEY,
+      place_id: placeID,
+    };
+
+    axios
+      .get<PlaceDetailServiceResponse>(GGMAPS_URL + "/Place/Detail", {
+        params: requestParams,
+      })
+      .then((res) => {
+        if (res.data.status === "OK" && !ignore)
+          updatePlaceDetail(res.data.result);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        ignore = true;
+      });
   };
 
   const handleClear = () => {
     setPlaces([]);
-    updateLocationID(null);
+    updatePlaceDetail(null);
   };
 
   return (
@@ -873,10 +962,16 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
     const updateFieldValues = useBookStore(
       (state) => state.updateServiceFieldValues
     );
-    const destinationID = useBookStore((state) => state.destinationID);
-    const pickupID = useBookStore((state) => state.pickupID);
+    const destinationDetail = useBookStore((state) => state.destinationDetail);
+    const pickupDetail = useBookStore((state) => state.pickupDetail);
     const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
     const updateDirection = useBookStore((state) => state.updateStepDirection);
+
+    if (!destinationDetail || !pickupDetail)
+      throw new Error("destination or pickup is null/undefined");
+
+    const { place_id: destinationID } = destinationDetail;
+    const { place_id: pickupID } = pickupDetail;
 
     const methods = useForm<ServiceFieldValues>({
       resolver: zodResolver(ServiceFormSchema),
