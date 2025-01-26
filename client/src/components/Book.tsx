@@ -38,9 +38,9 @@ import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
 import ReactMapGL, {
   Marker,
-  ViewportProps,
   MapRef,
   WebMercatorViewport,
+  ViewportProps,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
 
@@ -302,23 +302,23 @@ function Map(): React.JSX.Element {
   const isXL = useMediaQuery({ maxWidth: 1279 });
   const isSM = useMediaQuery({ maxWidth: 639 });
   const width: string = React.useMemo(() => {
-    let temp = "76%";
+    let temp = "70%";
     if (is2XL) temp = "62.5%";
     if (isXL) temp = "100%";
     return temp;
   }, [is2XL, isXL]);
 
   const zoom: number = React.useMemo(() => {
-    let temp = 14;
-    if (isSM) temp = 13;
-    if (is4K) temp = 15;
+    let temp = 13;
+    if (isSM) temp = 12;
+    if (is4K) temp = 14;
     if (is8K) temp = 16;
     return temp;
   }, [isSM, is4K, is8K]);
 
-  const [viewport, setViewport] = React.useState({
-    width,
-    height: "100%",
+  const [viewport, setViewport] = React.useState<ViewportProps>({
+    // width,
+    // height: "100%",
     latitude: 21.02686595596347,
     longitude: 105.85375738102857,
     zoom,
@@ -397,13 +397,13 @@ function Map(): React.JSX.Element {
           ],
         ],
         {
-          padding: 20,
+          padding: { top: 200, left: 400, right: 200, bottom: 20 },
           offset: [0, 0],
         }
       );
       mapRef.current?.getMap().flyTo({
         center: [longitude, latitude],
-        zoom: 13,
+        zoom,
         duration: 1500,
         easing: easeCubic,
       });
@@ -416,13 +416,13 @@ function Map(): React.JSX.Element {
           ...viewport,
           longitude,
           latitude,
-          zoom: 13,
+          zoom,
         });
       });
     }
   }, [destinationDetail?.place_id, pickupDetail?.place_id]);
 
-  console.log("map re-rendered");
+  console.log("map re-rendered", zoom);
 
   return (
     <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
@@ -435,8 +435,9 @@ function Map(): React.JSX.Element {
         ref={mapRef}
         {...viewport}
         onViewportChange={setViewport}
-        // width={width}
-        // height="100%"
+        width={width}
+        height="100%"
+        // zoom={zoom}
         style={mapInlineStyles}
         mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
         goongApiAccessToken={GGMAPS_MAPTILES_KEY}
