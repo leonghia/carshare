@@ -40,7 +40,6 @@ import ReactMapGL, {
   Marker,
   MapRef,
   WebMercatorViewport,
-  ViewportProps,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
 
@@ -149,75 +148,74 @@ const stepVariants = cva<{ step: Record<Step, string> }>(
 
 export function Book(): React.JSX.Element {
   return (
-    <div className="overflow-hidden relative w-full min-h-screen bg-background-950 xl:grid xl:grid-rows-[max-content,minmax(0,1fr)]">
-      {/* Wrapper */}
-      <div
-        className={cn(
-          "relative z-10 w-full min-h-screen xl:min-h-fit px-16 xl:px-10 md:px-8 sm:px-4 pt-8 sm:pt-4 pb-20 xl:pb-0 grid grid-rows-[max-content,minmax(0,1fr)] xl:grid-rows-[repeat(2,max-content)] justify-items-center"
-        )}
-      >
-        {/* Header */}
-        <header className="z-10 w-full grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
-          {/* Hamburger button & Logo */}
-          <div className="flex items-center gap-4 sm:gap-3">
-            <button type="button" className="hidden lg:block">
-              <HambergerMenu
-                variant="Bold"
-                className="size-8 sm:size-6 text-foreground-500"
-              />
-            </button>
-            <Link to="/">
-              <img
-                src={logo}
-                alt="carshare logo"
-                className="h-8 sm:h-5 object-cover"
-              />
-            </Link>
-          </div>
-          {/* Navbar */}
-          <nav className="w-[31.25rem] xl:w-[400px] lg:hidden flex items-center justify-between">
-            <NavLink
-              to="/book"
-              className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-            >
-              Đặt xe
-            </NavLink>
-            <NavLink
-              to="/rules"
-              className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-            >
-              Quy định
-            </NavLink>
-            <NavLink
-              to="/feedback"
-              className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-            >
-              Phản ánh
-            </NavLink>
-          </nav>
-          {/* Right */}
-          <div className="flex items-center gap-10 sm:gap-6">
-            <button type="button" className="relative">
-              <Notification
-                variant="Bold"
-                className="size-8 sm:size-6 text-foreground-500"
-              />
-              <span className="block absolute top-0 right-0 size-3 sm:size-2 rounded-full bg-danger-500 border-2 sm:border border-white"></span>
-            </button>
-            <button type="button">
-              <img
-                src={pfp}
-                alt="user profile picture"
-                className="size-10 sm:size-[30px] rounded-full border-2 sm:border border-primary-500 shadow-xl sm:shadow-md"
-              />
-            </button>
-          </div>
-        </header>
-        {/* Main */}
-        <Main />
-      </div>
-      {/* Map */}
-      <Map />
+    <div className="w-full min-h-screen bg-background-950 grid grid-rows-[max-content,minmax(0,1fr)]">
+      {/* Header */}
+      <header className="w-full px-16 lg:px-6 pt-8 lg:pt-6 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
+        {/* Hamburger button & Logo */}
+        <div className="flex items-center gap-4 sm:gap-3">
+          <button type="button" className="hidden lg:block">
+            <HambergerMenu
+              variant="Bold"
+              className="size-8 sm:size-6 text-foreground-500"
+            />
+          </button>
+          <Link to="/">
+            <img
+              src={logo}
+              alt="carshare logo"
+              className="h-8 sm:h-5 object-cover"
+            />
+          </Link>
+        </div>
+        {/* Navbar */}
+        <nav className="w-[500px] xl:w-[450px] lg:hidden flex items-center justify-between">
+          <NavLink
+            to="/book"
+            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
+          >
+            Đặt xe
+          </NavLink>
+          <NavLink
+            to="/rules"
+            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
+          >
+            Quy định
+          </NavLink>
+          <NavLink
+            to="/feedback"
+            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
+          >
+            Phản ánh
+          </NavLink>
+        </nav>
+        {/* Right */}
+        <div className="flex items-center gap-10 sm:gap-6">
+          <button type="button" className="relative">
+            <Notification
+              variant="Bold"
+              className="size-8 sm:size-6 text-foreground-500"
+            />
+            <span className="block absolute top-0 right-0 size-3 sm:size-2 rounded-full bg-danger-500 border-2 sm:border border-white"></span>
+          </button>
+          <button type="button">
+            <img
+              src={pfp}
+              alt="user profile picture"
+              className="size-10 sm:size-[30px] rounded-full border-2 sm:border border-primary-500 shadow-xl sm:shadow-md"
+            />
+          </button>
+        </div>
+      </header>
+      {/* Main */}
+      <main className="w-full min-h-[900px] 2xl:min-h-[800px] xl:min-h-[1000px] lg:min-h-[900px] pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
+        {/* Inner */}
+        <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)] items-center xl:items-start">
+          {/* Left Section */}
+          <LeftSection />
+          {/* Right Section */}
+          <RightSection />
+        </div>
+      </main>
     </div>
   );
 }
@@ -294,31 +292,25 @@ function CustomMarker({
   );
 }
 
-function Map(): React.JSX.Element {
+function RightSection(): React.JSX.Element {
   const mapRef = React.useRef<MapRef>(null);
   const is8K = useMediaQuery({ minWidth: 7680 });
   const is4K = useMediaQuery({ minWidth: 3840 });
   const is2XL = useMediaQuery({ maxWidth: 1535 });
   const isXL = useMediaQuery({ maxWidth: 1279 });
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const width: string = React.useMemo(() => {
-    let temp = "70%";
-    if (is2XL) temp = "62.5%";
-    if (isXL) temp = "100%";
-    return temp;
-  }, [is2XL, isXL]);
 
   const zoom: number = React.useMemo(() => {
     let temp = 13;
-    if (isSM) temp = 12;
+    if (is2XL) temp = 12;
     if (is4K) temp = 14;
     if (is8K) temp = 16;
     return temp;
-  }, [isSM, is4K, is8K]);
+  }, [is2XL, is4K, is8K]);
 
-  const [viewport, setViewport] = React.useState<ViewportProps>({
-    // width,
-    // height: "100%",
+  const [viewport, setViewport] = React.useState({
+    width: 0,
+    height: 0,
     latitude: 21.02686595596347,
     longitude: 105.85375738102857,
     zoom,
@@ -397,7 +389,7 @@ function Map(): React.JSX.Element {
           ],
         ],
         {
-          padding: { top: 200, left: 400, right: 200, bottom: 20 },
+          padding: { top: 0, left: 0, right: 0, bottom: 0 },
           offset: [0, 0],
         }
       );
@@ -422,22 +414,21 @@ function Map(): React.JSX.Element {
     }
   }, [destinationDetail?.place_id, pickupDetail?.place_id]);
 
-  console.log("map re-rendered", zoom);
+  console.log("map re-rendered");
 
   return (
-    <div className="absolute xl:relative xl:min-h-[800px] lg:min-h-[600px] md:min-h-[500px] sm:min-h-[360px] inset-0 z-0 xl:-mt-[70px] sm:-mt-[60px]">
+    <section className="h-full relative">
       {/* Vertical gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,0.99)10%,rgba(39,42,55,0)40%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0)25%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)30%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0.1)35%)] sm:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)30%)]"></div>
       {/* Horizontal gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)35%,rgba(39,42,55,0)55%)] 2xl:bg-[linear-gradient(90deg,rgba(39,42,55,1)40%,rgba(39,42,55,0)60%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0)0%,rgba(39,42,55,0)100%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)40%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0)50%,rgba(39,42,55,0.5)100%)] sm:bg-[linear-gradient(90deg,rgba(39,42,55,0.1)0%,rgba(39,42,55,0)50%,rgba(39,42,55,0.1)100%)]"></div>
       {/* Actual map */}
       <ReactMapGL
         ref={mapRef}
         {...viewport}
         onViewportChange={setViewport}
-        width={width}
+        width="100%"
         height="100%"
-        // zoom={zoom}
         style={mapInlineStyles}
         mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
         goongApiAccessToken={GGMAPS_MAPTILES_KEY}
@@ -445,7 +436,7 @@ function Map(): React.JSX.Element {
         <CustomMarker locationType="Destination" />
         <CustomMarker locationType="Pickup" />
       </ReactMapGL>
-    </div>
+    </section>
   );
 }
 
@@ -524,208 +515,211 @@ type SearchFieldValues = z.infer<typeof SearchFormSchema>;
 
 const now = new Date();
 
-interface SearchFormProps extends React.ComponentPropsWithoutRef<"form"> {}
+interface SearchFormProps extends React.ComponentPropsWithRef<"form"> {}
 
-const SearchForm = React.forwardRef<HTMLFormElement, SearchFormProps>(
-  ({ className, ...props }, ref) => {
-    const [isSearching, setIsSearching] = React.useState(false);
-    const isSM = useMediaQuery({ maxWidth: 639 });
-    const [revalidate, setRevalidate] = React.useState(false);
-    const fieldValues = useBookStore((state) => state.searchFieldValues);
-    const destinationDetail = useBookStore((state) => state.destinationDetail);
-    const pickupDetail = useBookStore((state) => state.pickupDetail);
+function SearchForm({
+  className,
+  ...props
+}: SearchFormProps): React.JSX.Element {
+  const [isSearching, setIsSearching] = React.useState(false);
+  const isSM = useMediaQuery({ maxWidth: 639 });
+  const [revalidate, setRevalidate] = React.useState(false);
+  const fieldValues = useBookStore((state) => state.searchFieldValues);
+  const destinationDetail = useBookStore((state) => state.destinationDetail);
+  const pickupDetail = useBookStore((state) => state.pickupDetail);
 
-    const updateFieldValues = useBookStore(
-      (state) => state.updateSearchFieldValues
-    );
-    const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
-    const updateServiceFieldValues = useBookStore(
-      (state) => state.updateServiceFieldValues
-    );
-    const updateDirection = useBookStore((state) => state.updateStepDirection);
+  const updateFieldValues = useBookStore(
+    (state) => state.updateSearchFieldValues
+  );
+  const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
+  const updateServiceFieldValues = useBookStore(
+    (state) => state.updateServiceFieldValues
+  );
+  const updateDirection = useBookStore((state) => state.updateStepDirection);
 
-    const methods = useForm<SearchFieldValues>({
-      resolver: zodResolver(SearchFormSchema),
-      defaultValues: {
-        destination: "",
-        pickup: "",
-        departureTime: {
-          hour: "",
-          minute: "",
-          date: "",
-          month: "",
-          year: "",
-        },
-        numbersOfPassengers: "",
-        useCurrentLocation: false,
+  const methods = useForm<SearchFieldValues>({
+    resolver: zodResolver(SearchFormSchema),
+    defaultValues: {
+      destination: "",
+      pickup: "",
+      departureTime: {
+        hour: "",
+        minute: "",
+        date: "",
+        month: "",
+        year: "",
       },
-      values: fieldValues
-        ? {
-            destination: fieldValues.destination,
-            pickup: fieldValues.pickup,
-            departureTime: {
-              hour: fieldValues.departureTime.hour,
-              minute: fieldValues.departureTime.minute,
-              date: fieldValues.departureTime.date,
-              month: fieldValues.departureTime.month,
-              year: fieldValues.departureTime.year,
-            },
-            numbersOfPassengers: fieldValues.numbersOfPassengers,
-            useCurrentLocation: fieldValues.useCurrentLocation,
-          }
-        : undefined,
-      shouldFocusError: false,
-      resetOptions: {
-        keepDefaultValues: true,
-      },
-    });
+      numbersOfPassengers: "",
+      useCurrentLocation: false,
+    },
+    values: fieldValues
+      ? {
+          destination: fieldValues.destination,
+          pickup: fieldValues.pickup,
+          departureTime: {
+            hour: fieldValues.departureTime.hour,
+            minute: fieldValues.departureTime.minute,
+            date: fieldValues.departureTime.date,
+            month: fieldValues.departureTime.month,
+            year: fieldValues.departureTime.year,
+          },
+          numbersOfPassengers: fieldValues.numbersOfPassengers,
+          useCurrentLocation: fieldValues.useCurrentLocation,
+        }
+      : undefined,
+    shouldFocusError: false,
+    resetOptions: {
+      keepDefaultValues: true,
+    },
+  });
 
-    const onSubmit = async (data: SearchFieldValues) => {
-      const addressNotFoundMessage = "Không tìm thấy địa chỉ này";
-      if (!destinationDetail?.place_id) {
-        methods.setError("destination", {
-          type: "manual",
-          message: addressNotFoundMessage,
-        });
-      }
-
-      if (!pickupDetail?.place_id) {
-        methods.setError("pickup", {
-          type: "manual",
-          message: addressNotFoundMessage,
-        });
-        return;
-      }
-
-      setIsSearching(true);
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve("foo");
-        }, 1000);
+  const onSubmit = async (data: SearchFieldValues) => {
+    const addressNotFoundMessage = "Không tìm thấy địa chỉ này";
+    if (!destinationDetail?.place_id) {
+      methods.setError("destination", {
+        type: "manual",
+        message: addressNotFoundMessage,
       });
-      setIsSearching(false);
-      updateFieldValues(data);
-      updateServiceFieldValues(null);
-      updateDirection(1);
-      updateCurrentStep("service");
-    };
+    }
 
-    const onInvalid = () => {
-      setRevalidate(true);
-    };
+    if (!pickupDetail?.place_id) {
+      methods.setError("pickup", {
+        type: "manual",
+        message: addressNotFoundMessage,
+      });
+      return;
+    }
 
-    return (
-      <FormProvider {...methods}>
-        <form
-          ref={ref}
-          onSubmit={methods.handleSubmit(onSubmit, onInvalid)}
-          className={cn("w-full space-y-10 sm:space-y-8", className)}
-          {...props}
-        >
-          {/* Fields */}
-          <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
-            <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
-              <Field<SearchFieldValues>
-                label="Điểm đón"
-                required
-                size={isSM ? "small" : "default"}
-                name="pickup"
-                control={methods.control}
-              >
-                <LocationField
-                  locationType="Pickup"
-                  onSelectLocation={() => methods.clearErrors("pickup")}
-                />
-              </Field>
-              <Field<SearchFieldValues>
-                label="Sử dụng vị trí hiện tại của tôi"
-                size={isSM ? "small" : "default"}
-                name="useCurrentLocation"
-                control={methods.control}
-              >
-                <CheckboxField
-                  classNames={{
-                    container: "items-center",
-                    label: "text-sm font-normal text-foreground-200 sm:text-xs",
-                  }}
-                />
-              </Field>
-            </div>
+    setIsSearching(true);
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("foo");
+      }, 1000);
+    });
+    setIsSearching(false);
+    updateFieldValues(data);
+    updateServiceFieldValues(null);
+    updateDirection(1);
+    updateCurrentStep("service");
+  };
+
+  const onInvalid = () => {
+    setRevalidate(true);
+  };
+
+  return (
+    <FormProvider {...methods}>
+      <form
+        onSubmit={methods.handleSubmit(onSubmit, onInvalid)}
+        className={cn(
+          "w-full xl:max-w-[800px] space-y-10 sm:space-y-8",
+          className
+        )}
+        {...props}
+      >
+        {/* Fields */}
+        <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
+          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
             <Field<SearchFieldValues>
-              label="Điểm đến"
+              label="Điểm đón"
               required
               size={isSM ? "small" : "default"}
-              name="destination"
+              name="pickup"
               control={methods.control}
             >
               <LocationField
-                locationType="Destination"
-                onSelectLocation={() => methods.clearErrors("destination")}
+                locationType="Pickup"
+                onSelectLocation={() => methods.clearErrors("pickup")}
               />
             </Field>
             <Field<SearchFieldValues>
-              label="Thời gian khởi hành"
-              required
+              label="Sử dụng vị trí hiện tại của tôi"
               size={isSM ? "small" : "default"}
-              name="departureTime"
+              name="useCurrentLocation"
               control={methods.control}
             >
-              <DatetimeField
-                invalidMessage="Thời gian không hợp lệ"
-                requiredMessage="Thời gian khởi hành không được để trống"
-                revalidate={revalidate}
-                hourName="departureTime.hour"
-                minuteName="departureTime.minute"
-                dateName="departureTime.date"
-                monthName="departureTime.month"
-                yearName="departureTime.year"
-                hourPlaceholder={String(now.getHours()).padStart(2, "0")}
-                minutePlaceholder={String(now.getMinutes()).padStart(2, "0")}
-                datePlaceholder={String(now.getDate()).padStart(2, "0")}
-                monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
-                yearPlaceholder={String(now.getFullYear())}
+              <CheckboxField
                 classNames={{
-                  container:
-                    "col-span-full xl:col-span-1 xl:row-start-1 xl:col-start-2 lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
-                  inner: "gap-8 sm:gap-10",
-                  upper: "w-fit md:w-full",
-                }}
-              />
-            </Field>
-            <Field<SearchFieldValues>
-              label="Số lượng hành khách"
-              required
-              size={isSM ? "small" : "default"}
-              name="numbersOfPassengers"
-              control={methods.control}
-            >
-              <QuantityField
-                max={20}
-                min={0}
-                placeholder="0"
-                classNames={{
-                  container:
-                    "col-span-full xl:col-start-2 xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
-                  left: "max-w-[200px] sm:max-w-[180px]",
+                  container: "items-center",
+                  label: "text-sm font-normal text-foreground-200 sm:text-xs",
                 }}
               />
             </Field>
           </div>
-          {/* Search button */}
-          <Button
-            hasLoader
-            isLoading={isSearching}
+          <Field<SearchFieldValues>
+            label="Điểm đến"
+            required
             size={isSM ? "small" : "default"}
-            type="submit"
-            className="px-0 py-0 w-full h-[70px] xl:max-w-[360px] sm:max-w-full lg:w-[320px] xl:flex xl:mx-auto sm:w-full sm:h-[60px]"
+            name="destination"
+            control={methods.control}
           >
-            Tìm cuốc xe
-          </Button>
-        </form>
-      </FormProvider>
-    );
-  }
-);
+            <LocationField
+              locationType="Destination"
+              onSelectLocation={() => methods.clearErrors("destination")}
+            />
+          </Field>
+          <Field<SearchFieldValues>
+            label="Thời gian khởi hành"
+            required
+            size={isSM ? "small" : "default"}
+            name="departureTime"
+            control={methods.control}
+          >
+            <DatetimeField
+              invalidMessage="Thời gian không hợp lệ"
+              requiredMessage="Thời gian khởi hành không được để trống"
+              revalidate={revalidate}
+              hourName="departureTime.hour"
+              minuteName="departureTime.minute"
+              dateName="departureTime.date"
+              monthName="departureTime.month"
+              yearName="departureTime.year"
+              hourPlaceholder={String(now.getHours()).padStart(2, "0")}
+              minutePlaceholder={String(now.getMinutes()).padStart(2, "0")}
+              datePlaceholder={String(now.getDate()).padStart(2, "0")}
+              monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
+              yearPlaceholder={String(now.getFullYear())}
+              classNames={{
+                container:
+                  "col-span-full xl:col-span-1 xl:row-start-1 xl:col-start-2 lg:col-span-1 lg:row-start-1 lg:col-start-2 md:col-start-1 md:row-start-3 sm:col-span-full",
+                inner: "gap-8 sm:gap-10",
+                upper: "w-fit md:w-full",
+              }}
+            />
+          </Field>
+          <Field<SearchFieldValues>
+            label="Số lượng hành khách"
+            required
+            size={isSM ? "small" : "default"}
+            name="numbersOfPassengers"
+            control={methods.control}
+          >
+            <QuantityField
+              max={20}
+              min={0}
+              placeholder="0"
+              classNames={{
+                container:
+                  "col-span-full xl:col-start-2 xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 lg:col-start-2 md:row-start-3 sm:col-span-full sm:row-start-4",
+                left: "max-w-[200px] sm:max-w-[180px]",
+              }}
+            />
+          </Field>
+        </div>
+        {/* Search button */}
+        <Button
+          hasLoader
+          isLoading={isSearching}
+          size={isSM ? "small" : "default"}
+          type="submit"
+          className="px-0 py-0 w-full h-[70px] xl:max-w-[360px] sm:max-w-full lg:w-[320px] xl:flex xl:mx-auto sm:w-full sm:h-[60px]"
+        >
+          Tìm cuốc xe
+        </Button>
+      </form>
+    </FormProvider>
+  );
+}
 
 interface ServiceResponse {
   status: "OK";
@@ -1275,9 +1269,9 @@ const stepAnimationVariants = {
   }),
 };
 
-const Main = React.forwardRef<
+const LeftSection = React.forwardRef<
   HTMLDivElement,
-  React.ComponentPropsWithoutRef<"main">
+  React.ComponentPropsWithoutRef<"section">
 >(({ className, ...props }, ref) => {
   const currentStep = useBookStore((state) => state.currentStep);
   const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
@@ -1314,44 +1308,42 @@ const Main = React.forwardRef<
   }, [currentStep]);
 
   return (
-    <main
+    <section
       ref={ref}
       className={cn(
-        "grid w-full max-w-[1500px] 2xl:min-h-[800px] xl:min-h-[480px] lg:min-h-[400px] md:min-h-[480px] sm:min-h-0 pt-[120px] 2xl:pt-20 sm:pt-8 xl:items-end xl:justify-items-center",
+        "grid lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 xl:justify-items-center",
         currentStep === "search" && "pt-0 2xl:pt-0 items-center",
         className
       )}
       {...props}
     >
-      <div className="w-[500px] xl:w-full space-y-12 sm:space-y-8">
-        {currentStep !== "search" && (
-          <Button
-            intent="primary"
-            asLink
-            size={isSM ? "extraSmall" : "small"}
-            onClick={onBack}
-          >
-            Quay về
-          </Button>
-        )}
+      {currentStep !== "search" && (
+        <Button
+          intent="primary"
+          asLink
+          size={isSM ? "extraSmall" : "small"}
+          onClick={onBack}
+        >
+          Quay về
+        </Button>
+      )}
 
-        {/* Step */}
-        <AnimatePresence mode="wait" initial={false} custom={direction}>
-          <motion.div
-            key={currentStep}
-            variants={stepAnimationVariants}
-            custom={direction}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-            className={cn(stepVariants({ step: currentStep }))}
-          >
-            {content}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </main>
+      {/* Step */}
+      <AnimatePresence mode="wait" initial={false} custom={direction}>
+        <motion.div
+          key={currentStep}
+          variants={stepAnimationVariants}
+          custom={direction}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+          className={cn(stepVariants({ step: currentStep }))}
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
+    </section>
   );
 });
 
