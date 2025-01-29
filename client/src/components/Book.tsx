@@ -150,7 +150,7 @@ export function Book(): React.JSX.Element {
   return (
     <div className="w-full min-h-screen bg-background-950 grid grid-rows-[max-content,minmax(0,1fr)]">
       {/* Header */}
-      <header className="w-full px-16 lg:px-6 pt-8 lg:pt-6 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
+      <header className="w-full px-16 lg:px-6 sm:px-4 pt-8 lg:pt-6 sm:pt-4 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
         {/* Hamburger button & Logo */}
         <div className="flex items-center gap-4 sm:gap-3">
           <button type="button" className="hidden lg:block">
@@ -207,7 +207,7 @@ export function Book(): React.JSX.Element {
         </div>
       </header>
       {/* Main */}
-      <main className="w-full min-h-[900px] 2xl:min-h-[800px] xl:min-h-[1000px] lg:min-h-[900px] pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
+      <main className="w-full min-h-[900px] 2xl:min-h-[800px] xl:min-h-[1000px] lg:min-h-[900px] sm:min-h-[800px] pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
         {/* Inner */}
         <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)] items-center xl:items-start">
           {/* Left Section */}
@@ -225,6 +225,8 @@ function CustomMarker({
 }: {
   locationType: "Destination" | "Pickup";
 }): React.JSX.Element | null {
+  const isSM = useMediaQuery({ maxWidth: 639 });
+
   const placeDetail = useBookStore((state) =>
     locationType === "Destination"
       ? state.destinationDetail
@@ -238,6 +240,7 @@ function CustomMarker({
       longitude={placeDetail.geometry.location.lng}
       offsetLeft={-20}
       offsetTop={-20}
+      className="z-10 pointer-events-none"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.5 }}
@@ -249,27 +252,41 @@ function CustomMarker({
         }}
         className="relative"
       >
-        <div className="absolute left-0 top-0 -translate-y-[calc(100%+8px)] -translate-x-[calc(50%-20px)] w-max max-w-[260px] bg-background-950 rounded-xl px-4 py-4">
-          <div className="w-full flex items-center gap-3">
-            <div
-              className={cn(
-                "flex flex-none size-[34px] rounded-full items-center justify-center",
-                locationType === "Destination"
-                  ? "bg-[#22C55E]/15"
-                  : "bg-[#EF4444]/15"
-              )}
-            >
-              {locationType === "Destination" ? (
-                <Flag variant="Bold" className="size-4 text-[#22C55E]" />
+        <div className="absolute left-0 top-0 -translate-y-[calc(100%+12px)] sm:-translate-y-[calc(100%+8px)] -translate-x-[calc(50%-24px)] sm:-translate-x-[calc(50%-20px)] w-max max-w-[260px] sm:max-w-[200px] bg-background-950 border-2 border-divider rounded-2xl sm:rounded-xl p-4 sm:p-2">
+          <div className="w-full flex items-center gap-3 sm:gap-2">
+            {isSM &&
+              (locationType === "Destination" ? (
+                <Flag variant="Bold" className="size-5 text-[#22C55E]" />
               ) : (
-                <Location variant="Bold" className="size-4 text-[#EF4444]" />
-              )}
-            </div>
+                <Location variant="Bold" className="size-5 text-[#EF4444]" />
+              ))}
+            {!isSM && (
+              <div
+                className={cn(
+                  "flex flex-none size-10 sm:size-[34px] rounded-full items-center justify-center",
+                  locationType === "Destination"
+                    ? "bg-[#22C55E]/15"
+                    : "bg-[#EF4444]/15"
+                )}
+              >
+                {locationType === "Destination" ? (
+                  <Flag
+                    variant="Bold"
+                    className="size-5 sm:size-4 text-[#22C55E]"
+                  />
+                ) : (
+                  <Location
+                    variant="Bold"
+                    className="size-5 sm:size-4 text-[#EF4444]"
+                  />
+                )}
+              </div>
+            )}
             <div className="flex-1 min-w-0 space-y-1">
-              <p className="text-xxs font-normal text-foreground-500 w-full truncate">
+              <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
                 {placeDetail.compound.district}, {placeDetail.compound.province}
               </p>
-              <p className="text-xs font-normal text-white w-full truncate">
+              <p className="text-sm sm:text-xs font-normal text-white w-full truncate">
                 {placeDetail.name}
               </p>
             </div>
@@ -283,9 +300,9 @@ function CustomMarker({
             repeat: Infinity,
             duration: 0.7,
           }}
-          className="mx-auto size-10 rounded-full bg-[#1D90F5]/40 shadow-xl flex items-center justify-center"
+          className="mx-auto size-12 sm:size-8 rounded-full bg-[#1D90F5]/40 shadow-xl flex items-center justify-center"
         >
-          <div className="size-[40%] rounded-full bg-primary-500"></div>
+          <div className="size-5 sm:size-3 rounded-full bg-primary-500"></div>
         </motion.div>
       </motion.div>
     </Marker>
@@ -298,7 +315,6 @@ function RightSection(): React.JSX.Element {
   const is4K = useMediaQuery({ minWidth: 3840 });
   const is2XL = useMediaQuery({ maxWidth: 1535 });
   const isXL = useMediaQuery({ maxWidth: 1279 });
-  const isSM = useMediaQuery({ maxWidth: 639 });
 
   const zoom: number = React.useMemo(() => {
     let temp = 13;
@@ -389,7 +405,9 @@ function RightSection(): React.JSX.Element {
           ],
         ],
         {
-          padding: { top: 0, left: 0, right: 0, bottom: 0 },
+          padding: isXL
+            ? { top: 100, left: 100, right: 100, bottom: 100 }
+            : { top: 200, left: 200, right: 200, bottom: 200 },
           offset: [0, 0],
         }
       );
@@ -419,9 +437,9 @@ function RightSection(): React.JSX.Element {
   return (
     <section className="h-full relative">
       {/* Vertical gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)30%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)5%,rgba(39,42,55,0.1)35%)] sm:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)30%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
       {/* Horizontal gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)40%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0)50%,rgba(39,42,55,0.5)100%)] sm:bg-[linear-gradient(90deg,rgba(39,42,55,0.1)0%,rgba(39,42,55,0)50%,rgba(39,42,55,0.1)100%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)]"></div>
       {/* Actual map */}
       <ReactMapGL
         ref={mapRef}
@@ -618,8 +636,8 @@ function SearchForm({
         {...props}
       >
         {/* Fields */}
-        <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-6">
-          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 lg:col-span-1 lg:row-start-2 md:col-span-full">
+        <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-5">
+          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full">
             <Field<SearchFieldValues>
               label="Điểm đón"
               required

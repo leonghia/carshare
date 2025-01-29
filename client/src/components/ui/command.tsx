@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { cva } from "class-variance-authority";
+import { useField } from "./field";
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -52,19 +54,30 @@ const CommandInput = React.forwardRef<
 
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 
+const commandListVariants = cva("dropdown-scrollbar overflow-x-hidden", {
+  variants: {
+    size: {
+      default: "max-h-[400px]",
+      small: "max-h-[300px]",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
 const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive.List
-    ref={ref}
-    className={cn(
-      "dropdown-scrollbar max-h-[400px] sm:max-h-[300px] overflow-x-hidden",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { size } = useField();
+
+  return (
+    <CommandPrimitive.List
+      ref={ref}
+      className={cn(commandListVariants({ size }), className)}
+      {...props}
+    />
+  );
+});
 
 CommandList.displayName = CommandPrimitive.List.displayName;
 
@@ -109,19 +122,33 @@ const CommandSeparator = React.forwardRef<
 ));
 CommandSeparator.displayName = CommandPrimitive.Separator.displayName;
 
+const commandItemVariants = cva(
+  "relative flex cursor-default gap-2 select-none items-center font-normal outline-none data-[disabled=true]:pointer-events-none hover:bg-[#363A49] hover:text-foreground-300 data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  {
+    variants: {
+      size: {
+        default: "p-4 text-sm",
+        small: "p-3 text-xs",
+      },
+    },
+    defaultVariants: { size: "default" },
+  }
+);
+
 const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive.Item
-    ref={ref}
-    className={cn(
-      "relative flex cursor-default gap-2 select-none items-center p-4 sm:p-3 text-sm sm:text-xs font-normal outline-none data-[disabled=true]:pointer-events-none hover:bg-[#363A49] hover:text-foreground-300 data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { size } = useField();
+
+  return (
+    <CommandPrimitive.Item
+      ref={ref}
+      className={cn(commandItemVariants({ size }), className)}
+      {...props}
+    />
+  );
+});
 
 CommandItem.displayName = CommandPrimitive.Item.displayName;
 
