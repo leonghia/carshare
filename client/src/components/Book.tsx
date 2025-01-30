@@ -54,6 +54,7 @@ type BookStoreState = {
   stepDirection: -1 | 1;
   destinationDetail: PlaceDetail | null;
   pickupDetail: PlaceDetail | null;
+  hasBothLocationsEver: boolean;
 };
 
 type BookStoreActions = {
@@ -70,6 +71,7 @@ type BookStoreActions = {
 type BookStore = BookStoreState & BookStoreActions;
 
 const useBookStore = create<BookStore>()((set) => ({
+  hasBothLocationsEver: false,
   destinationDetail: null,
   pickupDetail: null,
   route: null,
@@ -111,13 +113,38 @@ const useBookStore = create<BookStore>()((set) => ({
       true
     ),
   updateDestinationDetail: (newDestinationDetail) => {
-    set(
-      (state) => ({ ...state, destinationDetail: newDestinationDetail }),
-      true
-    );
+    set((state) => {
+      if (!newDestinationDetail && !state.pickupDetail)
+        return {
+          ...state,
+          destinationDetail: newDestinationDetail,
+          hasBothLocationsEver: false,
+        };
+      if (newDestinationDetail && state.pickupDetail)
+        return {
+          ...state,
+          destinationDetail: newDestinationDetail,
+          hasBothLocationsEver: true,
+        };
+      return { ...state, destinationDetail: newDestinationDetail };
+    }, true);
   },
   updatePickupDetail: (newPickupDetail) => {
-    set((state) => ({ ...state, pickupDetail: newPickupDetail }), true);
+    set((state) => {
+      if (!newPickupDetail && !state.destinationDetail)
+        return {
+          ...state,
+          pickupDetail: newPickupDetail,
+          hasBothLocationsEver: false,
+        };
+      if (newPickupDetail && state.destinationDetail)
+        return {
+          ...state,
+          pickupDetail: newPickupDetail,
+          hasBothLocationsEver: true,
+        };
+      return { ...state, pickupDetail: newPickupDetail };
+    }, true);
   },
 }));
 
@@ -207,13 +234,13 @@ export function Book(): React.JSX.Element {
         </div>
       </header>
       {/* Main */}
-      <main className="w-full min-h-[900px] 2xl:min-h-[800px] xl:min-h-[1000px] lg:min-h-[900px] sm:min-h-[800px] pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
+      <main className="w-full pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
         {/* Inner */}
         <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)] items-center xl:items-start">
           {/* Left Section */}
           <LeftSection />
           {/* Right Section */}
-          <RightSection />
+          <RightSection className="h-full relative min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[500px] md:min-h-[450px] sm:min-h-[400px]" />
         </div>
       </main>
     </div>
@@ -247,7 +274,6 @@ function CustomMarker({
         animate={{ opacity: 1, scale: 1 }}
         transition={{
           type: "spring",
-          delay: 2,
           duration: 1,
         }}
         className="relative"
@@ -282,7 +308,7 @@ function CustomMarker({
                 )}
               </div>
             )}
-            <div className="flex-1 min-w-0 space-y-1">
+            <div className="flex-1 min-w-0 space-y-2 sm:space-y-1">
               <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
                 {placeDetail.compound.district}, {placeDetail.compound.province}
               </p>
@@ -309,7 +335,13 @@ function CustomMarker({
   );
 }
 
-function RightSection(): React.JSX.Element {
+function RightSection({
+  className,
+}: React.ComponentPropsWithRef<"section">): React.JSX.Element {
+  const hasBothLocationsEver = useBookStore(
+    (state) => state.hasBothLocationsEver
+  );
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
   const mapRef = React.useRef<MapRef>(null);
   const is8K = useMediaQuery({ minWidth: 7680 });
   const is4K = useMediaQuery({ minWidth: 3840 });
@@ -342,7 +374,8 @@ function RightSection(): React.JSX.Element {
   }, [isXL]);
 
   React.useEffect(() => {
-    if (destinationDetail && !pickupDetail) {
+    if (destinationDetail && !pickupDetail && !hasBothLocationsEver) {
+      setIsTransitioning(true);
       mapRef.current?.getMap().flyTo({
         center: [
           destinationDetail.geometry.location.lng,
@@ -356,17 +389,19 @@ function RightSection(): React.JSX.Element {
         setTimeout(() => {
           resolve("foo");
         }, 1600);
-      }).then((_) =>
+      }).then((_) => {
         setViewport({
           ...viewport,
           longitude: destinationDetail.geometry.location.lng,
           latitude: destinationDetail.geometry.location.lat,
           zoom,
-        })
-      );
+        });
+        setIsTransitioning(false);
+      });
     }
 
-    if (pickupDetail && !destinationDetail) {
+    if (pickupDetail && !destinationDetail && !hasBothLocationsEver) {
+      setIsTransitioning(true);
       mapRef.current?.getMap().flyTo({
         center: [
           pickupDetail.geometry.location.lng,
@@ -380,17 +415,19 @@ function RightSection(): React.JSX.Element {
         setTimeout(() => {
           resolve("foo");
         }, 1600);
-      }).then((_) =>
+      }).then((_) => {
         setViewport({
           ...viewport,
           longitude: pickupDetail.geometry.location.lng,
           latitude: pickupDetail.geometry.location.lat,
           zoom,
-        })
-      );
+        });
+        setIsTransitioning(false);
+      });
     }
 
     if (destinationDetail && pickupDetail) {
+      setIsTransitioning(true);
       const { longitude, latitude, zoom } = new WebMercatorViewport(
         viewport
       ).fitBounds(
@@ -428,6 +465,7 @@ function RightSection(): React.JSX.Element {
           latitude,
           zoom,
         });
+        setIsTransitioning(false);
       });
     }
   }, [destinationDetail?.place_id, pickupDetail?.place_id]);
@@ -435,11 +473,11 @@ function RightSection(): React.JSX.Element {
   console.log("map re-rendered");
 
   return (
-    <section className="h-full relative">
+    <section className={cn(className)}>
       {/* Vertical gradient */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
       {/* Horizontal gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)]"></div>
       {/* Actual map */}
       <ReactMapGL
         ref={mapRef}
@@ -451,8 +489,8 @@ function RightSection(): React.JSX.Element {
         mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
         goongApiAccessToken={GGMAPS_MAPTILES_KEY}
       >
-        <CustomMarker locationType="Destination" />
-        <CustomMarker locationType="Pickup" />
+        {!isTransitioning && <CustomMarker locationType="Destination" />}
+        {!isTransitioning && <CustomMarker locationType="Pickup" />}
       </ReactMapGL>
     </section>
   );
