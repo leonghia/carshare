@@ -10,6 +10,7 @@ import {
   Location,
   People,
   Flag,
+  Routing,
 } from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
@@ -42,6 +43,7 @@ import ReactMapGL, {
   WebMercatorViewport,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
+import { Hourglass } from "lucide-react";
 
 const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
 const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
@@ -55,6 +57,7 @@ type BookStoreState = {
   destinationDetail: PlaceDetail | null;
   pickupDetail: PlaceDetail | null;
   hasBothLocationsEver: boolean;
+  route: Route | null;
 };
 
 type BookStoreActions = {
@@ -66,15 +69,16 @@ type BookStoreActions = {
   updateStepDirection: (newStepDirection: -1 | 1) => void;
   updateDestinationDetail: (newDestinationDetail: PlaceDetail | null) => void;
   updatePickupDetail: (newPickupDetail: PlaceDetail | null) => void;
+  updateRoute: (newRoute: Route | null) => void;
 };
 
 type BookStore = BookStoreState & BookStoreActions;
 
 const useBookStore = create<BookStore>()((set) => ({
+  route: null,
   hasBothLocationsEver: false,
   destinationDetail: null,
   pickupDetail: null,
-  route: null,
   stepDirection: 1,
   currentStep: "search",
   searchFieldValues: null,
@@ -145,6 +149,9 @@ const useBookStore = create<BookStore>()((set) => ({
         };
       return { ...state, pickupDetail: newPickupDetail };
     }, true);
+  },
+  updateRoute: (newRoute) => {
+    set((state) => ({ ...state, route: newRoute }), true);
   },
 }));
 
@@ -240,7 +247,7 @@ export function Book(): React.JSX.Element {
           {/* Left Section */}
           <LeftSection />
           {/* Right Section */}
-          <RightSection className="h-full relative min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[500px] md:min-h-[450px] sm:min-h-[400px]" />
+          <RightSection className="h-full relative min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
         </div>
       </main>
     </div>
@@ -278,7 +285,7 @@ function CustomMarker({
         }}
         className="relative"
       >
-        <div className="absolute left-0 top-0 -translate-y-[calc(100%+12px)] sm:-translate-y-[calc(100%+8px)] -translate-x-[calc(50%-24px)] sm:-translate-x-[calc(50%-20px)] w-max max-w-[260px] sm:max-w-[200px] bg-background-950 border-2 border-divider rounded-2xl sm:rounded-xl p-4 sm:p-2">
+        <div className="absolute left-0 top-0 -translate-y-[calc(100%+12px)] sm:-translate-y-[calc(100%+8px)] -translate-x-[calc(50%-24px)] sm:-translate-x-[calc(50%-20px)] w-max max-w-[260px] sm:max-w-[200px] bg-background-950 border-2 border-divider rounded-2xl sm:rounded-xl p-4 sm:px-3 sm:py-2">
           <div className="w-full flex items-center gap-3 sm:gap-2">
             {isSM &&
               (locationType === "Destination" ? (
@@ -335,9 +342,18 @@ function CustomMarker({
   );
 }
 
+interface DirectionRequestParams {
+  origin: string;
+  destination: string;
+  vehicle: "car";
+  api_key: string;
+}
+
 function RightSection({
   className,
 }: React.ComponentPropsWithRef<"section">): React.JSX.Element {
+  const route = useBookStore((state) => state.route);
+  const updateRoute = useBookStore((state) => state.updateRoute);
   const hasBothLocationsEver = useBookStore(
     (state) => state.hasBothLocationsEver
   );
@@ -345,8 +361,10 @@ function RightSection({
   const mapRef = React.useRef<MapRef>(null);
   const is8K = useMediaQuery({ minWidth: 7680 });
   const is4K = useMediaQuery({ minWidth: 3840 });
+  const isQHD = useMediaQuery({ minWidth: 2560 });
   const is2XL = useMediaQuery({ maxWidth: 1535 });
   const isXL = useMediaQuery({ maxWidth: 1279 });
+  const isSM = useMediaQuery({ maxWidth: 639 });
 
   const zoom: number = React.useMemo(() => {
     let temp = 13;
@@ -374,6 +392,7 @@ function RightSection({
   }, [isXL]);
 
   React.useEffect(() => {
+    if (!destinationDetail || !pickupDetail) updateRoute(null);
     if (destinationDetail && !pickupDetail && !hasBothLocationsEver) {
       setIsTransitioning(true);
       mapRef.current?.getMap().flyTo({
@@ -426,7 +445,44 @@ function RightSection({
       });
     }
 
+    let ignoreDirection = false;
     if (destinationDetail && pickupDetail) {
+      let padding = {
+        top: 200,
+        left: 180,
+        right: 160,
+        bottom: 200,
+      };
+
+      if (isQHD)
+        padding = {
+          top: 266,
+          left: 239,
+          right: 213,
+          bottom: 266,
+        };
+      if (is4K)
+        padding = {
+          top: 400,
+          left: 360,
+          right: 320,
+          bottom: 400,
+        };
+      if (is8K)
+        padding = {
+          top: 800,
+          left: 720,
+          right: 640,
+          bottom: 800,
+        };
+      if (isXL)
+        padding = {
+          top: 200,
+          left: 160,
+          right: 160,
+          bottom: 200,
+        };
+      if (isSM) padding = { top: 50, left: 100, right: 100, bottom: 50 };
       setIsTransitioning(true);
       const { longitude, latitude, zoom } = new WebMercatorViewport(
         viewport
@@ -442,9 +498,7 @@ function RightSection({
           ],
         ],
         {
-          padding: isXL
-            ? { top: 100, left: 100, right: 100, bottom: 100 }
-            : { top: 200, left: 200, right: 200, bottom: 200 },
+          padding,
           offset: [0, 0],
         }
       );
@@ -467,13 +521,35 @@ function RightSection({
         });
         setIsTransitioning(false);
       });
+      const directionRequestParams: DirectionRequestParams = {
+        origin: `${pickupDetail.geometry.location.lat},${pickupDetail.geometry.location.lng}`,
+        destination: `${destinationDetail.geometry.location.lat},${destinationDetail.geometry.location.lng}`,
+        vehicle: "car",
+        api_key: GGMAPS_API_KEY,
+      };
+      axios
+        .get<DirectionServiceResponse>(GGMAPS_URL + "/Direction", {
+          params: directionRequestParams,
+        })
+        .then((res) => {
+          const { routes, geocoded_waypoints } = res.data;
+          let isOK = geocoded_waypoints.every(
+            (waypoint) => waypoint.geocoder_status === "OK"
+          );
+          if (!isOK || ignoreDirection || !routes[0]) return;
+          updateRoute(routes[0]);
+        })
+        .catch((err) => console.error(err));
     }
+    return () => {
+      ignoreDirection = true;
+    };
   }, [destinationDetail?.place_id, pickupDetail?.place_id]);
 
   console.log("map re-rendered");
 
   return (
-    <section className={cn(className)}>
+    <section className={cn("relative overflow-hidden", className)}>
       {/* Vertical gradient */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
       {/* Horizontal gradient */}
@@ -492,6 +568,20 @@ function RightSection({
         {!isTransitioning && <CustomMarker locationType="Destination" />}
         {!isTransitioning && <CustomMarker locationType="Pickup" />}
       </ReactMapGL>
+      <AnimatePresence>
+        {route && (
+          <MotionDirectionInfo
+            initial={{ opacity: 0, y: 100, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: 100, x: "-50%", transition: { delay: 0 } }}
+            transition={{ type: "spring", duration: 1, delay: 2 }}
+            key="direction_info"
+            className="absolute z-10 bottom-8 sm:bottom-4 left-1/2 w-max"
+            distanceText={route.legs[0].distance.text}
+            durationText={route.legs[0].duration.text}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
@@ -874,6 +964,7 @@ function LocationField({
   locationType: "Destination" | "Pickup";
   onSelectLocation: () => void;
 }): React.JSX.Element {
+  const [isFetching, setIsFetching] = React.useState(false);
   const updatePlaceDetail = useBookStore((state) =>
     locationType === "Destination"
       ? state.updateDestinationDetail
@@ -894,7 +985,8 @@ function LocationField({
   }));
 
   const handleSelectLocation = (placeID: string) => {
-    let ignore = false;
+    if (isFetching) return;
+    setIsFetching(true);
     onSelectLocation();
     const requestParams: PlaceDetailRequestParams = {
       api_key: GGMAPS_API_KEY,
@@ -906,14 +998,14 @@ function LocationField({
         params: requestParams,
       })
       .then((res) => {
-        if (res.data.status === "OK" && !ignore)
+        if (res.data.status === "OK" && !isFetching)
           updatePlaceDetail(res.data.result);
       })
       .catch((err) => {
         console.error(err);
       })
       .finally(() => {
-        ignore = true;
+        setIsFetching(false);
       });
   };
 
@@ -1470,3 +1562,76 @@ const CompleteModal = React.forwardRef<HTMLDivElement, CompleteModalProps>(
     );
   }
 );
+
+interface Leg {
+  distance: {
+    text: string;
+    value: number;
+  };
+  duration: {
+    text: string;
+    value: number;
+  };
+}
+
+interface Route {
+  legs: Leg[];
+  overview_polyline: {
+    points: string;
+  };
+}
+
+interface GeocodedWaypoint {
+  geocoder_status: "OK";
+  place_id: string;
+}
+
+interface DirectionServiceResponse {
+  routes: Route[];
+  geocoded_waypoints: GeocodedWaypoint[];
+}
+
+interface DirectionInfoProps extends React.ComponentPropsWithoutRef<"div"> {
+  distanceText: string;
+  durationText: string;
+}
+
+const DirectionInfo = React.forwardRef<HTMLDivElement, DirectionInfoProps>(
+  ({ distanceText, durationText, className }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "bg-background-950 rounded-3xl sm:rounded-xl border-2 border-divider px-8 sm:px-4 py-5 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-16 sm:gap-8 items-center",
+        className
+      )}
+    >
+      <div className="flex gap-4 sm:gap-2 items-center">
+        <Routing
+          variant="Bold"
+          className="flex-none size-8 sm:size-[18px] text-primary-500"
+        />
+        <div className="flex-1 min-w-0 space-y-1 sm:space-y-0">
+          <p className="text-sm font-normal text-foreground-600 sm:hidden">
+            Khoảng cách quãng đường
+          </p>
+          <p className="text-lg sm:text-xs font-medium sm:font-normal text-white">
+            {distanceText}
+          </p>
+        </div>
+      </div>
+      <div className="flex gap-4 sm:gap-2 items-center">
+        <Hourglass className="flex-none size-6 sm:size-[14px] text-primary-500" />
+        <div className="flex-1 min-w-0 space-y-1 sm:space-y-0">
+          <p className="text-sm font-normal text-foreground-600 sm:hidden">
+            Thời gian di chuyển dự kiến
+          </p>
+          <p className="text-lg sm:text-xs font-medium sm:font-normal text-white">
+            {durationText}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+);
+
+const MotionDirectionInfo = motion.create(DirectionInfo);
