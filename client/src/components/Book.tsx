@@ -41,9 +41,12 @@ import ReactMapGL, {
   Marker,
   MapRef,
   WebMercatorViewport,
+  Source,
+  Layer,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
 import { Hourglass } from "lucide-react";
+import polyline from "@mapbox/polyline";
 
 const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
 const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
@@ -272,8 +275,8 @@ function CustomMarker({
     <Marker
       latitude={placeDetail.geometry.location.lat}
       longitude={placeDetail.geometry.location.lng}
-      offsetLeft={-20}
-      offsetTop={-20}
+      offsetLeft={isSM ? -16 : -24}
+      offsetTop={isSM ? -16 : -24}
       className="z-10 pointer-events-none"
     >
       <motion.div
@@ -353,6 +356,7 @@ function RightSection({
   className,
 }: React.ComponentPropsWithRef<"section">): React.JSX.Element {
   const route = useBookStore((state) => state.route);
+  const hasRoute = route ? true : false;
   const updateRoute = useBookStore((state) => state.updateRoute);
   const hasBothLocationsEver = useBookStore(
     (state) => state.hasBothLocationsEver
@@ -482,7 +486,7 @@ function RightSection({
           right: 160,
           bottom: 200,
         };
-      if (isSM) padding = { top: 50, left: 100, right: 100, bottom: 50 };
+      if (isSM) padding = { top: 80, left: 100, right: 100, bottom: 80 };
       setIsTransitioning(true);
       const { longitude, latitude, zoom } = new WebMercatorViewport(
         viewport
@@ -548,6 +552,32 @@ function RightSection({
 
   console.log("map re-rendered");
 
+  const directionSource = React.useMemo(() => {
+    if (!route) return null;
+    const geometry_string = route.overview_polyline.points;
+    const geoJSON: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: polyline.toGeoJSON(geometry_string),
+          properties: null,
+        },
+      ],
+    };
+    return (
+      <Source id="route" type="geojson" data={geoJSON}>
+        <Layer
+          id="route"
+          type="line"
+          source="route"
+          layout={{ "line-join": "round", "line-cap": "round" }}
+          paint={{ "line-color": "#1D90F5", "line-width": 4 }}
+        />
+      </Source>
+    );
+  }, [hasRoute]);
+
   return (
     <section className={cn("relative overflow-hidden", className)}>
       {/* Vertical gradient */}
@@ -567,6 +597,7 @@ function RightSection({
       >
         {!isTransitioning && <CustomMarker locationType="Destination" />}
         {!isTransitioning && <CustomMarker locationType="Pickup" />}
+        {!isTransitioning && route && directionSource}
       </ReactMapGL>
       <AnimatePresence>
         {route && (
