@@ -249,7 +249,7 @@ export function Book(): React.JSX.Element {
         {/* Inner */}
         <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)]">
           {/* Left Section */}
-          <LeftSection className="relative z-10 h-full pt-[120px] 2xl:pt-16 xl:pt-0 grid auto-rows-min lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 xl:justify-items-center" />
+          <LeftSection className="relative z-10 h-full pt-[120px] 2xl:pt-16 xl:pt-0 grid auto-rows-min lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 lg:space-y-10 sm:space-y-6 xl:justify-items-center" />
           {/* Right Section */}
           <RightSection className="h-full relative z-0 min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
         </div>
@@ -1475,6 +1475,7 @@ const LeftSection = React.forwardRef<
   const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
   const direction = useBookStore((state) => state.stepDirection);
   const updateDirection = useBookStore((state) => state.updateStepDirection);
+  const isXL = useMediaQuery({ maxWidth: 1279 });
   const isSM = useMediaQuery({ maxWidth: 639 });
 
   const onBack = () => {
@@ -1509,13 +1510,14 @@ const LeftSection = React.forwardRef<
     <section ref={ref} className={cn(className)} {...props}>
       {
         <Button
+          hidden={currentStep === "search" && isXL}
           intent="primary"
           asLink
           size={isSM ? "extraSmall" : "small"}
           onClick={onBack}
           className={cn(
             "justify-self-start transition-all duration-200 ease-out",
-            currentStep == "search" && "opacity-0 invisible"
+            currentStep === "search" && "opacity-0 invisible xl:hidden"
           )}
         >
           Quay về
