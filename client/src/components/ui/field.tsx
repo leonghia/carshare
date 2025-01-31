@@ -1,10 +1,15 @@
 import { VariantProps } from "class-variance-authority";
-import { field__containerVariants } from "./fieldContainer";
+import { containerVariants } from "./fieldContainer";
 import React from "react";
-import { FieldPath, FieldValues, useFormContext } from "react-hook-form";
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  useFormContext,
+} from "react-hook-form";
 
 interface FieldContextType
-  extends Pick<VariantProps<typeof field__containerVariants>, "size"> {
+  extends Pick<VariantProps<typeof containerVariants>, "size"> {
   onFocus: () => void;
   onBlur: () => void;
   fieldInputId: string;
@@ -16,6 +21,7 @@ interface FieldContextType
   isFocus: boolean;
   id: string;
   name: string;
+  control: Control<any>;
 }
 
 const FieldContext = React.createContext<FieldContextType | null>(null);
@@ -23,12 +29,13 @@ const FieldContext = React.createContext<FieldContextType | null>(null);
 interface FieldProps<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends Pick<VariantProps<typeof field__containerVariants>, "size"> {
+> extends Pick<VariantProps<typeof containerVariants>, "size"> {
   label?: string;
   description?: string;
   required?: boolean;
   children: React.ReactNode;
   name: TName;
+  control: Control<TFieldValues>;
 }
 
 const Field = <TFieldValues extends FieldValues>({
@@ -37,6 +44,7 @@ const Field = <TFieldValues extends FieldValues>({
   description,
   size,
   name,
+  control,
   children,
 }: FieldProps<TFieldValues>) => {
   const [isFocus, setIsFocus] = React.useState(false);
@@ -57,6 +65,7 @@ const Field = <TFieldValues extends FieldValues>({
         id,
         size,
         name,
+        control,
       }}
     >
       {children}
@@ -70,10 +79,27 @@ const useField = () => {
     throw new Error("useField must be used within FieldContext.Provider");
   }
 
-  const { getFieldState, formState } = useFormContext();
+  const {
+    getFieldState,
+    formState,
+    setError,
+    clearErrors,
+    getValues,
+    setValue,
+    resetField,
+  } = useFormContext();
   const fieldState = getFieldState(fieldContext.name, formState);
 
-  return { ...fieldContext, ...fieldState };
+  return {
+    ...fieldContext,
+    ...fieldState,
+    getFieldState,
+    setError,
+    clearErrors,
+    getValues,
+    setValue,
+    resetField,
+  };
 };
 
 export { Field, FieldContext, useField };

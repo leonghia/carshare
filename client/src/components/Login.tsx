@@ -47,7 +47,7 @@ export function Login(): React.JSX.Element {
             initial={{ opacity: 0, x: "-9.375rem" }}
             animate={{ opacity: 1, x: "0rem" }}
             transition={{ type: "spring", duration: 1 }}
-            className="w-[30rem] sm:w-full h-fit space-y-16 sm:space-y-8"
+            className="w-[30rem] sm:w-full h-fit space-y-12 sm:space-y-8"
           >
             {/* Heading */}
             <div className="w-full space-y-4 sm:space-y-1">
@@ -122,7 +122,6 @@ interface LoginFormProps {
 function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   const methods = useForm<TFieldValues>({
@@ -194,16 +193,15 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="email"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="email"
               inputProps={{
                 type: "email",
                 placeholder: "abc@email.com",
                 maxLength: 254,
               }}
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -211,13 +209,12 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="password"
+            control={methods.control}
           >
             <PasswordField
-              control={methods.control}
-              name="password"
               maxLength={128}
               placeholder="****************"
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <div className="flex items-center justify-between">
@@ -225,11 +222,10 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
               label="Ghi nhớ tôi"
               size={isSM ? "small" : "default"}
               name="remember"
+              control={methods.control}
             >
               <CheckboxField
-                control={methods.control}
-                name="remember"
-                labelProps={{ className: "font-normal text-foreground-100" }}
+                classNames={{ label: "font-normal text-foreground-100" }}
               />
             </Field>
             <Button
@@ -243,7 +239,6 @@ function LoginForm({ onSuccess }: LoginFormProps): React.JSX.Element {
         </div>
         {/* Submit button */}
         <Button
-          ref={buttonRef}
           hasLoader
           isLoading={isSubmitting}
           size={isSM ? "small" : "default"}

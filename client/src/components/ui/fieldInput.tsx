@@ -2,7 +2,7 @@ import React from "react";
 import { Control, Controller } from "react-hook-form";
 import { useField } from "./field";
 import { Input } from "./input";
-import { parseNumericValue, parseTelValue } from "@/lib/utils";
+import { cn, parseNumericValue, parseTelValue } from "@/lib/utils";
 
 interface FieldInputProps extends React.ComponentPropsWithoutRef<"input"> {
   fieldName: string;
@@ -11,7 +11,7 @@ interface FieldInputProps extends React.ComponentPropsWithoutRef<"input"> {
 }
 
 const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
-  ({ fieldName, control, onChange, handleRef, ...props }, ref) => {
+  ({ fieldName, control, onChange, handleRef, className, ...props }, ref) => {
     const { error, fieldDescriptionId, size, fieldMessageId, onBlur, onFocus } =
       useField();
 
@@ -21,6 +21,7 @@ const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
         name={fieldName}
         render={({ field }) => (
           <Input
+            className={cn("text-ellipsis", className)}
             {...props}
             aria-describedby={
               !error

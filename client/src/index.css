@@ -19,9 +19,9 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  @media screen("2k") {
+  @media screen("qhd") {
     html {
-      font-size: 150%;
+      font-size: 133%;
     }
   }
 
@@ -34,6 +34,33 @@
   @media screen("8k") {
     html {
       font-size: 400%;
+    }
+  }
+}
+
+@layer components {
+  .PopoverContent {
+    width: var(--radix-popover-trigger-width);
+    max-height: var(--radix-popover-content-available-height);
+  }
+
+  .dropdown-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .dropdown-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+    /* border-radius: 100px; */
+  }
+
+  .dropdown-scrollbar::-webkit-scrollbar-thumb {
+    background-color: theme(colors.divider);
+    /* border-radius: 100px; */
+  }
+
+  @media screen(sm) {
+    .dropdown-scrollbar::-webkit-scrollbar {
+      width: 4px;
     }
   }
 }

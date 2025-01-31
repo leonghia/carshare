@@ -1,14 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { useField } from "./field";
-import { FieldLower } from "./fieldLower";
-import { FieldUpper } from "./fieldUpper";
 
-const field__containerVariants = cva(undefined, {
+export interface FieldStyles {
+  upper?: string;
+  container?: string;
+  lower?: string;
+}
+
+const containerVariants = cva(undefined, {
   variants: {
     size: {
       default: "space-y-4",
@@ -24,7 +28,7 @@ const field__containerVariants = cva(undefined, {
   },
 });
 
-const field__textVariants = cva("flex-none font-medium text-white", {
+const textVariants = cva("flex-none font-medium text-white", {
   variants: {
     size: {
       default: "text-base",
@@ -36,21 +40,36 @@ const field__textVariants = cva("flex-none font-medium text-white", {
 
 interface FieldContainerProps
   extends React.ComponentPropsWithoutRef<"div">,
-    VariantProps<typeof field__containerVariants> {}
+    VariantProps<typeof containerVariants> {}
 
 const FieldContainer = React.forwardRef<HTMLDivElement, FieldContainerProps>(
   ({ className, children }, ref) => {
-    const { size, error } = useField();
+    const { size, error, isFocus } = useField();
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    React.useImperativeHandle<
+      typeof containerRef.current,
+      typeof containerRef.current
+    >(ref, () => containerRef.current);
+
+    useEffect(() => {
+      if (containerRef.current && isFocus)
+        containerRef.current.scrollIntoView({ behavior: "smooth" });
+    }, [isFocus]);
 
     const state: Pick<
-      VariantProps<typeof field__containerVariants>,
+      VariantProps<typeof containerVariants>,
       "state"
     >["state"] = error ? "error" : "default";
 
     return (
       <div
-        ref={ref}
-        className={cn(field__containerVariants({ size, state }), className)}
+        ref={containerRef}
+        className={cn(
+          containerVariants({ size, state }),
+          "scroll-mt-4",
+          className
+        )}
       >
         {children}
       </div>
@@ -58,4 +77,4 @@ const FieldContainer = React.forwardRef<HTMLDivElement, FieldContainerProps>(
   }
 );
 
-export { field__containerVariants, field__textVariants, FieldContainer };
+export { containerVariants, textVariants, FieldContainer };

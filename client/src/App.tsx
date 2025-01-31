@@ -1,5 +1,14 @@
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Outlet } from "react-router";
+
+const queryClient = new QueryClient();
+
 export function App() {
   return (
-    <div className="min-h-screen grid items-center justify-items-center bg-background-950"></div>
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+    </QueryClientProvider>
   );
 }

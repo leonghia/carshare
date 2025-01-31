@@ -2,12 +2,12 @@ import { z } from "zod";
 import curvedDivider from "../assets/images/curved_divider_1.svg";
 import logo from "../assets/images/logo.svg";
 import { Button } from "./ui/button";
-import { FormProvider, useForm } from "react-hook-form";
+import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, useAnimate } from "motion/react";
 import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
-import { DatePickerField } from "./ui/datePickerField";
+import { DateField } from "./ui/dateField";
 import { PasswordField } from "./ui/passwordField";
 import { calculatePasswordStrength, obscureEmail } from "@/lib/utils";
 import { CheckboxField } from "./ui/checkboxField";
@@ -31,13 +31,13 @@ export function Register(): JSX.Element {
       {/* Container */}
       <div className="grid justify-items-center items-center sm:items-start px-16 md:px-8 py-20 md:py-16 sm:px-4 sm:py-8 overflow-x-hidden relative z-10 w-full min-h-screen bg-[linear-gradient(238deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)] xl:bg-[linear-gradient(248deg,rgba(39,42,55,0.65)0%,rgba(39,42,55,1)40%)] lg:bg-[linear-gradient(218deg,rgba(39,42,55,0.97)0%,rgba(39,42,55,1)50%,rgba(39,42,55,0.97)100%)] sm:bg-[linear-gradient(218deg,rgba(39,42,55,0.99)0%,rgba(39,42,55,1)50%,rgba(39,42,55,0.99)100%)]">
         <div className="w-full max-w-7xl h-fit lg:grid lg:justify-items-center sm:gap-12">
-          <div className="w-[34rem] sm:w-full sm:grid sm:justify-items-center h-fit space-y-12 sm:space-y-8">
-            <motion.div
-              initial={{ opacity: 0, x: "-9.375rem" }}
-              animate={{ opacity: 1, x: "0rem" }}
-              transition={{ type: "spring", duration: 1 }}
-              className="w-full space-y-4 sm:space-y-2"
-            >
+          <motion.div
+            initial={{ opacity: 0, x: "-9.375rem" }}
+            animate={{ opacity: 1, x: "0rem" }}
+            transition={{ type: "spring", duration: 1 }}
+            className="w-[34rem] sm:w-full sm:grid sm:justify-items-center h-fit space-y-12 sm:space-y-8"
+          >
+            <div className="w-full space-y-4 sm:space-y-2">
               <div className="flex gap-2 sm:gap-1">
                 <h1 className="text-4xl sm:text-lg font-bold sm:font-semibold text-white shrink-0">
                   Đăng ký tài khoản
@@ -53,9 +53,9 @@ export function Register(): JSX.Element {
                   Đăng nhập ngay
                 </Link>
               </p>
-            </motion.div>
+            </div>
             <SignupForm />
-          </div>
+          </motion.div>
           <figure className="hidden sm:block">
             <img src={logo} alt="logo" className="h-6 object-contain" />
           </figure>
@@ -118,9 +118,11 @@ const formSchema = z
       .trim()
       .min(1, { message: "Số CCCD không được để trống" })
       .max(12, { message: "Số CCCD không chứa quá 12 số" }),
-    publishedDay: z.string().trim(),
-    publishedMonth: z.string().trim(),
-    publishedYear: z.string().trim(),
+    issuedAt: z.object({
+      date: z.string().trim(),
+      month: z.string().trim(),
+      year: z.string().trim(),
+    }),
     password: z
       .string()
       .trim()
@@ -134,65 +136,65 @@ const formSchema = z
       message: "Bạn phải đồng ý cam đoan",
     }),
   })
-  .superRefine(
-    (
-      { password, retypePassword, publishedDay, publishedMonth, publishedYear },
-      ctx
-    ) => {
-      if (calculatePasswordStrength(password) === "weak") {
-        ctx.addIssue({
-          code: "custom",
-          message: "Mật khẩu của bạn quá yếu",
-          path: ["password"],
-        });
-      }
-
-      if (password !== retypePassword) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Mật khẩu nhập lại phải trùng khớp",
-          path: ["retypePassword"],
-        });
-      }
-      if (
-        publishedDay.length === 0 ||
-        publishedMonth.length === 0 ||
-        publishedYear.length === 0
-      ) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Ngày cấp CCCD không được để trống",
-          path: ["publishedDay"],
-        });
-      }
-
-      if (
-        !z
-          .string()
-          .date()
-          .safeParse(
-            `${publishedYear}-${publishedMonth.padStart(
-              2,
-              "0"
-            )}-${publishedDay.padStart(2, "0")}`
-          ).success
-      ) {
-        ctx.addIssue({
-          code: "invalid_date",
-          message: "Ngày cấp CCCD không hợp lệ",
-          path: ["publishedDay"],
-        });
-      }
+  .superRefine(({ password, retypePassword, issuedAt }, ctx) => {
+    if (calculatePasswordStrength(password) === "weak") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Mật khẩu của bạn quá yếu",
+        path: ["password"],
+      });
     }
-  );
+
+    if (password !== retypePassword) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Mật khẩu nhập lại phải trùng khớp",
+        path: ["retypePassword"],
+      });
+    }
+    if (
+      issuedAt.date.length === 0 &&
+      issuedAt.month.length === 0 &&
+      issuedAt.year.length === 0
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Ngày cấp không được để trống",
+        path: ["issuedAt"],
+        fatal: true,
+      });
+
+      return z.NEVER;
+    }
+
+    if (
+      !z
+        .string()
+        .date()
+        .safeParse(
+          `${issuedAt.year}-${issuedAt.month.padStart(
+            2,
+            "0"
+          )}-${issuedAt.date.padStart(2, "0")}`
+        ).success
+    ) {
+      ctx.addIssue({
+        code: "invalid_date",
+        message: "Ngày cấp không hợp lệ",
+        path: ["issuedAt"],
+      });
+    }
+  });
 
 type TFieldValues = z.infer<typeof formSchema>;
 
+const now = new Date();
+
 function SignupForm(): JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [revalidate, setRevalidate] = React.useState(false);
   const [isOpenCompleteModal, setIsOpenCompleteModal] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: 639 });
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const methods = useForm<TFieldValues>({
     resolver: zodResolver(formSchema),
@@ -201,9 +203,11 @@ function SignupForm(): JSX.Element {
       phoneNumber: "",
       email: "",
       nationalID: "",
-      publishedDay: "",
-      publishedMonth: "",
-      publishedYear: "",
+      issuedAt: {
+        date: "",
+        month: "",
+        year: "",
+      },
       password: "",
       retypePassword: "",
       agree: false,
@@ -214,25 +218,21 @@ function SignupForm(): JSX.Element {
   const onValid = (data: TFieldValues) => {
     setIsSubmitting(true);
     const timeout = setTimeout(() => {
-      const dto = {
-        fullName: data.fullName,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-        nationalID: data.nationalID,
-        issuedDate: `${data.publishedYear}-${data.publishedMonth}-${data.publishedDay}`,
-        password: data.password,
-      };
       setIsSubmitting(false);
       setIsOpenCompleteModal(true);
       clearTimeout(timeout);
     }, 3000);
   };
 
+  const onInvalid = (errors: FieldErrors<TFieldValues>) => {
+    setRevalidate(true);
+  };
+
   return (
     <FormProvider {...methods}>
       <motion.form
-        onSubmit={methods.handleSubmit(onValid)}
-        className="w-full sm:max-w-[21.875rem] space-y-12 sm:space-y-8"
+        onSubmit={methods.handleSubmit(onValid, onInvalid)}
+        className="w-full sm:max-w-[27.5rem] space-y-12 sm:space-y-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ type: "tween", duration: 1, ease: "easeIn" }}
@@ -243,16 +243,15 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="fullName"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="fullName"
               inputProps={{
                 type: "text",
                 placeholder: "Nguyễn Văn A",
                 maxLength: 64,
               }}
-              className="col-span-1 sm:col-span-full"
+              classNames={{ container: "col-span-1 sm:col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -260,17 +259,16 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="phoneNumber"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="phoneNumber"
               inputProps={{
                 type: "tel",
                 inputMode: "tel",
                 placeholder: "0123 456 789",
                 maxLength: 12,
               }}
-              className="col-span-1 sm:col-span-full"
+              classNames={{ container: "col-span-1 sm:col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -278,16 +276,15 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="email"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="email"
               inputProps={{
                 type: "email",
                 placeholder: "abc@email.com",
                 maxLength: 254,
               }}
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -295,34 +292,36 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="nationalID"
+            control={methods.control}
           >
             <BasicField
-              control={methods.control}
-              name="nationalID"
               inputProps={{
                 type: "text",
                 inputMode: "numeric",
                 placeholder: "000000000000",
                 maxLength: 12,
               }}
-              className="col-span-1"
+              classNames={{ container: "col-span-1" }}
             />
           </Field>
           <Field<TFieldValues>
             label="Ngày cấp CCCD"
             required
             size={isSM ? "small" : "default"}
-            name="publishedDay"
+            name="issuedAt"
+            control={methods.control}
           >
-            <DatePickerField
-              control={methods.control}
-              dayName="publishedDay"
-              monthName="publishedMonth"
-              yearName="publishedYear"
-              dayPlaceholder="01"
-              monthPlaceholder="01"
-              yearPlaceholder="2020"
-              className="col-span-1"
+            <DateField
+              dateName="issuedAt.date"
+              monthName="issuedAt.month"
+              yearName="issuedAt.year"
+              datePlaceholder={String(now.getDate()).padStart(2, "0")}
+              monthPlaceholder={String(now.getMonth() + 1).padStart(2, "0")}
+              yearPlaceholder={String(now.getFullYear())}
+              classNames={{ container: "col-span-1" }}
+              revalidate={revalidate}
+              invalidMessage="Ngày cấp không hợp lệ"
+              requiredMessage="Ngày cấp không được để trống"
             />
           </Field>
           <Field<TFieldValues>
@@ -330,15 +329,14 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="password"
-            description="Tối thiểu tối thiểu 6 ký tự, với ít nhất 1 chữ cái thường, 1 chữ cái in hoa, 1 chữ số (0-9) và 1 ký tự đặc biệt."
+            control={methods.control}
+            description="Tối thiểu 6 ký tự, với ít nhất 1 chữ cái thường, 1 chữ cái in hoa, 1 chữ số (0-9) và 1 ký tự đặc biệt."
           >
             <PasswordField
-              control={methods.control}
-              name="password"
               maxLength={128}
               placeholder="****************"
               hasStrength
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
@@ -346,25 +344,23 @@ function SignupForm(): JSX.Element {
             required
             size={isSM ? "small" : "default"}
             name="retypePassword"
+            control={methods.control}
           >
             <PasswordField
-              control={methods.control}
-              name="retypePassword"
               maxLength={128}
               placeholder="****************"
-              className="col-span-full"
+              classNames={{ container: "col-span-full" }}
             />
           </Field>
           <Field<TFieldValues>
             label="Tôi cam đoan những thông tin trên đây là đúng sự thật"
             size={isSM ? "small" : "default"}
             name="agree"
+            control={methods.control}
           >
             <CheckboxField
-              control={methods.control}
-              name="agree"
               className="col-span-full"
-              labelProps={{ className: "font-normal text-foreground-100" }}
+              classNames={{ label: "font-normal text-foreground-200" }}
             />
           </Field>
         </div>
@@ -373,7 +369,6 @@ function SignupForm(): JSX.Element {
           onOpenChange={setIsOpenCompleteModal}
         >
           <Button
-            ref={buttonRef}
             hasLoader
             isLoading={isSubmitting}
             size={isSM ? "small" : "default"}

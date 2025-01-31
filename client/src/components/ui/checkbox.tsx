@@ -27,7 +27,7 @@ const rightVariants = cva(undefined, {
 });
 
 const checkboxVariants = cva(
-  "group relative flex-none bg-background-900 focus-visible:outline focus-visible:outline-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-500 data-[state=checked]:text-white transition-[background-color] duration-200 ease-out",
+  "group relative flex-none bg-background-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-flat focus-visible:ring-offset-2 focus-visible:ring-offset-primary-500 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-500 data-[state=checked]:text-white transition-[background-color] duration-200 ease-out",
   {
     variants: {
       size: {
@@ -63,13 +63,18 @@ const descriptionVariants = cva("font-normal text-foreground-600", {
   defaultVariants: { size: "default" },
 });
 
+export interface CheckboxStyles {
+  container?: string;
+  label?: string;
+  description?: string;
+}
+
 interface CheckboxProps
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
     VariantProps<typeof checkboxVariants> {
   label?: string;
   description?: string;
-  labelProps?: React.ComponentPropsWithRef<"label">;
-  descriptionProps?: React.ComponentPropsWithRef<"p">;
+  classNames?: CheckboxStyles;
 }
 
 const Checkbox = React.forwardRef<
@@ -77,23 +82,20 @@ const Checkbox = React.forwardRef<
   CheckboxProps
 >(
   (
-    {
-      className,
-      size,
-      label,
-      description,
-      id = "field",
-      labelProps,
-      descriptionProps,
-      ...props
-    },
+    { className, size, label, description, id = "field", classNames, ...props },
     ref
   ) => {
     const [checked, setChecked] =
       React.useState<CheckboxPrimitive.CheckedState>(false);
 
     return (
-      <div className={cn(containerVariants({ size }), className)}>
+      <div
+        className={cn(
+          containerVariants({ size }),
+          className,
+          classNames?.container
+        )}
+      >
         <CheckboxPrimitive.Root
           checked={checked}
           id={id}
@@ -132,18 +134,16 @@ const Checkbox = React.forwardRef<
           {label && (
             <label
               htmlFor={id}
-              {...labelProps}
-              className={cn(labelVariants({ size }), labelProps?.className)}
+              className={cn(labelVariants({ size }), classNames?.label)}
             >
               {label}
             </label>
           )}
           {description && (
             <p
-              {...descriptionProps}
               className={cn(
                 descriptionVariants({ size }),
-                descriptionProps?.className
+                classNames?.description
               )}
             >
               {description}
