@@ -54,7 +54,7 @@ const GGMAPS_URL = import.meta.env.VITE_GGMAPS_URL;
 
 type BookStoreState = {
   searchFieldValues: SearchFieldValues | null;
-  serviceFieldValues: ServiceFieldValuesWithFee | null;
+  serviceFieldValues: ServiceFieldValues | null;
   currentStep: Step;
   stepDirection: -1 | 1;
   destinationDetail: PlaceDetail | null;
@@ -65,9 +65,7 @@ type BookStoreState = {
 
 type BookStoreActions = {
   updateSearchFieldValues: (newValues: SearchFieldValues | null) => void;
-  updateServiceFieldValues: (
-    newValues: ServiceFieldValuesWithFee | null
-  ) => void;
+  updateServiceFieldValues: (newValues: ServiceFieldValues | null) => void;
   updateCurrentStep: (newStep: Step) => void;
   updateStepDirection: (newStepDirection: -1 | 1) => void;
   updateDestinationDetail: (newDestinationDetail: PlaceDetail | null) => void;
@@ -166,7 +164,10 @@ const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
   timeStyle: "short",
 });
 
-const feeFormatter = new Intl.NumberFormat("vi-VN");
+const moneyFormatter = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
+});
 
 type Step = "search" | "service" | "summary";
 
@@ -246,11 +247,11 @@ export function Book(): React.JSX.Element {
       {/* Main */}
       <main className="w-full pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
         {/* Inner */}
-        <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)] items-center xl:items-start">
+        <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)]">
           {/* Left Section */}
-          <LeftSection />
+          <LeftSection className="relative z-10 h-full pt-[120px] 2xl:pt-16 xl:pt-0 grid auto-rows-min lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 xl:justify-items-center" />
           {/* Right Section */}
-          <RightSection className="h-full relative min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
+          <RightSection className="h-full relative z-0 min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
         </div>
       </main>
     </div>
@@ -1110,22 +1111,34 @@ const services: Service[] = [
 const calculateFare = ({
   serviceName,
   distance,
+  duration,
 }: {
   serviceName: ServiceName;
   distance: number;
+  duration: number;
 }) => {
-  const baseFare = 10_000;
-  switch (serviceName) {
-    case "basic":
-      return baseFare + distance * 7_000;
-    case "premium":
-      return baseFare + distance * 12_000;
-    case "extra":
-      return baseFare + distance * 9_000;
-    default:
-      const unexpected: never = serviceName;
-      throw new Error("invalid serviceName");
+  const base_fare = 8000;
+  let per_km_rate = 8000;
+  let per_minute_rate = 2000;
+  const surge_multiplier = 1;
+  const service_fee = 2000;
+  const discount = 0;
+  const tax_rate = 0.1;
+  if (serviceName === "extra") {
+    per_km_rate = 10_000;
+    per_minute_rate = 2500;
   }
+  if (serviceName === "premium") {
+    per_km_rate = 12_000;
+    per_minute_rate = 3500;
+  }
+  const subtotal =
+    base_fare +
+    (distance * per_km_rate + duration * per_minute_rate) * surge_multiplier +
+    service_fee -
+    discount;
+  const tax = subtotal * tax_rate;
+  return subtotal + tax;
 };
 
 interface SelectServiceProps extends React.ComponentPropsWithoutRef<"div"> {}
@@ -1140,6 +1153,7 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
     const pickupDetail = useBookStore((state) => state.pickupDetail);
     const updateCurrentStep = useBookStore((state) => state.updateCurrentStep);
     const updateDirection = useBookStore((state) => state.updateStepDirection);
+    const route = useBookStore((state) => state.route);
 
     if (!destinationDetail || !pickupDetail)
       throw new Error("destination or pickup is null/undefined");
@@ -1156,26 +1170,31 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
         : undefined,
     });
     const isSM = useMediaQuery({ maxWidth: 639 });
-    const calculateFee = React.useCallback(
-      (service: ServiceName) => {
-        switch (service) {
-          case "basic":
-            return 96000;
-          case "premium":
-            return 124800;
-          case "extra":
-            return 105300;
-          default:
-            const unexpected: never = service;
-            throw new Error("invalid service");
-        }
-      },
-      [destinationID, pickupID]
-    );
+    const fares: Record<ServiceName, number> = React.useMemo(() => {
+      if (!route) throw new Error("route is undefined or null");
+      const distance = route.legs[0].distance.value / 1000;
+      const duration = route.legs[0].duration.value / 60;
+      const basic_fare = calculateFare({
+        serviceName: "basic",
+        distance,
+        duration,
+      });
+      const premium_fare = calculateFare({
+        serviceName: "premium",
+        distance,
+        duration,
+      });
+      const extra_fare = calculateFare({
+        serviceName: "extra",
+        distance,
+        duration,
+      });
+
+      return { basic: basic_fare, premium: premium_fare, extra: extra_fare };
+    }, [destinationID, pickupID]);
 
     const onValid = (data: ServiceFieldValues) => {
       updateFieldValues({
-        fee: calculateFee(data.service),
         service: data.service,
       });
       updateCurrentStep("summary");
@@ -1237,8 +1256,7 @@ const SelectService = React.forwardRef<HTMLDivElement, SelectServiceProps>(
                               </span>
                             </div>
                             <div className="text-base sm:text-sm font-medium text-[#F59E0B] text-right">
-                              {feeFormatter.format(calculateFee(service.value))}
-                              đ
+                              {moneyFormatter.format(fares[service.value])}
                             </div>
                           </div>
                         </div>
@@ -1282,7 +1300,7 @@ type Output = {
   destination: string;
   pickup: string;
   numbersOfPassengers: number;
-  fee: number;
+  fare: number;
 };
 
 const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
@@ -1290,31 +1308,36 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
     const isSM = useMediaQuery({ maxWidth: 639 });
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const route = useBookStore((state) => state.route);
     const searchFieldValues = useBookStore((state) => state.searchFieldValues);
     const serviceFieldValues = useBookStore(
       (state) => state.serviceFieldValues
     );
 
-    if (!searchFieldValues) throw new Error("invalid searchFieldValues");
-    if (!serviceFieldValues) throw new Error("invalid serviceFieldValues");
+    if (!searchFieldValues)
+      throw new Error("searchFieldValues is undefined or null");
+    if (!serviceFieldValues)
+      throw new Error("serviceFieldValues is undefined or null");
+    if (!route) throw new Error("route is undefined or null");
 
-    const output: Output = React.useMemo(
-      () => ({
-        departureTime: new Date(
-          Number(searchFieldValues.departureTime.year),
-          Number(searchFieldValues.departureTime.month) - 1,
-          Number(searchFieldValues.departureTime.date),
-          Number(searchFieldValues.departureTime.hour),
-          Number(searchFieldValues.departureTime.minute)
-        ),
-        service: serviceNameText[serviceFieldValues.service],
-        destination: searchFieldValues.destination,
-        pickup: searchFieldValues.pickup,
-        numbersOfPassengers: Number(searchFieldValues.numbersOfPassengers),
-        fee: Number(serviceFieldValues.fee),
+    const output: Output = {
+      departureTime: new Date(
+        Number(searchFieldValues.departureTime.year),
+        Number(searchFieldValues.departureTime.month) - 1,
+        Number(searchFieldValues.departureTime.date),
+        Number(searchFieldValues.departureTime.hour),
+        Number(searchFieldValues.departureTime.minute)
+      ),
+      service: serviceNameText[serviceFieldValues.service],
+      destination: searchFieldValues.destination,
+      pickup: searchFieldValues.pickup,
+      numbersOfPassengers: Number(searchFieldValues.numbersOfPassengers),
+      fare: calculateFare({
+        serviceName: serviceFieldValues.service,
+        distance: route.legs[0].distance.value / 1000,
+        duration: route.legs[0].duration.value / 60,
       }),
-      [searchFieldValues, serviceFieldValues]
-    );
+    };
 
     const handleBook = React.useCallback(() => {
       setIsLoading(true);
@@ -1327,7 +1350,7 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
 
     return (
       <div ref={ref} className={cn("w-full", className)} {...props}>
-        <p className="w-full text-base sm:text-sm font-normal text-foreground-600 mt-12 sm:mt-10">
+        <p className="w-full text-base sm:text-sm font-normal text-foreground-600">
           Vui lòng kiểm tra lại thông tin dưới đây lần cuối trước khi nhấn đặt
           xe:
         </p>
@@ -1399,7 +1422,7 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
               Cước phí
             </span>
             <span className="mt-2 sm:mt-0 sm:ml-2 block sm:inline-block text-lg sm:text-base font-medium text-[#F59E0B]">
-              {feeFormatter.format(output.fee)}đ
+              {moneyFormatter.format(output.fare)}
             </span>
           </div>
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -1428,10 +1451,6 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
     );
   }
 );
-
-interface ServiceFieldValuesWithFee extends ServiceFieldValues {
-  fee: number;
-}
 
 const stepAnimationVariants = {
   initial: (direction: number) => ({
@@ -1487,28 +1506,24 @@ const LeftSection = React.forwardRef<
   }, [currentStep]);
 
   return (
-    <section
-      ref={ref}
-      className={cn(
-        "grid lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 xl:justify-items-center",
-        currentStep === "search" && "pt-0 2xl:pt-0 items-center",
-        className
-      )}
-      {...props}
-    >
-      {currentStep !== "search" && (
+    <section ref={ref} className={cn(className)} {...props}>
+      {
         <Button
           intent="primary"
           asLink
           size={isSM ? "extraSmall" : "small"}
           onClick={onBack}
+          className={cn(
+            "justify-self-start transition-all duration-200 ease-out",
+            currentStep == "search" && "opacity-0 invisible"
+          )}
         >
           Quay về
         </Button>
-      )}
+      }
 
       {/* Step */}
-      <AnimatePresence mode="wait" initial={false} custom={direction}>
+      <AnimatePresence mode="popLayout" initial={false} custom={direction}>
         <motion.div
           key={currentStep}
           variants={stepAnimationVariants}
