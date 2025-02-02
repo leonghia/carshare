@@ -186,75 +186,15 @@ const stepVariants = cva<{ step: Record<Step, string> }>(
 
 export function Book(): React.JSX.Element {
   return (
-    <div className="w-full min-h-screen bg-background-950 grid grid-rows-[max-content,minmax(0,1fr)]">
-      {/* Header */}
-      <header className="w-full px-16 lg:px-6 sm:px-4 pt-8 lg:pt-6 sm:pt-4 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
-        {/* Hamburger button & Logo */}
-        <div className="flex items-center gap-4 sm:gap-3">
-          <button type="button" className="hidden lg:block">
-            <HambergerMenu
-              variant="Bold"
-              className="size-8 sm:size-6 text-foreground-500"
-            />
-          </button>
-          <Link to="/">
-            <img
-              src={logo}
-              alt="carshare logo"
-              className="h-8 sm:h-5 object-cover"
-            />
-          </Link>
-        </div>
-        {/* Navbar */}
-        <nav className="w-[500px] xl:w-[450px] lg:hidden flex items-center justify-between">
-          <NavLink
-            to="/book"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Đặt xe
-          </NavLink>
-          <NavLink
-            to="/rules"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Quy định
-          </NavLink>
-          <NavLink
-            to="/feedback"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Phản ánh
-          </NavLink>
-        </nav>
-        {/* Right */}
-        <div className="flex items-center gap-10 sm:gap-6">
-          <button type="button" className="relative">
-            <Notification
-              variant="Bold"
-              className="size-8 sm:size-6 text-foreground-500"
-            />
-            <span className="block absolute top-0 right-0 size-3 sm:size-2 rounded-full bg-danger-500 border-2 sm:border border-white"></span>
-          </button>
-          <button type="button">
-            <img
-              src={pfp}
-              alt="user profile picture"
-              className="size-10 sm:size-[30px] rounded-full border-2 sm:border border-primary-500 shadow-xl sm:shadow-md"
-            />
-          </button>
-        </div>
-      </header>
-      {/* Main */}
-      <main className="w-full pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
-        {/* Inner */}
-        <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)]">
-          {/* Left Section */}
-          <LeftSection className="relative z-10 h-full pt-[120px] 2xl:pt-16 xl:pt-0 grid auto-rows-min lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 lg:space-y-10 sm:space-y-6 xl:justify-items-center" />
-          {/* Right Section */}
-          <RightSection className="h-full relative z-0 min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
-        </div>
-      </main>
-    </div>
+    <main className="w-full pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
+      {/* Inner */}
+      <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)]">
+        {/* Left Section */}
+        <LeftSection className="relative z-10 h-full pt-[120px] 2xl:pt-16 xl:pt-0 grid auto-rows-min lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 lg:space-y-10 sm:space-y-6 xl:justify-items-center" />
+        {/* Right Section */}
+        <RightSection className="h-full relative z-0 min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
+      </div>
+    </main>
   );
 }
 
