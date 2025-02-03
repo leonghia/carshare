@@ -1301,20 +1301,21 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
             <span className="inline-block size-[6px] sm:size-1 rounded-full bg-primary-500"></span>
           </h2>
           <div className="w-full space-y-6 sm:space-y-5 mt-8 sm:mt-6">
-            <div className="grid grid-cols-[repeat(3,max-content)] gap-8 sm:grid-cols-1 sm:gap-5">
+            <div className="grid grid-cols-[repeat(5,max-content)] sm:grid-cols-[repeat(2,max-content)] gap-5 items-center">
               <div className="flex gap-2">
                 <Calendar
                   variant="Bold"
                   className="flex-none size-6 sm:size-5 text-foreground-600"
                 />
-                <span className="flex-none w-[44px] text-base sm:text-sm font-normal text-foreground-500">
+                <span className="flex-none w-[44px] sm:w-[38px] text-base sm:text-sm font-normal text-foreground-500">
                   {timeFormatter.format(output.departureTime)}
                 </span>
-                <span className="flex-none w-[94px] text-base sm:text-sm font-normal text-foreground-500">
+                <span className="flex-none w-[94px] sm:w-[82px] text-base sm:text-sm font-normal text-foreground-500">
                   {formatDate(output.departureTime)}
                 </span>
               </div>
-              <div className="flex gap-2">
+              <span className="block w-[2px] h-4 rounded bg-divider sm:hidden" />
+              <div className="flex gap-2 sm:hidden">
                 <SmartCar
                   variant="Bold"
                   className="flex-none size-6 sm:size-5 text-foreground-600"
@@ -1323,13 +1324,14 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
                   {output.service}
                 </span>
               </div>
+              <span className="block w-[2px] h-4 rounded bg-divider sm:hidden" />
               <div className="flex gap-2">
                 <Profile2User
                   variant="Bold"
                   className="flex-none size-6 sm:size-5 text-foreground-600"
                 />
                 <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
-                  {output.numbersOfPassengers}
+                  {output.numbersOfPassengers} {isSM && " hành khách"}
                 </span>
               </div>
             </div>
@@ -1349,6 +1351,15 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
               />
               <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
                 {output.destination}
+              </span>
+            </div>
+            <div className="hidden sm:flex gap-2">
+              <SmartCar
+                variant="Bold"
+                className="flex-none size-6 sm:size-5 text-foreground-600"
+              />
+              <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                {output.service}
               </span>
             </div>
           </div>
@@ -1601,34 +1612,30 @@ const DirectionInfo = React.forwardRef<HTMLDivElement, DirectionInfoProps>(
     <div
       ref={ref}
       className={cn(
-        "bg-background-900 rounded-3xl sm:rounded-xl px-8 sm:px-4 py-5 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-16 sm:gap-8 items-center",
+        "bg-background-900 rounded-3xl sm:rounded-2xl px-6 sm:px-4 py-4 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-10 sm:gap-6 items-center",
         className
       )}
     >
-      <div className="flex gap-4 sm:gap-2 items-center">
+      <div className="grid grid-cols-[repeat(2,max-content)] sm:grid-cols-[max-content,minmax(0,1fr)] gap-x-4 sm:gap-x-2 gap-y-1 sm:gap-y-[2px] items-center">
         <Routing
           variant="Bold"
-          className="flex-none size-8 sm:size-[18px] text-primary-500"
+          className="size-6 sm:size-4 text-primary-500 row-span-2 sm:row-span-1 sm:row-start-2"
         />
-        <div className="flex-1 min-w-0 space-y-1 sm:space-y-0">
-          <p className="text-sm font-normal text-foreground-600 sm:hidden">
-            Khoảng cách quãng đường
-          </p>
-          <p className="text-lg sm:text-xs font-medium sm:font-normal text-white">
-            {distanceText}
-          </p>
-        </div>
+        <p className="text-xs sm:text-xxs font-normal text-foreground-600 sm:col-span-2">
+          Khoảng cách quãng đường
+        </p>
+        <p className="text-sm sm:text-xs font-medium sm:font-normal text-white">
+          {distanceText}
+        </p>
       </div>
-      <div className="flex gap-4 sm:gap-2 items-center">
-        <Hourglass className="flex-none size-6 sm:size-[14px] text-primary-500" />
-        <div className="flex-1 min-w-0 space-y-1 sm:space-y-0">
-          <p className="text-sm font-normal text-foreground-600 sm:hidden">
-            Thời gian di chuyển dự kiến
-          </p>
-          <p className="text-lg sm:text-xs font-medium sm:font-normal text-white">
-            {durationText}
-          </p>
-        </div>
+      <div className="grid grid-cols-[repeat(2,max-content)] sm:grid-cols-[max-content,minmax(0,1fr)] gap-x-3 sm:gap-x-2 gap-y-1 sm:gap-y-[2px] items-center">
+        <Hourglass className="size-5 sm:size-3 text-primary-500 row-span-2 sm:row-span-1 sm:row-start-2" />
+        <p className="text-xs sm:text-xxs font-normal text-foreground-600 sm:col-span-2">
+          Thời gian di chuyển dự kiến
+        </p>
+        <p className="text-sm sm:text-xs font-medium sm:font-normal text-white">
+          {durationText}
+        </p>
       </div>
     </div>
   )
