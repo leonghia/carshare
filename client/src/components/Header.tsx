@@ -23,14 +23,14 @@ export function Header(): React.JSX.Element {
           Đặt xe
         </NavLink>
         <NavLink
-          to="/book"
+          to="/rules"
           end
           className="text-lg font-medium text-foreground-500 [&.active]:text-white"
         >
           Quy định
         </NavLink>
         <NavLink
-          to="/book"
+          to="/feedback"
           end
           className="text-lg font-medium text-foreground-500 [&.active]:text-white"
         >
