@@ -7,8 +7,9 @@ import { Home } from "./components/Home.tsx";
 import { Register } from "./components/Register.tsx";
 import { Login } from "./components/Login.tsx";
 import { Book } from "./components/Book.tsx";
-import { RideStatus } from "./components/RideStatus.tsx";
+import { Ride } from "./components/Ride.tsx";
 import { App } from "./App.tsx";
+import { UserLayout } from "./components/UserLayout.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,8 +20,10 @@ createRoot(document.getElementById("root")!).render(
           <Route path="welcome" element={<Welcome />} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
-          <Route path="book" element={<Book />} />
-          <Route path="ride-status" element={<RideStatus />} />
+          <Route element={<UserLayout />}>
+            <Route path="book" element={<Book />} />
+            <Route path="rides/:rideId" element={<Ride />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
