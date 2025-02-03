@@ -11,6 +11,7 @@ import {
   People,
   Flag,
   Routing,
+  Profile2User,
 } from "iconsax-react";
 import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
@@ -22,7 +23,7 @@ import { Button } from "./ui/button";
 import { CheckboxField } from "./ui/checkboxField";
 import { DatetimeField } from "./ui/datetimeField";
 import { QuantityField } from "./ui/quantityField";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { RadioGroup } from "./ui/radio-group";
 import carshareBasicIllustrator from "../assets/images/carshare_basic_illustrator.webp";
@@ -156,9 +157,9 @@ const useBookStore = create<BookStore>()((set) => ({
   },
 }));
 
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  dateStyle: "short",
-});
+// const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
+//   dateStyle: "medium",
+// });
 
 const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
   timeStyle: "short",
@@ -522,9 +523,9 @@ function RightSection({
   return (
     <section className={cn("relative overflow-hidden", className)}>
       {/* Vertical gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)50%,rgba(39,42,55,1)95%)]" />
       {/* Horizontal gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)]"></div>
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,0.98)5%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.1)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)]" />
       {/* Actual map */}
       <ReactMapGL
         ref={mapRef}
@@ -737,7 +738,7 @@ function SearchForm({
       >
         {/* Fields */}
         <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-5">
-          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full">
+          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 md:row-start-1 md:col-span-full">
             <Field<SearchFieldValues>
               label="Điểm đón"
               required
@@ -1300,43 +1301,54 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
             <span className="inline-block size-[6px] sm:size-1 rounded-full bg-primary-500"></span>
           </h2>
           <div className="w-full space-y-6 sm:space-y-5 mt-8 sm:mt-6">
-            <div className="grid grid-cols-2 gap-10 sm:grid-cols-1 sm:gap-5">
-              <div className="flex gap-2 text-foreground-400">
+            <div className="grid grid-cols-[repeat(3,max-content)] gap-8 sm:grid-cols-1 sm:gap-5">
+              <div className="flex gap-2">
                 <Calendar
                   variant="Bold"
-                  className="flex-none size-6 sm:size-5"
+                  className="flex-none size-6 sm:size-5 text-foreground-600"
                 />
-                <span className="flex-1 text-base sm:text-sm font-normal">
-                  {timeFormatter.format(output.departureTime)} ngày{" "}
-                  {dateFormatter.format(output.departureTime)}
+                <span className="flex-none w-[44px] text-base sm:text-sm font-normal text-foreground-500">
+                  {timeFormatter.format(output.departureTime)}
+                </span>
+                <span className="flex-none w-[94px] text-base sm:text-sm font-normal text-foreground-500">
+                  {formatDate(output.departureTime)}
                 </span>
               </div>
-              <div className="flex gap-2 text-foreground-400">
+              <div className="flex gap-2">
                 <SmartCar
                   variant="Bold"
-                  className="flex-none size-6 sm:size-5"
+                  className="flex-none size-6 sm:size-5 text-foreground-600"
                 />
-                <span className="flex-1 text-base sm:text-sm font-normal">
+                <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
                   {output.service}
                 </span>
               </div>
+              <div className="flex gap-2">
+                <Profile2User
+                  variant="Bold"
+                  className="flex-none size-6 sm:size-5 text-foreground-600"
+                />
+                <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                  {output.numbersOfPassengers}
+                </span>
+              </div>
             </div>
-            <div className="flex gap-2 text-foreground-400">
-              <Location variant="Bold" className="flex-none size-6 sm:size-5" />
-              <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đến: {output.destination}
+            <div className="flex gap-2">
+              <Location
+                variant="Bold"
+                className="flex-none size-6 sm:size-5 text-foreground-600"
+              />
+              <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                {output.pickup}
               </span>
             </div>
-            <div className="flex gap-2 text-foreground-400">
-              <Location variant="Bold" className="flex-none size-6 sm:size-5" />
-              <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đón: {output.pickup}
-              </span>
-            </div>
-            <div className="flex gap-2 text-foreground-400">
-              <People variant="Bold" className="flex-none size-6 sm:size-5" />
-              <span className="flex-1 text-base sm:text-sm font-normal">
-                Số lượng hành khách: {output.numbersOfPassengers}
+            <div className="flex gap-2">
+              <Flag
+                variant="Bold"
+                className="flex-none size-6 sm:size-5 text-foreground-600"
+              />
+              <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                {output.destination}
               </span>
             </div>
           </div>
@@ -1589,7 +1601,7 @@ const DirectionInfo = React.forwardRef<HTMLDivElement, DirectionInfoProps>(
     <div
       ref={ref}
       className={cn(
-        "bg-background-950 rounded-3xl sm:rounded-xl border-2 border-divider px-8 sm:px-4 py-5 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-16 sm:gap-8 items-center",
+        "bg-background-900 rounded-3xl sm:rounded-xl px-8 sm:px-4 py-5 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-16 sm:gap-8 items-center",
         className
       )}
     >
