@@ -217,8 +217,8 @@ function CustomMarker({
     <Marker
       latitude={placeDetail.geometry.location.lat}
       longitude={placeDetail.geometry.location.lng}
-      offsetLeft={isSM ? -16 : -24}
-      offsetTop={isSM ? -16 : -24}
+      offsetLeft={isSM ? -8 : -16}
+      offsetTop={0}
       className="z-10 pointer-events-none"
     >
       <motion.div
@@ -230,58 +230,71 @@ function CustomMarker({
         }}
         className="relative"
       >
-        <div className="absolute left-0 top-0 -translate-y-[calc(100%+12px)] sm:-translate-y-[calc(100%+8px)] -translate-x-[calc(50%-24px)] sm:-translate-x-[calc(50%-20px)] w-max max-w-[260px] sm:max-w-[200px] bg-background-950 border-2 border-divider rounded-2xl sm:rounded-xl p-4 sm:px-3 sm:py-2">
-          <div className="w-full flex items-center gap-3 sm:gap-2">
-            {isSM &&
-              (locationType === "Destination" ? (
-                <Flag variant="Bold" className="size-5 text-[#22C55E]" />
-              ) : (
-                <Location variant="Bold" className="size-5 text-[#EF4444]" />
-              ))}
-            {!isSM && (
-              <div
-                className={cn(
-                  "flex flex-none size-10 sm:size-[34px] rounded-full items-center justify-center",
-                  locationType === "Destination"
-                    ? "bg-[#22C55E]/15"
-                    : "bg-[#EF4444]/15"
-                )}
-              >
-                {locationType === "Destination" ? (
-                  <Flag
-                    variant="Bold"
-                    className="size-5 sm:size-4 text-[#22C55E]"
-                  />
-                ) : (
-                  <Location
-                    variant="Bold"
-                    className="size-5 sm:size-4 text-[#EF4444]"
-                  />
-                )}
-              </div>
+        {isSM ? (
+          <div
+            className={cn(
+              "absolute left-0 top-0 -translate-x-[calc(50%-4px)] -translate-y-[calc(100%+8px)] size-10 rounded-full flex items-center justify-center",
+              locationType === "Destination"
+                ? "bg-[#22C55E]/20"
+                : "bg-[#EF4444]/20"
             )}
-            <div className="flex-1 min-w-0 space-y-2 sm:space-y-1">
-              <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
-                {placeDetail.compound.district}, {placeDetail.compound.province}
-              </p>
-              <p className="text-sm sm:text-xs font-normal text-white w-full truncate">
-                {placeDetail.name}
-              </p>
+          >
+            {locationType === "Destination" ? (
+              <Flag
+                variant="Bold"
+                className="flex-none size-5 text-[#22C55E]"
+              />
+            ) : (
+              <Location
+                variant="Bold"
+                className="flex-none size-5 text-[#EF4444]"
+              />
+            )}
+          </div>
+        ) : (
+          <div className="absolute left-0 top-0 -translate-x-[calc(50%-8px)] -translate-y-[calc(100%+12px)] w-max max-w-[260px] sm:max-w-[200px] bg-background-950 border-2 border-divider rounded-2xl sm:rounded-xl p-4 sm:px-3 sm:py-2">
+            <div className="w-full flex items-center gap-3 sm:gap-2">
+              {isSM &&
+                (locationType === "Destination" ? (
+                  <Flag variant="Bold" className="size-5 text-[#22C55E]" />
+                ) : (
+                  <Location variant="Bold" className="size-5 text-[#EF4444]" />
+                ))}
+              {!isSM && (
+                <div
+                  className={cn(
+                    "flex flex-none size-10 sm:size-[34px] rounded-full items-center justify-center",
+                    locationType === "Destination"
+                      ? "bg-[#22C55E]/15"
+                      : "bg-[#EF4444]/15"
+                  )}
+                >
+                  {locationType === "Destination" ? (
+                    <Flag
+                      variant="Bold"
+                      className="size-5 sm:size-4 text-[#22C55E]"
+                    />
+                  ) : (
+                    <Location
+                      variant="Bold"
+                      className="size-5 sm:size-4 text-[#EF4444]"
+                    />
+                  )}
+                </div>
+              )}
+              <div className="flex-1 min-w-0 space-y-2 sm:space-y-1">
+                <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
+                  {placeDetail.compound.district},{" "}
+                  {placeDetail.compound.province}
+                </p>
+                <p className="text-sm sm:text-xs font-normal text-white w-full truncate">
+                  {placeDetail.name}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <motion.div
-          animate={{ scale: [1.2, 1, 1.25] }}
-          transition={{
-            type: "tween",
-            ease: "linear",
-            repeat: Infinity,
-            duration: 0.7,
-          }}
-          className="mx-auto size-12 sm:size-8 rounded-full bg-[#1D90F5]/40 shadow-xl flex items-center justify-center"
-        >
-          <div className="size-5 sm:size-3 rounded-full bg-primary-500"></div>
-        </motion.div>
+        )}
+        <div className="size-4 sm:size-2 rounded-full bg-primary-500" />
       </motion.div>
     </Marker>
   );
@@ -525,7 +538,7 @@ function RightSection({
       {/* Vertical gradient */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)50%,rgba(39,42,55,1)95%)]" />
       {/* Horizontal gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,0.98)5%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.1)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)]" />
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,0.98)5%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.1)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.3)0%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.3)100%)]" />
       {/* Actual map */}
       <ReactMapGL
         ref={mapRef}
