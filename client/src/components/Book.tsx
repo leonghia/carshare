@@ -217,8 +217,10 @@ function CustomMarker({
     <Marker
       latitude={placeDetail.geometry.location.lat}
       longitude={placeDetail.geometry.location.lng}
-      offsetLeft={isSM ? -8 : -16}
-      offsetTop={0}
+      offsetLeft={isSM ? -12 : -16}
+      offsetTop={isSM ? -12 : -16}
+      // offsetLeft={0}
+      // offsetTop={0}
       className="z-10 pointer-events-none"
     >
       <motion.div
@@ -230,71 +232,28 @@ function CustomMarker({
         }}
         className="relative"
       >
-        {isSM ? (
-          <div
-            className={cn(
-              "absolute left-0 top-0 -translate-x-[calc(50%-4px)] -translate-y-[calc(100%+8px)] size-10 rounded-full flex items-center justify-center",
-              locationType === "Destination"
-                ? "bg-[#22C55E]/20"
-                : "bg-[#EF4444]/20"
-            )}
-          >
-            {locationType === "Destination" ? (
-              <Flag
-                variant="Bold"
-                className="flex-none size-5 text-[#22C55E]"
-              />
-            ) : (
-              <Location
-                variant="Bold"
-                className="flex-none size-5 text-[#EF4444]"
-              />
-            )}
+        <div className="sm:hidden absolute left-0 top-0 -translate-x-[calc(50%-8px)] -translate-y-[calc(100%+12px)] w-max max-w-[260px] min-w-[160px] bg-background-950 border-2 border-divider rounded-xl px-4 py-3">
+          <div className="flex-1 min-w-0 space-y-1">
+            <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
+              {placeDetail.compound.district}, {placeDetail.compound.province}
+            </p>
+            <p className="text-sm sm:text-xs font-normal text-white w-full truncate">
+              {placeDetail.name}
+            </p>
           </div>
-        ) : (
-          <div className="absolute left-0 top-0 -translate-x-[calc(50%-8px)] -translate-y-[calc(100%+12px)] w-max max-w-[260px] sm:max-w-[200px] bg-background-950 border-2 border-divider rounded-2xl sm:rounded-xl p-4 sm:px-3 sm:py-2">
-            <div className="w-full flex items-center gap-3 sm:gap-2">
-              {isSM &&
-                (locationType === "Destination" ? (
-                  <Flag variant="Bold" className="size-5 text-[#22C55E]" />
-                ) : (
-                  <Location variant="Bold" className="size-5 text-[#EF4444]" />
-                ))}
-              {!isSM && (
-                <div
-                  className={cn(
-                    "flex flex-none size-10 sm:size-[34px] rounded-full items-center justify-center",
-                    locationType === "Destination"
-                      ? "bg-[#22C55E]/15"
-                      : "bg-[#EF4444]/15"
-                  )}
-                >
-                  {locationType === "Destination" ? (
-                    <Flag
-                      variant="Bold"
-                      className="size-5 sm:size-4 text-[#22C55E]"
-                    />
-                  ) : (
-                    <Location
-                      variant="Bold"
-                      className="size-5 sm:size-4 text-[#EF4444]"
-                    />
-                  )}
-                </div>
-              )}
-              <div className="flex-1 min-w-0 space-y-2 sm:space-y-1">
-                <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
-                  {placeDetail.compound.district},{" "}
-                  {placeDetail.compound.province}
-                </p>
-                <p className="text-sm sm:text-xs font-normal text-white w-full truncate">
-                  {placeDetail.name}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-        <div className="size-4 sm:size-2 rounded-full bg-primary-500" />
+        </div>
+        <div
+          className={cn(
+            "size-8 sm:size-6 rounded-full border-2 sm:border border-white flex items-center justify-center",
+            locationType === "Destination" ? "bg-[#22C55E]" : "bg-[#EF4444]"
+          )}
+        >
+          {locationType === "Destination" ? (
+            <Flag variant="Bold" className="size-4 sm:size-3 text-white" />
+          ) : (
+            <Location variant="Bold" className="size-4 sm:size-3 text-white" />
+          )}
+        </div>
       </motion.div>
     </Marker>
   );
@@ -441,11 +400,13 @@ function RightSection({
           right: 160,
           bottom: 200,
         };
-      if (isSM) padding = { top: 80, left: 100, right: 100, bottom: 80 };
+      if (isSM) padding = { top: 32, left: 64, right: 64, bottom: 80 };
       setIsTransitioning(true);
-      const { longitude, latitude, zoom } = new WebMercatorViewport(
-        viewport
-      ).fitBounds(
+      const {
+        longitude,
+        latitude,
+        zoom: dynamicZoom,
+      } = new WebMercatorViewport(viewport).fitBounds(
         [
           [
             pickupDetail.geometry.location.lng,
@@ -463,7 +424,7 @@ function RightSection({
       );
       mapRef.current?.getMap().flyTo({
         center: [longitude, latitude],
-        zoom,
+        zoom: dynamicZoom,
         duration: 1500,
         easing: easeCubic,
       });
@@ -476,7 +437,7 @@ function RightSection({
           ...viewport,
           longitude,
           latitude,
-          zoom,
+          zoom: dynamicZoom,
         });
         setIsTransitioning(false);
       });
