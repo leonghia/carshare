@@ -1,19 +1,14 @@
 import React from "react";
-import logo from "../assets/images/logo.svg";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import {
-  Notification,
-  HambergerMenu,
   Money4,
   Calendar,
   SmartCar,
   Location,
-  People,
   Flag,
   Routing,
   Profile2User,
 } from "iconsax-react";
-import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
 import { Controller, FormProvider, useForm } from "react-hook-form";
@@ -23,7 +18,7 @@ import { Button } from "./ui/button";
 import { CheckboxField } from "./ui/checkboxField";
 import { DatetimeField } from "./ui/datetimeField";
 import { QuantityField } from "./ui/quantityField";
-import { cn, formatDate } from "@/lib/utils";
+import { cn, formatDate, moneyFormatter, timeFormatter } from "@/lib/utils";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { RadioGroup } from "./ui/radio-group";
 import carshareBasicIllustrator from "../assets/images/carshare_basic_illustrator.webp";
@@ -39,7 +34,6 @@ import { AutoCompleteField, Item } from "./ui/autoCompleteField";
 import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
 import ReactMapGL, {
-  Marker,
   MapRef,
   WebMercatorViewport,
   Source,
@@ -48,6 +42,7 @@ import ReactMapGL, {
 import { easeCubic } from "d3-ease";
 import { Hourglass } from "lucide-react";
 import polyline from "@mapbox/polyline";
+import { Marker, PlaceDetail } from "./ui/marker";
 
 const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
 const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
@@ -161,15 +156,6 @@ const useBookStore = create<BookStore>()((set) => ({
 //   dateStyle: "medium",
 // });
 
-const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
-  timeStyle: "short",
-});
-
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
-
 type Step = "search" | "service" | "summary";
 
 const stepVariants = cva<{ step: Record<Step, string> }>(
@@ -204,59 +190,13 @@ function CustomMarker({
 }: {
   locationType: "Destination" | "Pickup";
 }): React.JSX.Element | null {
-  const isSM = useMediaQuery({ maxWidth: 639 });
-
   const placeDetail = useBookStore((state) =>
     locationType === "Destination"
       ? state.destinationDetail
       : state.pickupDetail
   );
 
-  if (!placeDetail?.geometry || !placeDetail.compound) return null;
-  return (
-    <Marker
-      latitude={placeDetail.geometry.location.lat}
-      longitude={placeDetail.geometry.location.lng}
-      offsetLeft={isSM ? -12 : -16}
-      offsetTop={isSM ? -12 : -16}
-      // offsetLeft={0}
-      // offsetTop={0}
-      className="z-10 pointer-events-none"
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{
-          type: "spring",
-          duration: 1,
-        }}
-        className="relative"
-      >
-        <div className="sm:hidden absolute left-0 top-0 -translate-x-[calc(50%-8px)] -translate-y-[calc(100%+12px)] w-max max-w-[260px] min-w-[160px] bg-background-950 border-2 border-divider rounded-xl px-4 py-3">
-          <div className="flex-1 min-w-0 space-y-1">
-            <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
-              {placeDetail.compound.district}, {placeDetail.compound.province}
-            </p>
-            <p className="text-sm sm:text-xs font-normal text-white w-full truncate">
-              {placeDetail.name}
-            </p>
-          </div>
-        </div>
-        <div
-          className={cn(
-            "size-8 sm:size-6 rounded-full border-2 sm:border border-white flex items-center justify-center",
-            locationType === "Destination" ? "bg-[#22C55E]" : "bg-[#EF4444]"
-          )}
-        >
-          {locationType === "Destination" ? (
-            <Flag variant="Bold" className="size-4 sm:size-3 text-white" />
-          ) : (
-            <Location variant="Bold" className="size-4 sm:size-3 text-white" />
-          )}
-        </div>
-      </motion.div>
-    </Marker>
-  );
+  return <Marker locationType={locationType} placeDetail={placeDetail} />;
 }
 
 interface DirectionRequestParams {
@@ -843,22 +783,6 @@ interface PlaceAutoComplete {
 
 interface PlaceDetailServiceResponse extends ServiceResponse {
   result: PlaceDetail;
-}
-
-interface Location {
-  lat: number;
-  lng: number;
-}
-
-interface PlaceDetail {
-  place_id: string;
-  formatted_address: string;
-  geometry: { location: Location };
-  name: string;
-  compound: {
-    district: string;
-    province: string;
-  };
 }
 
 function usePlacesSearch(
