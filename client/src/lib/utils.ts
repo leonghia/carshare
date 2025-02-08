@@ -73,3 +73,12 @@ export const formatDate = (date: Date) => {
 
   return `${day}/${month}/${year}`; // Return in dd/mm/yyyy format
 };
+
+export const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
+  timeStyle: "short",
+});
+
+export const moneyFormatter = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
+});
