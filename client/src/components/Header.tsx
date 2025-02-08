@@ -8,10 +8,10 @@ export function Header(): React.JSX.Element {
   return (
     <header className="relative z-10 w-full px-16 xl:px-12 lg:px-8 md:px-6 sm:px-4 pt-8 lg:pt-6 md:pt-5 sm:pt-4 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] justify-between items-center">
       <div className="flex items-center gap-4 sm:gap-2">
-        <button type="button">
+        <button type="button" className="hidden lg:block">
           <HambergerMenu
             variant="Bold"
-            className="hidden lg:block size-8 sm:size-6 text-foreground-500"
+            className="size-8 sm:size-6 text-foreground-500"
           />
         </button>
         <figure>
