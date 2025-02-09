@@ -43,10 +43,7 @@ import { easeCubic } from "d3-ease";
 import { Hourglass } from "lucide-react";
 import polyline from "@mapbox/polyline";
 import { Marker, PlaceDetail } from "./ui/marker";
-
-const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
-const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
-const GGMAPS_URL = import.meta.env.VITE_GGMAPS_URL;
+import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY, GGMAPS_URL } from "@/lib/config";
 
 type BookStoreState = {
   searchFieldValues: SearchFieldValues | null;
@@ -436,9 +433,9 @@ function RightSection({
 
   return (
     <section className={cn("relative overflow-hidden", className)}>
-      {/* Vertical gradient */}
+      {/* Vertical Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)50%,rgba(39,42,55,1)95%)]" />
-      {/* Horizontal gradient */}
+      {/* Horizontal Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,0.98)5%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.1)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.3)0%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.3)100%)]" />
       {/* Actual map */}
       <ReactMapGL
