@@ -6,7 +6,6 @@ import {
   SmartCar,
   Location,
   Flag,
-  Routing,
   Profile2User,
 } from "iconsax-react";
 import { useMediaQuery } from "react-responsive";
@@ -36,14 +35,13 @@ import axios from "axios";
 import ReactMapGL, {
   MapRef,
   WebMercatorViewport,
-  Source,
-  Layer,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
-import { Hourglass } from "lucide-react";
-import polyline from "@mapbox/polyline";
-import { Marker, PlaceDetail } from "./ui/marker";
+import { Marker } from "@/components/Marker";
 import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY, GGMAPS_URL } from "@/lib/config";
+import { DirectionServiceResponse, PlaceDetail, Route } from "@/lib/models";
+import { DirectionRequestParams, DirectionInfo } from "./DirectionInfo";
+import { RouteLine } from "./RouteLine";
 
 type BookStoreState = {
   searchFieldValues: SearchFieldValues | null;
@@ -194,13 +192,6 @@ function CustomMarker({
   );
 
   return <Marker locationType={locationType} placeDetail={placeDetail} />;
-}
-
-interface DirectionRequestParams {
-  origin: string;
-  destination: string;
-  vehicle: "car";
-  api_key: string;
 }
 
 function RightSection({
@@ -405,31 +396,10 @@ function RightSection({
 
   console.log("map re-rendered");
 
-  const directionSource = React.useMemo(() => {
-    if (!route) return null;
-    const geometry_string = route.overview_polyline.points;
-    const geoJSON: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          geometry: polyline.toGeoJSON(geometry_string),
-          properties: null,
-        },
-      ],
-    };
-    return (
-      <Source id="route" type="geojson" data={geoJSON}>
-        <Layer
-          id="route"
-          type="line"
-          source="route"
-          layout={{ "line-join": "round", "line-cap": "round" }}
-          paint={{ "line-color": "#1D90F5", "line-width": 4 }}
-        />
-      </Source>
-    );
-  }, [hasRoute]);
+  const directionSource = React.useMemo(
+    () => <RouteLine route={route} />,
+    [hasRoute]
+  );
 
   return (
     <section className={cn("relative overflow-hidden", className)}>
@@ -454,7 +424,7 @@ function RightSection({
       </ReactMapGL>
       <AnimatePresence>
         {route && (
-          <MotionDirectionInfo
+          <DirectionInfo
             initial={{ opacity: 0, y: 100, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 100, x: "-50%", transition: { delay: 0 } }}
@@ -1468,72 +1438,3 @@ const CompleteModal = React.forwardRef<HTMLDivElement, CompleteModalProps>(
     );
   }
 );
-
-interface Leg {
-  distance: {
-    text: string;
-    value: number;
-  };
-  duration: {
-    text: string;
-    value: number;
-  };
-}
-
-interface Route {
-  legs: Leg[];
-  overview_polyline: {
-    points: string;
-  };
-}
-
-interface GeocodedWaypoint {
-  geocoder_status: "OK";
-  place_id: string;
-}
-
-interface DirectionServiceResponse {
-  routes: Route[];
-  geocoded_waypoints: GeocodedWaypoint[];
-}
-
-interface DirectionInfoProps extends React.ComponentPropsWithoutRef<"div"> {
-  distanceText: string;
-  durationText: string;
-}
-
-const DirectionInfo = React.forwardRef<HTMLDivElement, DirectionInfoProps>(
-  ({ distanceText, durationText, className }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        "bg-background-900 rounded-3xl sm:rounded-2xl px-6 sm:px-4 py-4 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-10 sm:gap-6 items-center",
-        className
-      )}
-    >
-      <div className="grid grid-cols-[repeat(2,max-content)] sm:grid-cols-[max-content,minmax(0,1fr)] gap-x-4 sm:gap-x-2 gap-y-1 sm:gap-y-[2px] items-center">
-        <Routing
-          variant="Bold"
-          className="size-6 sm:size-4 text-primary-500 row-span-2 sm:row-span-1 sm:row-start-2"
-        />
-        <p className="text-xs sm:text-xxs font-normal text-foreground-600 sm:col-span-2">
-          Khoảng cách quãng đường
-        </p>
-        <p className="text-sm sm:text-xs font-medium sm:font-normal text-white">
-          {distanceText}
-        </p>
-      </div>
-      <div className="grid grid-cols-[repeat(2,max-content)] sm:grid-cols-[max-content,minmax(0,1fr)] gap-x-3 sm:gap-x-2 gap-y-1 sm:gap-y-[2px] items-center">
-        <Hourglass className="size-5 sm:size-3 text-primary-500 row-span-2 sm:row-span-1 sm:row-start-2" />
-        <p className="text-xs sm:text-xxs font-normal text-foreground-600 sm:col-span-2">
-          Thời gian di chuyển dự kiến
-        </p>
-        <p className="text-sm sm:text-xs font-medium sm:font-normal text-white">
-          {durationText}
-        </p>
-      </div>
-    </div>
-  )
-);
-
-const MotionDirectionInfo = motion.create(DirectionInfo);
