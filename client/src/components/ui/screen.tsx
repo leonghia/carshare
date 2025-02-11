@@ -6,7 +6,7 @@ const ScreenDefault = ({
   minWidth = 1536,
 }: {
   children: React.ReactNode;
-  minWidth: number;
+  minWidth?: number;
 }) => {
   const isDefault = useMediaQuery({ minWidth });
   return isDefault ? children : null;

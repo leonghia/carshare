@@ -40,7 +40,7 @@ import { Marker } from "@/components/Marker";
 import { DirectionInfo } from "./DirectionInfo";
 import { RouteLine } from "./RouteLine";
 import { PlaceDetail } from "@/types/placeDetail";
-import { Route } from "@/types/Route";
+import { Route } from "@/types/route";
 import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY } from "@/config/keys";
 import { GGMAPS_URL } from "@/config/urls";
 import { cn } from "@/utils/styling";

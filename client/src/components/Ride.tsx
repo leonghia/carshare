@@ -17,12 +17,13 @@ import { formatDate, timeFormatter } from "@/utils/datetime";
 import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY } from "@/config/keys";
 import { GGMAPS_URL } from "@/config/urls";
 import { PlaceDetail } from "@/types/placeDetail";
-import { Route } from "@/types/Route";
+import { Route } from "@/types/route";
 import { MotionRideSummary } from "./RideSummary";
 import {
   DirectionRequestParams,
   DirectionServiceResponse,
 } from "@/types/direction";
+import { ScreenDefault, ScreenXL } from "./ui/screen";
 
 interface Update {
   id: string;
@@ -190,7 +191,7 @@ function LeftSection(): React.JSX.Element {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ type: "tween", duration: 0.3, ease: "easeIn" }}
-      className="relative z-10 pt-16 pb-12 grid gap-16 grid-rows-[repeat(2,min-content),minmax(0,1fr)] xl:row-start-2"
+      className="relative z-10 pt-16 pb-12 xl:px-16 grid gap-16 grid-rows-[repeat(2,min-content),minmax(0,1fr)] xl:row-start-2"
     >
       {/* Title */}
       <div className="w-full space-y-2 xl:hidden">
@@ -204,7 +205,7 @@ function LeftSection(): React.JSX.Element {
         initial={{ opacity: 0, x: "-50%" }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: "spring", duration: 1, delay: 0.5 }}
-        className="w-full space-y-10"
+        className="w-full space-y-10 xl:max-w-[750px] xl:justify-self-center"
       >
         <h2 className="w-full text-lg font-medium text-white">
           Cập nhật mới nhất
@@ -256,7 +257,13 @@ function LeftSection(): React.JSX.Element {
         </ul>
       </motion.div>
       {/* Cancel Button */}
-      <Button intent="danger" className="w-[180px] h-[60px] self-end">
+      <Button
+        intent="danger"
+        className="w-[180px] h-[60px] self-end xl:justify-self-end"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ type: "tween", duration: 0.3, ease: "easeIn", delay: 1 }}
+      >
         Hủy cuốc xe
       </Button>
     </motion.section>
@@ -299,6 +306,7 @@ const destinationDetail: PlaceDetail = {
 };
 
 function RightSection(): React.JSX.Element {
+  const { rideId } = useParams();
   const [route, setRoute] = React.useState<Route | null>(null);
   const hasRoute = route ? true : false;
   const [ref, bounds] = useMeasure();
@@ -336,6 +344,8 @@ function RightSection(): React.JSX.Element {
         left: 199.5,
         right: 199.5,
       };
+
+    if (isXL) return { top: 250, bottom: 300, right: 150, left: 150 };
 
     return {
       top: 250,
@@ -402,12 +412,24 @@ function RightSection(): React.JSX.Element {
   return (
     <section
       ref={ref}
-      className="relative z-0 min-h-[930px] overflow-y-hidden -ml-8"
+      className="relative z-0 min-h-[930px] overflow-y-hidden -ml-8 xl:ml-0"
     >
       {/* Vertical Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,1)85%,rgba(39,42,55,1)100%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,0.9)80%,rgba(39,42,55,1)100%)]" />
       {/* Horizontal Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)40%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.4)0%,rgba(39,42,55,0.2)50%,rgba(39,42,55,0.4)100%)]" />
+      {/* Title (XL only) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ type: "tween", duration: 0.3, ease: "easeIn" }}
+        className="hidden xl:block absolute z-20 top-10 left-10 w-max space-y-2"
+      >
+        <PageTitle title="Cuốc xe của bạn" />
+        <p className="text-base font-normal text-foreground-600">
+          ID #{rideId}
+        </p>
+      </motion.div>
       {/* Map */}
       {viewport && (
         <StaticMap
@@ -438,11 +460,20 @@ function RightSection(): React.JSX.Element {
         durationText="15 phút"
       />
       {/* Summary */}
-      <MotionRideSummary
-        initial={{ opacity: 0, y: "100%", x: "-50%" }}
-        animate={{ opacity: 1, y: 0, x: "-50%" }}
-        transition={{ type: "spring", duration: 1, delay: 0.5 }}
-      />
+      <ScreenDefault>
+        <MotionRideSummary
+          initial={{ opacity: 0, y: "100%", x: "-50%" }}
+          animate={{ opacity: 1, y: 0, x: "-50%" }}
+          transition={{ type: "spring", duration: 1, delay: 0.5 }}
+        />
+      </ScreenDefault>
+      <ScreenXL>
+        <MotionRideSummary
+          initial={{ opacity: 0, x: "-100%" }}
+          animate={{ opacity: 1, y: 0, x: "-50%" }}
+          transition={{ type: "spring", duration: 1, delay: 1 }}
+        />
+      </ScreenXL>
     </section>
   );
 }

@@ -6,7 +6,7 @@ import userPfp from "../assets/images/user_pfp.webp";
 
 export function Header(): React.JSX.Element {
   return (
-    <header className="relative z-10 w-full px-16 xl:px-12 lg:px-8 md:px-6 sm:px-4 pt-8 lg:pt-6 md:pt-5 sm:pt-4 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] justify-between items-center">
+    <header className="relative z-10 w-full px-16 xl:px-10 lg:px-8 md:px-6 sm:px-4 pt-8 lg:pt-6 md:pt-5 sm:pt-4 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] justify-between items-center">
       <div className="flex items-center gap-4 sm:gap-2">
         <button type="button" className="hidden lg:block">
           <HambergerMenu

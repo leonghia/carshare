@@ -1,5 +1,5 @@
 import { GeocodedWaypoint } from "./geocodeWaypoint";
-import { Route } from "./Route";
+import { Route } from "./route";
 
 export interface DirectionServiceResponse {
   routes: Route[];
