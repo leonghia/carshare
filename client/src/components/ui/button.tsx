@@ -194,19 +194,12 @@ const MotionButton = motion.create(UnmotionButton);
 //   <MotionButton whileTap={whileTap} {...props} />
 // );
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ hasLoader, asChild, isLoading }, ref) => {
-    return (
-      <MotionButton
-        ref={ref}
-        whileTap={{ y: "0.5rem" }}
-        hasLoader={hasLoader}
-        asChild={asChild}
-        isLoading={isLoading}
-      />
-    );
-  }
-);
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  ButtonProps & HTMLMotionProps<"button">
+>(({ whileTap = { y: "0.5rem" }, ...props }, ref) => {
+  return <MotionButton ref={ref} whileTap={whileTap} {...props} />;
+});
 
 Button.displayName = "Button";
 
