@@ -1,5 +1,6 @@
 import { Strength } from "@/components/ui/passwordField";
 import { clsx, type ClassValue } from "clsx";
+import { useMediaQuery } from "react-responsive";
 import { extendTailwindMerge } from "tailwind-merge";
 
 const customTwMerge = extendTailwindMerge({
