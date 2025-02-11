@@ -18,9 +18,11 @@ import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY } from "@/config/keys";
 import { GGMAPS_URL } from "@/config/urls";
 import { PlaceDetail } from "@/types/placeDetail";
 import { Route } from "@/types/Route";
-import { DirectionRequestParams } from "@/types/directionRequestParams";
-import { DirectionServiceResponse } from "@/types/directionServiceResponse";
 import { MotionRideSummary } from "./RideSummary";
+import {
+  DirectionRequestParams,
+  DirectionServiceResponse,
+} from "@/types/direction";
 
 interface Update {
   id: string;

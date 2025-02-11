@@ -5,7 +5,7 @@ import { FieldUpper as Left } from "./fieldUpper";
 import { FieldLabel } from "./fieldLabel";
 import { FieldInput } from "./fieldInput";
 import { FieldLower } from "./fieldLower";
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/styling";
 import { cva } from "class-variance-authority";
 import { ArrowUp2, ArrowDown2 } from "iconsax-react";
 

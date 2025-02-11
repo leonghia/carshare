@@ -1,4 +1,4 @@
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/styling";
 import React from "react";
 import { useField } from "./field";
 import { cva } from "class-variance-authority";

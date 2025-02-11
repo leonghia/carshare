@@ -1,5 +1,7 @@
-import { RideSummary as RideSummaryType } from "@/types/rideSummary";
-import { RideSummaryTab } from "@/types/rideSummaryTab";
+import {
+  RideSummaryTab,
+  RideSummary as RideSummaryType,
+} from "@/types/rideSummary";
 import {
   Calendar,
   Profile2User,

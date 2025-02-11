@@ -7,3 +7,8 @@ export interface RideSummary {
   pickup: string;
   destination: string;
 }
+
+export enum RideSummaryTab {
+  RideInfo,
+  DriverInfo,
+}

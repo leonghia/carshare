@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "@/utils/utils";
 import {
   Command,
   CommandEmpty,
@@ -20,6 +19,7 @@ import { FieldInput } from "./fieldInput";
 import { FieldLower } from "./fieldLower";
 import { useMediaQuery } from "react-responsive";
 import { FieldInner } from "./fieldInner";
+import { cn } from "@/utils/styling";
 
 export type Item = {
   id: string;

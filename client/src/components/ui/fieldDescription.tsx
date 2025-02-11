@@ -1,6 +1,6 @@
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/styling";
 import { motion } from "motion/react";
 import { useField } from "./field";
 

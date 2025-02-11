@@ -3,7 +3,7 @@ import { FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
 import { FieldInput } from "./fieldInput";
 import { FieldLabel } from "./fieldLabel";
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/styling";
 import { textVariants, FieldContainer, FieldStyles } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";

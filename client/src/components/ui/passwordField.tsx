@@ -8,9 +8,9 @@ import { FieldContainer, FieldStyles } from "./fieldContainer";
 import { FieldUpper } from "./fieldUpper";
 import { FieldLower } from "./fieldLower";
 import { FieldInner } from "./fieldInner";
-import { PasswordStrength, PasswordStrengthText } from "@/types/password";
 import { cn } from "@/utils/styling";
 import { calculatePasswordStrength } from "@/utils/password";
+import { PasswordStrength, PasswordStrengthText } from "@/types/password";
 
 const innerVariants = cva(undefined, {
   variants: {

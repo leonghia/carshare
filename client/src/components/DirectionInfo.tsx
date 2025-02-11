@@ -1,4 +1,4 @@
-import { cn } from "@/utils/utils";
+import { cn } from "@/utils/styling";
 import { Routing } from "iconsax-react";
 import { Hourglass } from "lucide-react";
 import { motion } from "motion/react";

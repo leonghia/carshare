@@ -2,9 +2,9 @@ import React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { motion } from "motion/react";
 
-import { cn } from "@/utils/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { MotionCheck } from "./motionCheck";
+import { cn } from "@/utils/styling";
 
 const containerVariants = cva("flex", {
   variants: {
