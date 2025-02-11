@@ -1,6 +1,6 @@
 import React from "react";
 import { textVariants, FieldContainer, FieldStyles } from "./fieldContainer";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { FieldLabel } from "./fieldLabel";
 import { useField } from "./field";
 import { FieldInput } from "./fieldInput";

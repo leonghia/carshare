@@ -1,15 +1,8 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Routing } from "iconsax-react";
 import { Hourglass } from "lucide-react";
 import { motion } from "motion/react";
 import React from "react";
-
-export interface DirectionRequestParams {
-  origin: string;
-  destination: string;
-  vehicle: "car";
-  api_key: string;
-}
 
 interface DirectionInfoProps extends React.ComponentPropsWithoutRef<"div"> {
   distanceText: string;
@@ -23,7 +16,7 @@ const DirectionInfoPrimitive = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "bg-background-900 rounded-3xl sm:rounded-xl px-6 sm:px-4 py-3 sm:py-2 grid grid-cols-[repeat(2,max-content)] gap-10 sm:gap-6 items-center",
+      "bg-background-900 rounded-3xl sm:rounded-2xl px-6 sm:px-4 py-4 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-10 sm:gap-6 items-center",
       className
     )}
   >

@@ -17,7 +17,7 @@ import { Button } from "./ui/button";
 import { CheckboxField } from "./ui/checkboxField";
 import { DatetimeField } from "./ui/datetimeField";
 import { QuantityField } from "./ui/quantityField";
-import { cn, formatDate, moneyFormatter, timeFormatter } from "@/lib/utils";
+import { cn, formatDate, moneyFormatter, timeFormatter } from "@/utils/utils";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { RadioGroup } from "./ui/radio-group";
 import carshareBasicIllustrator from "../assets/images/carshare_basic_illustrator.webp";
@@ -38,9 +38,18 @@ import ReactMapGL, {
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
 import { Marker } from "@/components/Marker";
-import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY, GGMAPS_URL } from "@/lib/config";
-import { DirectionServiceResponse, PlaceDetail, Route } from "@/lib/models";
-import { DirectionRequestParams, DirectionInfo } from "./DirectionInfo";
+import {
+  GGMAPS_API_KEY,
+  GGMAPS_MAPTILES_KEY,
+  GGMAPS_URL,
+} from "@/config/config";
+import {
+  DirectionRequestParams,
+  DirectionServiceResponse,
+  PlaceDetail,
+  Route,
+} from "@/lib/models";
+import { DirectionInfo } from "./DirectionInfo";
 import { RouteLine } from "./RouteLine";
 
 type BookStoreState = {

@@ -9,7 +9,7 @@ import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
 import { DateField } from "./ui/dateField";
 import { PasswordField } from "./ui/passwordField";
-import { calculatePasswordStrength, obscureEmail } from "@/lib/utils";
+import { calculatePasswordStrength, obscureEmail } from "@/utils/utils";
 import { CheckboxField } from "./ui/checkboxField";
 import React from "react";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";

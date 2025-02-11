@@ -2,7 +2,7 @@ import React from "react";
 import { Control, Controller } from "react-hook-form";
 import { useField } from "./field";
 import { Input } from "./input";
-import { cn, parseNumericValue, parseTelValue } from "@/lib/utils";
+import { cn, parseNumericValue, parseTelValue } from "@/utils/utils";
 
 interface FieldInputProps extends React.ComponentPropsWithoutRef<"input"> {
   fieldName: string;

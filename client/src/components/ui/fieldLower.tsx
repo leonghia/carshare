@@ -1,7 +1,7 @@
 import { AnimatePresence } from "motion/react";
 import React from "react";
 import { useField } from "./field";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { cva } from "class-variance-authority";
 import { MotionFieldMessage } from "./fieldMessage";
 import { MotionFieldDescription } from "./fieldDescription";

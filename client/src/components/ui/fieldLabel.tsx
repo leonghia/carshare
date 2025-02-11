@@ -2,7 +2,7 @@ import * as LabelPrimitive from "@radix-ui/react-label";
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 import { Label } from "./label";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { useField } from "./field";
 
 const fieldLabelVariants = cva(
