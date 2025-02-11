@@ -1,4 +1,4 @@
-import { Route } from "@/lib/models";
+import { Route } from "@/types/Route";
 import { Layer, Source } from "@goongmaps/goong-map-react";
 import polyline from "@mapbox/polyline";
 import React from "react";

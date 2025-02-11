@@ -9,7 +9,6 @@ import { Field } from "./ui/field";
 import { BasicField } from "./ui/basicField";
 import { DateField } from "./ui/dateField";
 import { PasswordField } from "./ui/passwordField";
-import { calculatePasswordStrength, obscureEmail } from "@/utils/utils";
 import { CheckboxField } from "./ui/checkboxField";
 import React from "react";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
@@ -18,6 +17,8 @@ import { VisuallyHidden } from "./ui/visuallyHidden";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router";
 import { PageTitle } from "./ui/pageTitle";
+import { calculatePasswordStrength } from "@/utils/password";
+import { obscureEmail } from "@/utils/email";
 
 export function Register(): JSX.Element {
   return (
