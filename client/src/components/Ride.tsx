@@ -13,18 +13,19 @@ import {
   Money4,
   MessageText1,
 } from "iconsax-react";
-import {
-  StaticMap,
-  MapRef,
-  WebMercatorViewport,
-  Source,
-  Layer,
-} from "@goongmaps/goong-map-react";
-import { GGMAPS_MAPTILES_KEY } from "@/lib/config";
+import { StaticMap, WebMercatorViewport } from "@goongmaps/goong-map-react";
+import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY, GGMAPS_URL } from "@/lib/config";
 import emptyDriverInfoIllustrator from "@/assets/images/empty_driver_info_illustration.webp";
 import driverPfp from "@/assets/images/driver_duong_van_hung_pfp.webp";
 import mercedesBenzC200 from "@/assets/images/mercedes-benz-c200.webp";
 import { AnimatePresence, motion, Target, Variants } from "motion/react";
+import { Marker } from "@/components/Marker";
+import axios from "axios";
+import { DirectionServiceResponse, PlaceDetail, Route } from "@/lib/models";
+import { DirectionRequestParams, DirectionInfo } from "./DirectionInfo";
+import { RouteLine } from "./RouteLine";
+import useMeasure from "react-use-measure";
+import { useMediaQuery } from "react-responsive";
 
 interface Update {
   id: string;
@@ -190,7 +191,10 @@ function LeftSection({
 }: React.ComponentPropsWithRef<"section">): React.JSX.Element {
   const { rideId } = useParams();
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ type: "tween", duration: 0.3, ease: "easeIn" }}
       className={cn(
         "pt-16 pb-12 grid gap-16 grid-rows-[repeat(2,min-content),minmax(0,1fr)]",
         className
@@ -204,7 +208,12 @@ function LeftSection({
         </p>
       </div>
       {/* Updates */}
-      <div className="w-full space-y-10">
+      <motion.div
+        initial={{ opacity: 0, x: "-50%" }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ type: "spring", duration: 1, delay: 0.5 }}
+        className="w-full space-y-10"
+      >
         <h2 className="w-full text-lg font-medium text-white">
           Cập nhật mới nhất
         </h2>
@@ -253,34 +262,183 @@ function LeftSection({
             );
           })}
         </ul>
-      </div>
+      </motion.div>
       {/* Cancel Button */}
       <Button intent="danger" className="w-[180px] h-[60px] self-end">
         Hủy cuốc xe
       </Button>
-    </section>
+    </motion.section>
   );
 }
 
+const pickupDetail: PlaceDetail = {
+  place_id:
+    "srd0DE7cDlJyuE1fqGq15WaqVgd-e5eZsoKtWNVJkl9l83nk-sboM-mbdPQCsk-WbfKtSO6yYm5h9eTwWqCKD83JXdKitGOHTf7tNWZtrm_J-gV4NrQ2Lm3ypViabDODb",
+  formatted_address: "Ngõ 133 Thái Hà, Trung Liệt, Đống Đa, Hà Nội",
+  geometry: {
+    location: {
+      lat: 21.0127586506918,
+      lng: 105.818695042825,
+    },
+  },
+  compound: {
+    district: "Đống Đa",
+    province: "Hà Nội",
+  },
+  name: "Ngõ 133 Thái Hà",
+};
+
+const destinationDetail: PlaceDetail = {
+  place_id:
+    "OtItv3aq_dRCpEJRZqGm5nO4TRJlvrGVQ9IzGwC_n991qE0WZJHv6nXTcRJZQoj9Y4sDCnWmnO5Fp1krX5SU6nC4YFJdlJS1cLRCVmSi0ZRxjlEOCApSEnHOmWSkDou-U",
+  formatted_address:
+    "Đại học Ngoại thương (cơ sở 1), 91 Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  geometry: {
+    location: {
+      lat: 21.023258776,
+      lng: 105.805451453,
+    },
+  },
+  compound: {
+    district: "Đống Đa",
+    province: "Hà Nội",
+  },
+  name: "FTU",
+};
+
 function RightSection(): React.JSX.Element {
+  const [route, setRoute] = React.useState<Route | null>(null);
+  const hasRoute = route ? true : false;
+  const [ref, bounds] = useMeasure();
+  const [viewport, setViewport] = React.useState<{
+    longitude: number;
+    latitude: number;
+    zoom: number;
+  }>();
+  const isQHD = useMediaQuery({ minWidth: 2560 });
+  const is4K = useMediaQuery({ minWidth: 3840 });
+  const is8K = useMediaQuery({ minWidth: 7680 });
+
+  const padding = React.useMemo(() => {
+    if (is8K)
+      return {
+        top: 1000,
+        bottom: 1200,
+        left: 600,
+        right: 600,
+      };
+
+    if (is4K)
+      return {
+        top: 500,
+        bottom: 600,
+        left: 300,
+        right: 300,
+      };
+
+    if (isQHD)
+      return {
+        top: 332.5,
+        bottom: 399,
+        left: 199.5,
+        right: 199.5,
+      };
+
+    return {
+      top: 250,
+      bottom: 300,
+      left: 150,
+      right: 150,
+    };
+  }, [isQHD, is4K, is8K]);
+
+  React.useEffect(() => {
+    if (bounds.width === 0 || bounds.height === 0) return;
+
+    const { longitude, latitude, zoom } = new WebMercatorViewport({
+      width: bounds.width,
+      height: bounds.height,
+    }).fitBounds(
+      [
+        [
+          pickupDetail.geometry.location.lng,
+          pickupDetail.geometry.location.lat,
+        ],
+        [
+          destinationDetail.geometry.location.lng,
+          destinationDetail.geometry.location.lat,
+        ],
+      ],
+      {
+        padding,
+        offset: [0, 0],
+      }
+    );
+    setViewport({ latitude, longitude, zoom });
+  }, [bounds.width, bounds.height, isQHD, is4K, is8K]);
+
+  React.useEffect(() => {
+    let ignoreDirection = false;
+    const directionRequestParams: DirectionRequestParams = {
+      origin: `${pickupDetail.geometry.location.lat},${pickupDetail.geometry.location.lng}`,
+      destination: `${destinationDetail.geometry.location.lat},${destinationDetail.geometry.location.lng}`,
+      vehicle: "car",
+      api_key: GGMAPS_API_KEY,
+    };
+    axios
+      .get<DirectionServiceResponse>(GGMAPS_URL + "/Direction", {
+        params: directionRequestParams,
+      })
+      .then((res) => {
+        const { routes, geocoded_waypoints } = res.data;
+        let isOK = geocoded_waypoints.every(
+          (waypoint) => waypoint.geocoder_status === "OK"
+        );
+        if (!isOK || ignoreDirection || !routes[0]) return;
+        setRoute(routes[0]);
+      })
+      .catch((err) => console.error(err));
+
+    return () => {
+      ignoreDirection = true;
+    };
+  }, []);
+
+  console.log("re-rendered");
+
   return (
-    <section className="relative min-h-[930px]">
+    <section ref={ref} className="relative min-h-[930px] overflow-y-hidden">
       {/* Vertical Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,1)85%,rgba(39,42,55,1)100%)]" />
       {/* Horizontal Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)40%)]" />
       {/* Map */}
-      <StaticMap
-        latitude={21.02686595596347}
-        longitude={105.85375738102857}
-        zoom={13}
-        width="100%"
-        height="100%"
-        mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
-        goongApiAccessToken={GGMAPS_MAPTILES_KEY}
+      {viewport && (
+        <StaticMap
+          latitude={viewport.latitude}
+          longitude={viewport.longitude}
+          zoom={viewport.zoom}
+          width="100%"
+          height="100%"
+          mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
+          goongApiAccessToken={GGMAPS_MAPTILES_KEY}
+        >
+          <Marker locationType="Pickup" placeDetail={pickupDetail} />
+          <Marker locationType="Destination" placeDetail={destinationDetail} />
+          {hasRoute && <RouteLine route={route} />}
+        </StaticMap>
+      )}
+      {/* Direction Info */}
+      <DirectionInfo
+        initial={{ opacity: 0, y: "-100%", x: "-50%" }}
+        animate={{ opacity: 1, y: 0, x: "-50%" }}
+        transition={{ type: "spring", duration: 1, delay: 1 }}
+        className="absolute w-max z-20 top-10 left-1/2"
+        distanceText="3,750m"
+        durationText="15 phút"
       />
       {/* Summary */}
-      <Summary className="absolute z-20 bottom-8 left-1/2 -translate-x-1/2 w-[87%] min-w-[750px] max-w-[800px] bg-background-900 rounded-4xl" />
+      <Summary />
     </section>
   );
 }
@@ -299,7 +457,7 @@ interface RideSummary {
   destination: string;
 }
 
-interface SummaryProps extends React.ComponentPropsWithRef<"div"> {
+interface SummaryProps {
   rideSummary?: RideSummary;
 }
 
@@ -322,11 +480,16 @@ const tabContentVariants: TabContentVariants = {
   },
 };
 
-function Summary({ className }: SummaryProps): React.JSX.Element {
+function Summary({ rideSummary }: SummaryProps): React.JSX.Element {
   const [selectedTab, setSelectedTab] = React.useState<Tab>(Tab.RideInfo);
 
   return (
-    <div className={cn(className)}>
+    <motion.div
+      initial={{ opacity: 0, y: "100%", x: "-50%" }}
+      animate={{ opacity: 1, y: 0, x: "-50%" }}
+      transition={{ type: "spring", duration: 1, delay: 0.5 }}
+      className="absolute z-20 bottom-8 left-1/2 w-[87%] min-w-[750px] max-w-[800px] bg-background-900 rounded-4xl"
+    >
       {/* Upper */}
       <div className="relative w-full border-b border-[#444755] flex">
         <input
@@ -530,6 +693,6 @@ function Summary({ className }: SummaryProps): React.JSX.Element {
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }
