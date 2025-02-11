@@ -1,39 +1,47 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 
-const ScreenDefault = ({
-  children,
-  minWidth = 1536,
-}: {
-  children: React.ReactNode;
-  minWidth?: number;
-}) => {
-  const isDefault = useMediaQuery({ minWidth });
+interface ScreenProps extends React.PropsWithChildren {
+  isCapturing?: boolean;
+}
+
+const ScreenDefault = ({ children }: ScreenProps) => {
+  const isDefault = useMediaQuery({ minWidth: 1536 });
   return isDefault ? children : null;
 };
 
-const Screen2XL = ({ children }: { children: React.ReactNode }) => {
-  const is2XL = useMediaQuery({ minWidth: 1280, maxWidth: 1535 });
+const Screen2XL = ({ children, isCapturing = true }: ScreenProps) => {
+  const is2XL = useMediaQuery(
+    isCapturing ? { maxWidth: 1535 } : { minWidth: 1280, maxWidth: 1535 }
+  );
   return is2XL ? children : null;
 };
 
-const ScreenXL = ({ children }: { children: React.ReactNode }) => {
-  const isXL = useMediaQuery({ minWidth: 1024, maxWidth: 1279 });
+const ScreenXL = ({ children, isCapturing = true }: ScreenProps) => {
+  const isXL = useMediaQuery(
+    isCapturing ? { maxWidth: 1279 } : { minWidth: 1024, maxWidth: 1279 }
+  );
   return isXL ? children : null;
 };
 
-const ScreenLG = ({ children }: { children: React.ReactNode }) => {
-  const isLG = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
+const ScreenLG = ({ children, isCapturing = true }: ScreenProps) => {
+  const isLG = useMediaQuery(
+    isCapturing ? { maxWidth: 1023 } : { minWidth: 768, maxWidth: 1023 }
+  );
   return isLG ? children : null;
 };
 
-const ScreenMD = ({ children }: { children: React.ReactNode }) => {
-  const isMD = useMediaQuery({ minWidth: 640, maxWidth: 767 });
+const ScreenMD = ({ children, isCapturing = true }: ScreenProps) => {
+  const isMD = useMediaQuery(
+    isCapturing ? { maxWidth: 767 } : { minWidth: 640, maxWidth: 767 }
+  );
   return isMD ? children : null;
 };
 
-const ScreenSM = ({ children }: { children: React.ReactNode }) => {
-  const isSM = useMediaQuery({ maxWidth: 639 });
+const ScreenSM = ({ children, isCapturing = true }: ScreenProps) => {
+  const isSM = useMediaQuery(
+    isCapturing ? { maxWidth: 639 } : { minWidth: 375, maxWidth: 639 }
+  );
   return isSM ? children : null;
 };
 
