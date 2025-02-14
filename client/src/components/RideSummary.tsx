@@ -47,7 +47,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
       <div
         ref={ref}
         className={cn(
-          "absolute z-20 bottom-8 left-1/2 w-full max-w-[700px] bg-background-900 rounded-4xl",
+          "absolute z-20 bottom-8 left-1/2 w-full max-w-[700px] bg-background-900 rounded-4xl sm:rounded-2xl",
           className
         )}
       >
@@ -63,7 +63,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
           />
           <label
             htmlFor="ride_info"
-            className="flex-none w-1/2 flex justify-center items-center text-sm font-normal text-foreground-600 cursor-pointer py-4 peer-checked/rideInfo:font-medium peer-checked/rideInfo:text-primary-500 transition-all duration-300 ease-out"
+            className="flex-none w-1/2 flex justify-center items-center text-sm sm:text-xs font-normal text-foreground-600 cursor-pointer py-4 sm:py-3 peer-checked/rideInfo:font-medium peer-checked/rideInfo:text-primary-500 transition-all duration-300 ease-out"
           >
             Thông tin cuốc xe
           </label>
@@ -77,14 +77,14 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
           />
           <label
             htmlFor="driver_info"
-            className="flex-none w-1/2 flex justify-center items-center text-sm font-normal text-foreground-600 cursor-pointer py-4 peer-checked/driverInfo:font-medium peer-checked/driverInfo:text-primary-500 transition-all duration-300 ease-out"
+            className="flex-none w-1/2 flex justify-center items-center text-sm sm:text-xs font-normal text-foreground-600 cursor-pointer py-4 sm:py-3 peer-checked/driverInfo:font-medium peer-checked/driverInfo:text-primary-500 transition-all duration-300 ease-out"
           >
             Thông tin tài xế
           </label>
-          <div className="absolute w-1/2 h-[3px] bg-primary-500 bottom-0 left-0 transition-all duration-300 ease-out peer-checked/rideInfo:translate-x-0 peer-checked/driverInfo:translate-x-full" />
+          <div className="absolute w-1/2 h-[3px] sm:h-[2px] bg-primary-500 bottom-0 left-0 transition-all duration-300 ease-out peer-checked/rideInfo:translate-x-0 peer-checked/driverInfo:translate-x-full" />
         </div>
         {/* Lower */}
-        <div className="w-full px-8 py-5 h-[168px]">
+        <div className="w-full px-8 sm:px-4 py-5 sm:py-3">
           {/* Ride Info */}
           <AnimatePresence mode="popLayout" initial={false}>
             {selectedTab === RideSummaryTab.RideInfo ? (
@@ -95,42 +95,42 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 animate="visible"
                 exit="hidden"
                 transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
-                className="w-full grid grid-cols-[repeat(5,max-content)] auto-rows-min justify-between gap-y-4 items-center"
+                className="w-full grid grid-cols-[repeat(5,max-content)] sm:grid-cols-[repeat(3,max-content)] auto-rows-min justify-between gap-y-4 sm:gap-y-2 items-center"
               >
                 {/* Datetime */}
                 <div className="flex items-center gap-2">
                   <Calendar
                     variant="Bold"
-                    className="flex-none size-5 text-foreground-500"
+                    className="flex-none size-5 sm:size-4 text-foreground-500"
                   />
-                  <span className="flex-none w-[38px] inline-block text-sm font-normal text-foreground-400">
+                  <span className="flex-none w-[38px] sm:w-[32px] inline-block text-sm sm:text-xs font-normal text-foreground-400">
                     15:00
                   </span>
-                  <span className="flex-none w-[82px] inline-block text-sm font-normal text-foreground-400">
+                  <span className="flex-none w-[82px] sm:w-[70px] inline-block text-sm sm:text-xs font-normal text-foreground-400">
                     02/02/2025
                   </span>
                 </div>
                 {/* Divider */}
-                <span className="inline-block w-px h-[14px] rounded bg-foreground-700" />
+                <span className="inline-block w-px h-[14px] sm:h-[10px] rounded bg-foreground-700" />
                 {/* Service */}
                 <div className="flex gap-2">
                   <SmartCar
                     variant="Bold"
-                    className="flex-none size-5 text-foreground-500 -translate-y-[2px]"
+                    className="flex-none size-5 sm:size-4 text-foreground-500 -translate-y-[2px]"
                   />
-                  <span className="inline-block flex-1 text-sm font-normal text-foreground-400">
+                  <span className="inline-block flex-1 text-sm sm:text-xs font-normal text-foreground-400">
                     Carshare Premium
                   </span>
                 </div>
                 {/* Divider */}
-                <span className="inline-block w-px h-[14px] rounded bg-foreground-700" />
+                <span className="sm:hidden inline-block w-px h-[14px] rounded bg-foreground-700" />
                 {/* Numbers of passengers */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 sm:row-start-4">
                   <Profile2User
                     variant="Bold"
-                    className="flex-none size-5 text-foreground-500"
+                    className="flex-none size-5 sm:size-4 text-foreground-500"
                   />
-                  <span className="inline-block text-sm font-normal text-foreground-400">
+                  <span className="inline-block text-sm sm:text-xs font-normal text-foreground-400">
                     2 hành khách
                   </span>
                 </div>
@@ -138,9 +138,9 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 <div className="col-span-full flex items-center gap-2">
                   <Location
                     variant="Bold"
-                    className="flex-none size-5 text-foreground-500"
+                    className="flex-none size-5 sm:size-4 text-foreground-500"
                   />
-                  <span className="flex-1 truncate text-sm font-normal text-foreground-400">
+                  <span className="flex-1 truncate text-sm sm:text-xs font-normal text-foreground-400">
                     37 ngõ 73 Giang Văn Minh, Đội Cấn, Ba Đình, Hà Nội
                   </span>
                 </div>
@@ -148,19 +148,19 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 <div className="col-span-full flex items-center gap-2">
                   <Flag
                     variant="Bold"
-                    className="flex-none size-5 text-foreground-500"
+                    className="flex-none size-5 sm:size-4 text-foreground-500"
                   />
-                  <span className="flex-1 truncate text-sm font-normal text-foreground-400">
+                  <span className="flex-1 truncate text-sm sm:text-xs font-normal text-foreground-400">
                     91 Chùa Láng, Láng Thượng, Đống Đa, Hà Nội
                   </span>
                 </div>
                 {/* Fare */}
-                <div className="col-span-full flex items-center gap-2 justify-self-center">
+                <div className="col-span-full flex items-center gap-2 justify-self-center sm:row-start-4 sm:col-span-2">
                   <Money4
                     variant="Bold"
-                    className="flex-none size-5 text-[#F59E0B]"
+                    className="flex-none size-5 sm:size-4 text-[#F59E0B]"
                   />
-                  <span className="flex-1 truncate text-sm font-medium text-[#F59E0B]">
+                  <span className="flex-1 truncate text-sm sm:text-xs font-medium text-[#F59E0B]">
                     124.800đ
                   </span>
                 </div>

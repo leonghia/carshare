@@ -8,7 +8,7 @@ import { StaticMap, WebMercatorViewport } from "@goongmaps/goong-map-react";
 import { motion } from "motion/react";
 import { Marker } from "@/components/Marker";
 import axios from "axios";
-import { DirectionInfo } from "./DirectionInfo";
+import { MotionDirectionInfo } from "./DirectionInfo";
 import { RouteLine } from "./RouteLine";
 import useMeasure from "react-use-measure";
 import { useMediaQuery } from "react-responsive";
@@ -23,7 +23,7 @@ import {
   DirectionRequestParams,
   DirectionServiceResponse,
 } from "@/types/direction";
-import { ScreenDefault, ScreenXL } from "./ui/screen";
+import { Dimensions, ScreenDefault, ScreenMD, ScreenXL } from "./ui/screen";
 
 interface Update {
   id: string;
@@ -170,28 +170,44 @@ const StatusIcon = ({
 };
 
 export function Ride(): React.JSX.Element {
+  const { rideId } = useParams();
+
   return (
     // Main
-    <main className="w-full pl-16 xl:pl-0 xl:pt-10">
+    <main className="w-full pl-16 xl:pl-0 xl:pt-10 lg:pt-8">
       {/* Wrapper */}
       <div className="ml-auto w-full h-full max-w-[1800px] grid grid-cols-[43%,minmax(0,1fr)] xl:grid-cols-1">
-        {/* Left Section */}
-        <LeftSection />
-        {/* Right Section */}
-        <RightSection />
+        {/* Title (MD and below) */}
+        <div className="hidden md:block w-full md:px-6 sm:px-4 space-y-1">
+          <PageTitle
+            classNames={{
+              text: "md:text-2xl sm:text-lg",
+              dot: "md:size-[6px] sm:size-4 md:translate-y-5",
+            }}
+          >
+            Cuốc xe của bạn
+          </PageTitle>
+          <p className="font-normal md:text-sm text-foreground-600">
+            ID #{rideId}
+          </p>
+        </div>
+        {/* Updates Section */}
+        <UpdatesSection />
+        {/* Map Section */}
+        <MapSection />
       </div>
     </main>
   );
 }
 
-function LeftSection(): React.JSX.Element {
+function UpdatesSection(): React.JSX.Element {
   const { rideId } = useParams();
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ type: "tween", duration: 0.3, ease: "easeIn" }}
-      className="relative z-10 pt-16 pb-12 xl:px-16 grid gap-16 grid-rows-[repeat(2,min-content),minmax(0,1fr)] xl:row-start-2"
+      className="relative z-10 pt-16 lg:pt-10 pb-12 lg:pb-10 md:py-10 xl:px-16 lg:px-10 md:px-6 grid gap-16 grid-rows-[repeat(2,min-content),minmax(0,1fr)] xl:grid-rows-[min-content,minmax(0,1fr)] xl:row-start-2 md:row-start-3"
     >
       {/* Title */}
       <div className="w-full space-y-2 xl:hidden">
@@ -257,15 +273,21 @@ function LeftSection(): React.JSX.Element {
         </ul>
       </motion.div>
       {/* Cancel Button */}
-      <Button
-        intent="danger"
-        className="w-[180px] h-[60px] self-end xl:justify-self-end"
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ type: "tween", duration: 0.3, ease: "easeIn", delay: 1 }}
+        transition={{
+          type: "tween",
+          duration: 0.3,
+          ease: "easeIn",
+          delay: 1,
+        }}
+        className="self-end xl:justify-self-end"
       >
-        Hủy cuốc xe
-      </Button>
+        <Button intent="danger" className="w-[180px] h-[60px]">
+          Hủy cuốc xe
+        </Button>
+      </motion.div>
     </motion.section>
   );
 }
@@ -305,7 +327,7 @@ const destinationDetail: PlaceDetail = {
   name: "FTU",
 };
 
-function RightSection(): React.JSX.Element {
+function MapSection(): React.JSX.Element {
   const { rideId } = useParams();
   const [route, setRoute] = React.useState<Route | null>(null);
   const hasRoute = route ? true : false;
@@ -315,10 +337,11 @@ function RightSection(): React.JSX.Element {
     latitude: number;
     zoom: number;
   }>();
-  const isQHD = useMediaQuery({ minWidth: 2560 });
-  const is4K = useMediaQuery({ minWidth: 3840 });
-  const is8K = useMediaQuery({ minWidth: 7680 });
-  const isXL = useMediaQuery({ maxWidth: 1279 });
+  const isQHD = useMediaQuery({ minWidth: Dimensions.QHD.min });
+  const is4K = useMediaQuery({ minWidth: Dimensions["4K"].min });
+  const is8K = useMediaQuery({ minWidth: Dimensions["8K"].min });
+  const isXL = useMediaQuery({ maxWidth: Dimensions.XL.max });
+  const isSM = useMediaQuery({ maxWidth: Dimensions.SM.max });
 
   const padding = React.useMemo(() => {
     if (is8K)
@@ -345,6 +368,7 @@ function RightSection(): React.JSX.Element {
         right: 199.5,
       };
 
+    if (isSM) return { top: 100, bottom: 200, right: 50, left: 50 };
     if (isXL) return { top: 250, bottom: 300, right: 150, left: 150 };
 
     return {
@@ -412,21 +436,28 @@ function RightSection(): React.JSX.Element {
   return (
     <section
       ref={ref}
-      className="relative z-0 min-h-[930px] overflow-y-hidden -ml-8 xl:ml-0"
+      className="relative z-0 min-h-[930px] lg:min-h-[850px] sm:min-h-[550px] overflow-y-hidden -ml-8 xl:ml-0"
     >
       {/* Vertical Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,1)85%,rgba(39,42,55,1)100%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,0.9)80%,rgba(39,42,55,1)100%)]" />
       {/* Horizontal Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)40%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.4)0%,rgba(39,42,55,0.2)50%,rgba(39,42,55,0.4)100%)]" />
-      {/* Title (XL only) */}
+      {/* Title (XL and LG only) */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ type: "tween", duration: 0.3, ease: "easeIn" }}
-        className="hidden xl:block absolute z-20 top-10 left-10 w-max space-y-2"
+        className="hidden xl:block md:hidden absolute z-20 top-10 left-10 lg:left-8 w-max space-y-2"
       >
-        <PageTitle title="Cuốc xe của bạn" />
-        <p className="text-base font-normal text-foreground-600">
+        <PageTitle
+          title="Cuốc xe của bạn"
+          classNames={{
+            root: "lg:gap-1",
+            text: "lg:text-2xl",
+            dot: "lg:size-[6px] lg:translate-y-5",
+          }}
+        />
+        <p className="text-base lg:text-sm font-normal text-foreground-600">
           ID #{rideId}
         </p>
       </motion.div>
@@ -447,18 +478,36 @@ function RightSection(): React.JSX.Element {
         </StaticMap>
       )}
       {/* Direction Info */}
-      <DirectionInfo
-        initial={
-          isXL
-            ? { opacity: 0, x: "100%" }
-            : { opacity: 0, y: "-100%", x: "-50%" }
-        }
-        animate={isXL ? { opacity: 1, x: 0 } : { opacity: 1, y: 0, x: "-50%" }}
-        transition={{ type: "spring", duration: 1, delay: 1 }}
-        className="absolute w-max z-20 top-10 xl:top-8 left-1/2 xl:left-auto xl:right-10"
-        distanceText="3,750m"
-        durationText="15 phút"
-      />
+      <ScreenDefault>
+        <MotionDirectionInfo
+          initial={{ opacity: 0, y: "-100%", x: "-50%" }}
+          animate={{ opacity: 1, y: 0, x: "-50%" }}
+          transition={{ type: "spring", duration: 1, delay: 1 }}
+          className="absolute w-max z-20 top-10 xl:top-8 left-1/2 xl:left-auto xl:right-10"
+          distanceText="3,750m"
+          durationText="15 phút"
+        />
+      </ScreenDefault>
+      <ScreenXL from="LG">
+        <MotionDirectionInfo
+          initial={{ opacity: 0, x: "100%" }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: "spring", duration: 1, delay: 1 }}
+          className="absolute w-max z-20 top-10 xl:top-8 left-1/2 xl:left-auto xl:right-10 lg:right-6"
+          distanceText="3,750m"
+          durationText="15 phút"
+        />
+      </ScreenXL>
+      <ScreenMD>
+        <MotionDirectionInfo
+          initial={{ opacity: 0, x: "100%" }}
+          animate={{ opacity: 1, x: "-50%" }}
+          transition={{ type: "spring", duration: 1, delay: 1 }}
+          className="absolute w-max z-20 top-10 xl:top-8 left-1/2"
+          distanceText="3,750m"
+          durationText="15 phút"
+        />
+      </ScreenMD>
       {/* Summary */}
       <ScreenDefault>
         <MotionRideSummary
@@ -467,13 +516,21 @@ function RightSection(): React.JSX.Element {
           transition={{ type: "spring", duration: 1, delay: 0.5 }}
         />
       </ScreenDefault>
-      <ScreenXL>
+      <ScreenXL from="LG">
         <MotionRideSummary
           initial={{ opacity: 0, x: "-100%" }}
           animate={{ opacity: 1, y: 0, x: "-50%" }}
           transition={{ type: "spring", duration: 1, delay: 1 }}
         />
       </ScreenXL>
+      <ScreenMD>
+        <MotionRideSummary
+          initial={{ opacity: 0, x: "-100%" }}
+          animate={{ opacity: 1, y: 0, x: "-50%" }}
+          transition={{ type: "spring", duration: 1, delay: 1 }}
+          className="md:max-w-[calc(100%-2*24px)] sm:max-w-[calc(100%-2*16px)]"
+        />
+      </ScreenMD>
     </section>
   );
 }

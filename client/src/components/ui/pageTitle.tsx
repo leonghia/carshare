@@ -3,7 +3,6 @@ import React from "react";
 
 interface PageTitleProps
   extends Omit<React.ComponentPropsWithoutRef<"div">, "className"> {
-  title: string;
   classNames?: {
     root?: string;
     text?: string;
@@ -12,7 +11,7 @@ interface PageTitleProps
 }
 
 const PageTitle = React.forwardRef<HTMLDivElement, PageTitleProps>(
-  ({ title, classNames, ...props }, ref) => (
+  ({ classNames, children, ...props }, ref) => (
     <div
       ref={ref}
       className={cn("flex gap-2 sm:gap-1", classNames?.root)}
@@ -24,7 +23,7 @@ const PageTitle = React.forwardRef<HTMLDivElement, PageTitleProps>(
           classNames?.text
         )}
       >
-        {title}
+        {children}
       </h1>
       <span
         className={cn(

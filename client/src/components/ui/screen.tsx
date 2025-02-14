@@ -1,13 +1,6 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 
-const checkScreen = (from?: Screen, to?: Screen): void => {
-  if (!from && !to) throw new Error("either from or to must be specified");
-  if (from && to && Dimensions[from] >= Dimensions[to])
-    throw new Error("from must not be greater than to");
-  return;
-};
-
 type Screen =
   | "8K"
   | "4K"
@@ -39,7 +32,6 @@ interface ScreenProps extends React.PropsWithChildren {
 }
 
 const ScreenDefault = ({ children, to }: ScreenProps) => {
-  checkScreen("Default", to);
   const isDefault = useMediaQuery(
     to
       ? { minWidth: Dimensions.Default.min, maxWidth: Dimensions[to].max }
@@ -49,7 +41,6 @@ const ScreenDefault = ({ children, to }: ScreenProps) => {
 };
 
 const Screen2XL = ({ children, from }: ScreenProps) => {
-  checkScreen("2XL", from);
   const is2XL = useMediaQuery(
     from
       ? { minWidth: Dimensions[from].min, maxWidth: Dimensions["2XL"].max }
@@ -59,7 +50,6 @@ const Screen2XL = ({ children, from }: ScreenProps) => {
 };
 
 const ScreenXL = ({ children, from }: ScreenProps) => {
-  checkScreen("XL", from);
   const isXL = useMediaQuery(
     from
       ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.XL.max }
@@ -69,7 +59,6 @@ const ScreenXL = ({ children, from }: ScreenProps) => {
 };
 
 const ScreenLG = ({ children, from }: ScreenProps) => {
-  checkScreen("LG", from);
   const isLG = useMediaQuery(
     from
       ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.LG.max }
@@ -79,7 +68,6 @@ const ScreenLG = ({ children, from }: ScreenProps) => {
 };
 
 const ScreenMD = ({ children, from }: ScreenProps) => {
-  checkScreen("MD", from);
   const isMD = useMediaQuery(
     from
       ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.MD.max }
@@ -89,7 +77,6 @@ const ScreenMD = ({ children, from }: ScreenProps) => {
 };
 
 const ScreenSM = ({ children, from }: ScreenProps) => {
-  checkScreen("SM", from);
   const isSM = useMediaQuery(
     from
       ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.SM.max }

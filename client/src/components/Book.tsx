@@ -37,7 +37,7 @@ import ReactMapGL, {
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
 import { Marker } from "@/components/Marker";
-import { DirectionInfo } from "./DirectionInfo";
+import { DirectionInfo, MotionDirectionInfo } from "./DirectionInfo";
 import { RouteLine } from "./RouteLine";
 import { PlaceDetail } from "@/types/placeDetail";
 import { Route } from "@/types/route";
@@ -432,7 +432,7 @@ function RightSection({
       </ReactMapGL>
       <AnimatePresence>
         {route && (
-          <DirectionInfo
+          <MotionDirectionInfo
             initial={{ opacity: 0, y: 100, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 100, x: "-50%", transition: { delay: 0 } }}
