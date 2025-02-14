@@ -17,6 +17,7 @@ import emptyDriverInfoIllustrator from "@/assets/images/empty_driver_info_illust
 import driverPfp from "@/assets/images/driver_duong_van_hung_pfp.webp";
 import mercedesBenzC200 from "@/assets/images/mercedes-benz-c200.webp";
 import { Button } from "./ui/button";
+import { cn } from "@/utils/styling";
 
 interface RideSummaryProps extends React.ComponentPropsWithoutRef<"div"> {
   rideSummary: RideSummaryType;
@@ -37,7 +38,7 @@ const tabContentVariants: TabContentVariants = {
 };
 
 const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
-  ({ rideSummary }, ref) => {
+  ({ rideSummary, className }, ref) => {
     const [selectedTab, setSelectedTab] = React.useState<RideSummaryTab>(
       RideSummaryTab.RideInfo
     );
@@ -45,7 +46,10 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
     return (
       <div
         ref={ref}
-        className="absolute z-20 bottom-8 left-1/2 w-[87%] min-w-[750px] 2xl:min-w-[660px] max-w-[800px] xl:max-w-[750px] bg-background-900 rounded-4xl"
+        className={cn(
+          "absolute z-20 bottom-8 left-1/2 w-full max-w-[700px] bg-background-900 rounded-4xl",
+          className
+        )}
       >
         {/* Upper */}
         <div className="relative w-full border-b border-[#444755] flex">
@@ -91,7 +95,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 animate="visible"
                 exit="hidden"
                 transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
-                className="w-full grid grid-cols-[repeat(5,max-content)_minmax(0,1fr)] auto-rows-min gap-x-10 gap-y-4 items-center"
+                className="w-full grid grid-cols-[repeat(5,max-content)] auto-rows-min justify-between gap-y-4 items-center"
               >
                 {/* Datetime */}
                 <div className="flex items-center gap-2">
@@ -209,7 +213,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                   </Button>
                 </div>
                 <div className="w-full flex items-center gap-8">
-                  <div className="flex-none w-[24%] space-y-1">
+                  <div className="flex-none w-[24%] md:w-[150px] space-y-1">
                     <p className="text-xs font-normal text-foreground-600">
                       Phương tiện
                     </p>
@@ -217,7 +221,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                       Mercedes-Benz C200
                     </p>
                   </div>
-                  <div className="flex-none w-[15%] space-y-1">
+                  <div className="flex-none w-[15%] md:w-[100px] space-y-1">
                     <p className="text-xs font-normal text-foreground-600">
                       Biển kiểm soát
                     </p>
