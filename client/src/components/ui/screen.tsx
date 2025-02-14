@@ -1,48 +1,114 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 
+const checkScreen = (from?: Screen, to?: Screen): void => {
+  if (!from && !to) throw new Error("either from or to must be specified");
+  if (from && to && Dimensions[from] >= Dimensions[to])
+    throw new Error("from must not be greater than to");
+  return;
+};
+
+type Screen =
+  | "8K"
+  | "4K"
+  | "QHD"
+  | "Default"
+  | "2XL"
+  | "XL"
+  | "LG"
+  | "MD"
+  | "SM"
+  | "XS";
+
+const Dimensions: Record<Screen, { min?: number; max?: number }> = {
+  "8K": { min: 7680 },
+  "4K": { min: 3840, max: 7679 },
+  QHD: { min: 2560, max: 3839 },
+  Default: { min: 1536, max: 2559 },
+  "2XL": { min: 1280, max: 1535 },
+  XL: { min: 1024, max: 1279 },
+  LG: { min: 768, max: 1023 },
+  MD: { min: 640, max: 767 },
+  SM: { min: 375, max: 639 },
+  XS: { min: 0, max: 374 },
+};
+
 interface ScreenProps extends React.PropsWithChildren {
-  isCapturing?: boolean;
+  from?: Screen;
+  to?: Screen;
 }
 
-const ScreenDefault = ({ children }: ScreenProps) => {
-  const isDefault = useMediaQuery({ minWidth: 1536 });
+const ScreenDefault = ({ children, to }: ScreenProps) => {
+  checkScreen("Default", to);
+  const isDefault = useMediaQuery(
+    to
+      ? { minWidth: Dimensions.Default.min, maxWidth: Dimensions[to].max }
+      : { minWidth: Dimensions.Default.min }
+  );
   return isDefault ? children : null;
 };
 
-const Screen2XL = ({ children, isCapturing = true }: ScreenProps) => {
+const Screen2XL = ({ children, from }: ScreenProps) => {
+  checkScreen("2XL", from);
   const is2XL = useMediaQuery(
-    isCapturing ? { maxWidth: 1535 } : { minWidth: 1280, maxWidth: 1535 }
+    from
+      ? { minWidth: Dimensions[from].min, maxWidth: Dimensions["2XL"].max }
+      : { maxWidth: Dimensions["2XL"].max }
   );
   return is2XL ? children : null;
 };
 
-const ScreenXL = ({ children, isCapturing = true }: ScreenProps) => {
+const ScreenXL = ({ children, from }: ScreenProps) => {
+  checkScreen("XL", from);
   const isXL = useMediaQuery(
-    isCapturing ? { maxWidth: 1279 } : { minWidth: 1024, maxWidth: 1279 }
+    from
+      ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.XL.max }
+      : { maxWidth: Dimensions.XL.max }
   );
   return isXL ? children : null;
 };
 
-const ScreenLG = ({ children, isCapturing = true }: ScreenProps) => {
+const ScreenLG = ({ children, from }: ScreenProps) => {
+  checkScreen("LG", from);
   const isLG = useMediaQuery(
-    isCapturing ? { maxWidth: 1023 } : { minWidth: 768, maxWidth: 1023 }
+    from
+      ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.LG.max }
+      : { maxWidth: Dimensions.LG.max }
   );
   return isLG ? children : null;
 };
 
-const ScreenMD = ({ children, isCapturing = true }: ScreenProps) => {
+const ScreenMD = ({ children, from }: ScreenProps) => {
+  checkScreen("MD", from);
   const isMD = useMediaQuery(
-    isCapturing ? { maxWidth: 767 } : { minWidth: 640, maxWidth: 767 }
+    from
+      ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.MD.max }
+      : { maxWidth: Dimensions.MD.max }
   );
   return isMD ? children : null;
 };
 
-const ScreenSM = ({ children, isCapturing = true }: ScreenProps) => {
+const ScreenSM = ({ children, from }: ScreenProps) => {
+  checkScreen("SM", from);
   const isSM = useMediaQuery(
-    isCapturing ? { maxWidth: 639 } : { minWidth: 375, maxWidth: 639 }
+    from
+      ? { minWidth: Dimensions[from].min, maxWidth: Dimensions.SM.max }
+      : { maxWidth: Dimensions.SM.max }
   );
   return isSM ? children : null;
 };
 
-export { ScreenDefault, Screen2XL, ScreenXL, ScreenLG, ScreenMD, ScreenSM };
+const ScreenXS = ({ children }: ScreenProps) => {
+  const isXS = useMediaQuery({ maxWidth: Dimensions.XS.max });
+  return isXS ? children : null;
+};
+
+export {
+  ScreenDefault,
+  Screen2XL,
+  ScreenXL,
+  ScreenLG,
+  ScreenMD,
+  ScreenSM,
+  Dimensions,
+};
