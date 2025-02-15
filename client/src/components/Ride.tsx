@@ -174,7 +174,7 @@ export function Ride(): React.JSX.Element {
 
   return (
     // Main
-    <main className="w-full pl-16 xl:pl-0 xl:pt-10 lg:pt-8">
+    <main className="w-full pl-16 xl:pl-0 xl:pt-10 lg:pt-8 sm:pt-6">
       {/* Wrapper */}
       <div className="ml-auto w-full h-full max-w-[1800px] grid grid-cols-[43%,minmax(0,1fr)] xl:grid-cols-1">
         {/* Title (MD and below) */}
@@ -182,12 +182,12 @@ export function Ride(): React.JSX.Element {
           <PageTitle
             classNames={{
               text: "md:text-2xl sm:text-lg",
-              dot: "md:size-[6px] sm:size-4 md:translate-y-5",
+              dot: "md:size-[6px] sm:size-1 md:translate-y-5 sm:translate-y-4",
             }}
           >
             Cuốc xe của bạn
           </PageTitle>
-          <p className="font-normal md:text-sm text-foreground-600">
+          <p className="font-normal md:text-sm sm:text-xs text-foreground-600">
             ID #{rideId}
           </p>
         </div>
@@ -202,16 +202,17 @@ export function Ride(): React.JSX.Element {
 
 function UpdatesSection(): React.JSX.Element {
   const { rideId } = useParams();
+  const isSM = useMediaQuery({ maxWidth: Dimensions.SM.max });
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ type: "tween", duration: 0.3, ease: "easeIn" }}
-      className="relative z-10 pt-16 lg:pt-10 pb-12 lg:pb-10 md:py-10 xl:px-16 lg:px-10 md:px-6 grid gap-16 grid-rows-[repeat(2,min-content),minmax(0,1fr)] xl:grid-rows-[min-content,minmax(0,1fr)] xl:row-start-2 md:row-start-3"
+      className="relative z-10 pt-16 lg:pt-10 pb-12 lg:pb-10 md:py-10 sm:py-8 xl:px-16 lg:px-10 md:px-6 sm:px-4 grid gap-16 sm:gap-10 grid-rows-[repeat(2,min-content),minmax(0,1fr)] xl:grid-rows-[min-content,minmax(0,1fr)] xl:row-start-2 md:row-start-3"
     >
       {/* Title */}
       <div className="w-full space-y-2 xl:hidden">
-        <PageTitle title="Cuốc xe của bạn" />
+        <PageTitle>Cuốc xe của bạn</PageTitle>
         <p className="text-base font-normal text-foreground-600">
           ID #{rideId}
         </p>
@@ -221,14 +222,14 @@ function UpdatesSection(): React.JSX.Element {
         initial={{ opacity: 0, x: "-50%" }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: "spring", duration: 1, delay: 0.5 }}
-        className="w-full space-y-10 xl:max-w-[750px] xl:justify-self-center"
+        className="w-full space-y-10 sm:space-y-5 xl:max-w-[750px] xl:justify-self-center"
       >
-        <h2 className="w-full text-lg font-medium text-white">
+        <h2 className="w-full text-lg sm:text-base font-medium text-white">
           Cập nhật mới nhất
         </h2>
         {/* List */}
-        <ul className="relative w-full space-y-8">
-          <div className="absolute w-px h-[calc(100%-32px)] bottom-1 left-4 border-r-divider border-r border-dashed" />
+        <ul className="relative w-full space-y-8 sm:space-y-5">
+          <div className="absolute w-px h-[calc(100%-32px)] sm:h-[calc(100%-30px)] bottom-1 sm:bottom-0 left-4 sm:left-3 border-r-divider border-r border-dashed" />
           {updates.map((update, i) => {
             const isHighlight = i === 0 && !update.isRead;
             return (
@@ -236,31 +237,31 @@ function UpdatesSection(): React.JSX.Element {
                 {/* Icon */}
                 <div
                   className={cn(
-                    "flex-none size-8 rounded-full flex items-center justify-center -translate-y-1",
+                    "flex-none size-8 sm:size-6 rounded-full flex items-center justify-center -translate-y-1 sm:translate-y-1",
                     isHighlight ? "bg-primary-flat" : "bg-background-900"
                   )}
                 >
                   <StatusIcon
                     status={update.status}
                     className={cn(
-                      "size-4",
+                      "size-1/2",
                       isHighlight ? "text-primary-500" : "text-foreground-600"
                     )}
                   />
                 </div>
                 {/* Content */}
-                <div className="flex-1 min-w-0 flex gap-10">
-                  <div className="flex gap-8">
-                    <p className="text-base font-normal text-foreground-600">
+                <div className="flex-1 min-w-0 grid grid-cols-[repeat(2,minmax(0,max-content))] sm:grid-cols-1 gap-10 sm:gap-1">
+                  <div className="flex gap-8 sm:gap-4">
+                    <p className="text-base sm:text-xs font-normal text-foreground-600">
                       {formatDate(update.createdAt)}
                     </p>
-                    <p className="text-base font-normal text-foreground-600">
+                    <p className="text-base sm:text-xs font-normal text-foreground-600">
                       {timeFormatter.format(update.createdAt)}
                     </p>
                   </div>
                   <p
                     className={cn(
-                      "text-base font-normal",
+                      "text-base sm:text-sm font-normal",
                       isHighlight ? "text-primary-500" : "text-foreground-300"
                     )}
                   >
@@ -282,9 +283,13 @@ function UpdatesSection(): React.JSX.Element {
           ease: "easeIn",
           delay: 1,
         }}
-        className="self-end xl:justify-self-end"
+        className="self-end xl:justify-self-end sm:justify-self-stretch"
       >
-        <Button intent="danger" className="w-[180px] h-[60px]">
+        <Button
+          intent="danger"
+          className="w-[180px] sm:w-full h-[60px] sm:h-[56px]"
+          size={isSM ? "small" : "default"}
+        >
           Hủy cuốc xe
         </Button>
       </motion.div>
@@ -368,7 +373,7 @@ function MapSection(): React.JSX.Element {
         right: 199.5,
       };
 
-    if (isSM) return { top: 100, bottom: 200, right: 50, left: 50 };
+    if (isSM) return { top: 100, bottom: 200, right: 60, left: 60 };
     if (isXL) return { top: 250, bottom: 300, right: 150, left: 150 };
 
     return {
@@ -439,7 +444,7 @@ function MapSection(): React.JSX.Element {
       className="relative z-0 min-h-[930px] lg:min-h-[850px] sm:min-h-[550px] overflow-y-hidden -ml-8 xl:ml-0"
     >
       {/* Vertical Overlay */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,1)85%,rgba(39,42,55,1)100%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,0.9)80%,rgba(39,42,55,1)100%)]" />
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,1)85%,rgba(39,42,55,1)100%)] xl:bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,0.9)80%,rgba(39,42,55,1)100%)] sm:bg-[linear-gradient(rgba(39,42,55,1)0%,rgba(39,42,55,1)10%,rgba(39,42,55,0)50%,rgba(39,42,55,1)80%,rgba(39,42,55,1)100%)]" />
       {/* Horizontal Overlay */}
       <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.1)40%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.4)0%,rgba(39,42,55,0.2)50%,rgba(39,42,55,0.4)100%)]" />
       {/* Title (XL and LG only) */}
@@ -450,13 +455,14 @@ function MapSection(): React.JSX.Element {
         className="hidden xl:block md:hidden absolute z-20 top-10 left-10 lg:left-8 w-max space-y-2"
       >
         <PageTitle
-          title="Cuốc xe của bạn"
           classNames={{
             root: "lg:gap-1",
             text: "lg:text-2xl",
             dot: "lg:size-[6px] lg:translate-y-5",
           }}
-        />
+        >
+          Cuốc xe của bạn
+        </PageTitle>
         <p className="text-base lg:text-sm font-normal text-foreground-600">
           ID #{rideId}
         </p>
@@ -493,7 +499,7 @@ function MapSection(): React.JSX.Element {
           initial={{ opacity: 0, x: "100%" }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ type: "spring", duration: 1, delay: 1 }}
-          className="absolute w-max z-20 top-10 xl:top-8 left-1/2 xl:left-auto xl:right-10 lg:right-6"
+          className="absolute w-max z-20 top-10 right-6"
           distanceText="3,750m"
           durationText="15 phút"
         />
@@ -503,7 +509,7 @@ function MapSection(): React.JSX.Element {
           initial={{ opacity: 0, x: "100%" }}
           animate={{ opacity: 1, x: "-50%" }}
           transition={{ type: "spring", duration: 1, delay: 1 }}
-          className="absolute w-max z-20 top-10 xl:top-8 left-1/2"
+          className="absolute w-max z-20 top-10 sm:top-4 left-1/2"
           distanceText="3,750m"
           durationText="15 phút"
         />
@@ -528,7 +534,7 @@ function MapSection(): React.JSX.Element {
           initial={{ opacity: 0, x: "-100%" }}
           animate={{ opacity: 1, y: 0, x: "-50%" }}
           transition={{ type: "spring", duration: 1, delay: 1 }}
-          className="md:max-w-[calc(100%-2*24px)] sm:max-w-[calc(100%-2*16px)]"
+          className="md:max-w-[calc(100%-2*24px)] sm:max-w-[calc(100%-2*16px)] sm:bottom-4"
         />
       </ScreenMD>
     </section>

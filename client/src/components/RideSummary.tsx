@@ -18,6 +18,8 @@ import driverPfp from "@/assets/images/driver_duong_van_hung_pfp.webp";
 import mercedesBenzC200 from "@/assets/images/mercedes-benz-c200.webp";
 import { Button } from "./ui/button";
 import { cn } from "@/utils/styling";
+import { useMediaQuery } from "react-responsive";
+import { Dimensions } from "./ui/screen";
 
 interface RideSummaryProps extends React.ComponentPropsWithoutRef<"div"> {
   rideSummary: RideSummaryType;
@@ -42,6 +44,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
     const [selectedTab, setSelectedTab] = React.useState<RideSummaryTab>(
       RideSummaryTab.RideInfo
     );
+    const isSM = useMediaQuery({ maxWidth: Dimensions.SM.max });
 
     return (
       <div
@@ -84,7 +87,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
           <div className="absolute w-1/2 h-[3px] sm:h-[2px] bg-primary-500 bottom-0 left-0 transition-all duration-300 ease-out peer-checked/rideInfo:translate-x-0 peer-checked/driverInfo:translate-x-full" />
         </div>
         {/* Lower */}
-        <div className="w-full px-8 sm:px-4 py-5 sm:py-3">
+        <div className="w-full px-8 sm:px-4 py-5 sm:py-3 min-h-[168px] sm:min-h-[112px]">
           {/* Ride Info */}
           <AnimatePresence mode="popLayout" initial={false}>
             {selectedTab === RideSummaryTab.RideInfo ? (
@@ -95,10 +98,10 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 animate="visible"
                 exit="hidden"
                 transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
-                className="w-full grid grid-cols-[repeat(5,max-content)] sm:grid-cols-[repeat(3,max-content)] auto-rows-min justify-between gap-y-4 sm:gap-y-2 items-center"
+                className="w-full grid grid-cols-[repeat(5,max-content)] sm:grid-cols-[repeat(3,minmax(0,max-content))] auto-rows-min justify-between gap-y-4 sm:gap-y-2 items-center"
               >
                 {/* Datetime */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 sm:col-start-1 sm:row-start-1">
                   <Calendar
                     variant="Bold"
                     className="flex-none size-5 sm:size-4 text-foreground-500"
@@ -113,7 +116,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 {/* Divider */}
                 <span className="inline-block w-px h-[14px] sm:h-[10px] rounded bg-foreground-700" />
                 {/* Service */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 sm:row-start-4">
                   <SmartCar
                     variant="Bold"
                     className="flex-none size-5 sm:size-4 text-foreground-500 -translate-y-[2px]"
@@ -125,7 +128,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 {/* Divider */}
                 <span className="sm:hidden inline-block w-px h-[14px] rounded bg-foreground-700" />
                 {/* Numbers of passengers */}
-                <div className="flex items-center gap-2 sm:row-start-4">
+                <div className="flex items-center gap-2 sm:row-start-1 sm:col-start-3">
                   <Profile2User
                     variant="Bold"
                     className="flex-none size-5 sm:size-4 text-foreground-500"
@@ -155,7 +158,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                   </span>
                 </div>
                 {/* Fare */}
-                <div className="col-span-full flex items-center gap-2 justify-self-center sm:row-start-4 sm:col-span-2">
+                <div className="col-span-full flex items-center gap-2 justify-self-center sm:row-start-4 sm:col-span-2 sm:justify-self-end sm:pl-6">
                   <Money4
                     variant="Bold"
                     className="flex-none size-5 sm:size-4 text-[#F59E0B]"
@@ -176,16 +179,16 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 className="w-full space-y-4"
               >
                 <div className="w-full grid grid-cols-[repeat(2,max-content)] justify-between items-center">
-                  <div className="flex items-center gap-4">
-                    <figure className="flex-none size-[60px] rounded-full bg-background-800 overflow-hidden">
+                  <div className="flex items-center gap-4 sm:gap-3">
+                    <figure className="flex-none size-[60px] sm:size-10 rounded-full bg-background-800 overflow-hidden">
                       <img
                         src={driverPfp}
                         alt="driver profile picture"
-                        className="size-full object-contain"
+                        className="size-full object-contain object-bottom"
                       />
                     </figure>
-                    <div className="space-y-2">
-                      <p className="max-w-[260px] truncate text-base font-medium text-white">
+                    <div className="space-y-2 sm:space-y-1">
+                      <p className="max-w-[260px] truncate text-base sm:text-xs font-medium text-white">
                         Dương Văn Hùng
                       </p>
                       <div className="flex items-center gap-1">
@@ -193,7 +196,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="currentColor"
-                          className="size-4 text-[#F59E0B]"
+                          className="size-4 sm:size-[10px] text-[#F59E0B]"
                         >
                           <path
                             fillRule="evenodd"
@@ -201,35 +204,39 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                             clipRule="evenodd"
                           />
                         </svg>
-                        <span className="text-sm font-normal text-[#F59E0B]">
+                        <span className="text-sm sm:text-xxs font-normal text-[#F59E0B]">
                           4.9
                         </span>
                       </div>
                     </div>
                   </div>
-                  <Button intent="secondary" size="small">
+                  <Button
+                    intent="secondary"
+                    size={isSM ? "extraSmall" : "small"}
+                    iconOnly={isSM}
+                  >
                     <MessageText1 variant="Bold" />
-                    Nhắn tin
+                    {!isSM && "Nhắn tin"}
                   </Button>
                 </div>
-                <div className="w-full flex items-center gap-8">
-                  <div className="flex-none w-[24%] md:w-[150px] space-y-1">
-                    <p className="text-xs font-normal text-foreground-600">
+                <div className="w-full flex items-center gap-8 sm:gap-0 sm:justify-between">
+                  <div className="flex-none w-[24%] md:w-[150px] space-y-1 sm:space-y-0">
+                    <p className="text-xs sm:text-xxs font-normal text-foreground-600">
                       Phương tiện
                     </p>
-                    <p className="text-sm font-medium text-foreground-300 truncate">
+                    <p className="text-sm sm:text-xs font-medium text-foreground-300 truncate">
                       Mercedes-Benz C200
                     </p>
                   </div>
-                  <div className="flex-none w-[15%] md:w-[100px] space-y-1">
-                    <p className="text-xs font-normal text-foreground-600">
+                  <div className="flex-none w-[15%] md:w-[100px] space-y-1 sm:space-y-0">
+                    <p className="text-xs sm:text-xxs font-normal text-foreground-600">
                       Biển kiểm soát
                     </p>
-                    <p className="text-sm font-medium text-foreground-300 truncate">
+                    <p className="text-sm sm:text-xs font-medium text-foreground-300 truncate">
                       29-B1 993.83
                     </p>
                   </div>
-                  <figure className="flex-none w-[60px] h-[30px]">
+                  <figure className="flex-none w-[60px] sm:w-12 h-[30px] sm:h-6">
                     <img
                       src={mercedesBenzC200}
                       alt="car picture"
@@ -239,15 +246,18 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                 </div>
               </motion.div>
             ) : (
-              <div key="empty_driver_info" className="space-y-2 mx-auto w-fit">
+              <div
+                key="empty_driver_info"
+                className="space-y-2 sm:space-y-1 mx-auto w-fit"
+              >
                 <figure>
                   <img
                     src={emptyDriverInfoIllustrator}
                     alt="empty driver info illustrator"
-                    className="w-[120px] h-[96px] object-contain"
+                    className="w-[120px] sm:w-[86px] h-[96px] sm:h-[70px] object-contain"
                   />
                 </figure>
-                <p className="text-xs font-normal text-foreground-600 text-center">
+                <p className="text-xs sm:text-xxs font-normal text-foreground-600 text-center">
                   Chưa có thông tin
                 </p>
               </div>
