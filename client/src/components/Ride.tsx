@@ -24,6 +24,13 @@ import {
   DirectionServiceResponse,
 } from "@/types/direction";
 import { Dimensions, ScreenDefault, ScreenMD, ScreenXL } from "./ui/screen";
+import { z } from "zod";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import { VisuallyHidden } from "./ui/visually-hidden";
+import { Field } from "./ui/field";
+import { RadioGroupField, RadioItem } from "./ui/radio-group-field";
 
 interface Update {
   id: string;
@@ -285,13 +292,24 @@ function UpdatesSection(): React.JSX.Element {
         }}
         className="self-end xl:justify-self-end sm:justify-self-stretch"
       >
-        <Button
-          intent="danger"
-          className="w-[180px] sm:w-full h-[60px] sm:h-[56px]"
-          size={isSM ? "small" : "default"}
-        >
-          Hủy cuốc xe
-        </Button>
+        <Dialog open={true}>
+          <Button
+            intent="danger"
+            className="w-[180px] sm:w-full h-[60px] sm:h-[56px]"
+            size={isSM ? "small" : "default"}
+          >
+            Hủy cuốc xe
+          </Button>
+          <DialogContent
+            aria-describedby={undefined}
+            onInteractOutside={(e) => e.preventDefault()}
+          >
+            <VisuallyHidden asChild>
+              <DialogTitle>Chọn lý do hủy cuốc xe</DialogTitle>
+            </VisuallyHidden>
+            <CancelModal />
+          </DialogContent>
+        </Dialog>
       </motion.div>
     </motion.section>
   );
@@ -541,7 +559,43 @@ function MapSection(): React.JSX.Element {
   );
 }
 
+const CancelFormSchema = z.object({
+  reason: z.enum(["change_info", "cancel_plan", "wait_too_long", "other"], {
+    required_error: "Bạn chưa chọn lý do hủy",
+  }),
+  note: z.string().optional(),
+});
+
+type CancelFormValues = z.infer<typeof CancelFormSchema>;
+
+const radioItems: RadioItem[] = [
+  {
+    label: "Tôi muốn thay đổi thông tin",
+    value: "change_info",
+  },
+  {
+    label: "Tôi thay đổi kế hoạch không muốn đi nữa",
+    value: "cancel_plan",
+  },
+  {
+    label: "Tôi chờ đợi xe quá lâu",
+    value: "wait_too_long",
+  },
+  {
+    label: "Lý do khác (nếu có)",
+    value: "other",
+  },
+];
+
 function CancelModal(): React.JSX.Element {
+  const methods = useForm<CancelFormValues>({
+    resolver: zodResolver(CancelFormSchema),
+  });
+
+  const onValid = (data: CancelFormValues) => {
+    console.log(data);
+  };
+
   return (
     <div className="w-[500px] bg-background-950 rounded-4xl p-8 overflow-hidden">
       <div className="w-full space-y-8">
@@ -549,7 +603,26 @@ function CancelModal(): React.JSX.Element {
           <p className="text-sm font-medium text-foreground-600">
             Vui lòng chọn lý do bạn muốn hủy cuốc xe
           </p>
-          <div className="space-y-5"></div>
+          <FormProvider {...methods}>
+            <form
+              onSubmit={methods.handleSubmit(onValid)}
+              className="w-full space-y-8"
+            >
+              <Field<CancelFormValues>
+                control={methods.control}
+                name="reason"
+                size={"default"}
+              >
+                <RadioGroupField
+                  items={radioItems}
+                  classNames={{ group: "space-y-5" }}
+                />
+              </Field>
+              <Button intent="danger" className="w-full py-0 h-16">
+                Xác nhận hủy
+              </Button>
+            </form>
+          </FormProvider>
         </div>
       </div>
     </div>
