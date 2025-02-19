@@ -1,10 +1,10 @@
 import React from "react";
 import { useField } from "./field";
-import { FieldContainer, FieldStyles } from "./fieldContainer";
-import { FieldUpper as Left } from "./fieldUpper";
-import { FieldLabel } from "./fieldLabel";
-import { FieldInput } from "./fieldInput";
-import { FieldLower } from "./fieldLower";
+import { FieldContainer, FieldStyles } from "./field-container";
+import { FieldUpper as Left } from "./field-upper";
+import { FieldLabel } from "./field-label";
+import { FieldInput } from "./field-input";
+import { FieldLower } from "./field-lower";
 import { cn } from "@/utils/styling";
 import { cva } from "class-variance-authority";
 import { ArrowUp2, ArrowDown2 } from "iconsax-react";

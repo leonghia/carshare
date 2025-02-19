@@ -1,12 +1,12 @@
 import React from "react";
 import { FieldPath, FieldValues } from "react-hook-form";
 import { useField } from "./field";
-import { FieldInput } from "./fieldInput";
-import { FieldLabel } from "./fieldLabel";
+import { FieldInput } from "./field-input";
+import { FieldLabel } from "./field-label";
 import { cn } from "@/utils/styling";
-import { textVariants, FieldContainer, FieldStyles } from "./fieldContainer";
-import { FieldUpper } from "./fieldUpper";
-import { FieldLower } from "./fieldLower";
+import { textVariants, FieldContainer, FieldStyles } from "./field-container";
+import { FieldUpper } from "./field-upper";
+import { FieldLower } from "./field-lower";
 import { cva } from "class-variance-authority";
 import { z } from "zod";
 

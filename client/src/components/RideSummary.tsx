@@ -114,7 +114,7 @@ const RideSummary = React.forwardRef<HTMLDivElement, RideSummaryProps>(
                   </span>
                 </div>
                 {/* Divider */}
-                <span className="inline-block w-px h-[14px] sm:h-[10px] rounded bg-foreground-700" />
+                <span className="sm:hidden inline-block w-px h-[14px] sm:h-[10px] rounded bg-foreground-700" />
                 {/* Service */}
                 <div className="flex gap-2 sm:row-start-4">
                   <SmartCar

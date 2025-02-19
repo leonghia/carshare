@@ -2,8 +2,8 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import { Checkbox, CheckboxStyles } from "./checkbox";
 import { useField } from "./field";
-import { FieldContainer } from "./fieldContainer";
-import { FieldLower } from "./fieldLower";
+import { FieldContainer } from "./field-container";
+import { FieldLower } from "./field-lower";
 
 interface CheckboxFieldProps extends React.ComponentPropsWithoutRef<"div"> {
   classNames?: CheckboxStyles;

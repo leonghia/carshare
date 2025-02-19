@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router";
-import { PageTitle } from "./ui/pageTitle";
+import { PageTitle } from "./ui/page-title";
 import { Button } from "./ui/button";
 import { DirectRight, Location, Flag } from "iconsax-react";
 import { StaticMap, WebMercatorViewport } from "@goongmaps/goong-map-react";
@@ -538,5 +538,20 @@ function MapSection(): React.JSX.Element {
         />
       </ScreenMD>
     </section>
+  );
+}
+
+function CancelModal(): React.JSX.Element {
+  return (
+    <div className="w-[500px] bg-background-950 rounded-4xl p-8 overflow-hidden">
+      <div className="w-full space-y-8">
+        <div className="w-full space-y-6">
+          <p className="text-sm font-medium text-foreground-600">
+            Vui lòng chọn lý do bạn muốn hủy cuốc xe
+          </p>
+          <div className="space-y-5"></div>
+        </div>
+      </div>
+    </div>
   );
 }

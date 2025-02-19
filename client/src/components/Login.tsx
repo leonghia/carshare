@@ -8,11 +8,11 @@ import { useMediaQuery } from "react-responsive";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
-import { BasicField } from "./ui/basicField";
-import { PasswordField } from "./ui/passwordField";
-import { CheckboxField } from "./ui/checkboxField";
+import { BasicField } from "./ui/basic-field";
+import { PasswordField } from "./ui/password-field";
+import { CheckboxField } from "./ui/checkbox-field";
 import { Button } from "./ui/button";
-import { PageTitle } from "./ui/pageTitle";
+import { PageTitle } from "./ui/page-title";
 
 export function Login(): React.JSX.Element {
   const logoRef = React.useRef<HTMLElement>(null);
