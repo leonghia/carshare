@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { DirectRight, Location, Flag } from "iconsax-react";
 import { StaticMap, WebMercatorViewport } from "@goongmaps/goong-map-react";
 
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Marker } from "@/components/Marker";
 import axios from "axios";
 import { MotionDirectionInfo } from "./DirectionInfo";
@@ -25,12 +25,13 @@ import {
 } from "@/types/direction";
 import { Dimensions, ScreenDefault, ScreenMD, ScreenXL } from "./ui/screen";
 import { z } from "zod";
-import { FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { VisuallyHidden } from "./ui/visually-hidden";
 import { Field } from "./ui/field";
 import { RadioGroupField, RadioItem } from "./ui/radio-group-field";
+import { TextareaField } from "./ui/textarea-field";
 
 interface Update {
   id: string;
@@ -590,11 +591,20 @@ const radioItems: RadioItem[] = [
 function CancelModal(): React.JSX.Element {
   const methods = useForm<CancelFormValues>({
     resolver: zodResolver(CancelFormSchema),
+    defaultValues: {
+      note: "",
+    },
   });
 
   const onValid = (data: CancelFormValues) => {
     console.log(data);
   };
+
+  const reason = methods.watch("reason");
+
+  React.useEffect(() => {
+    if (reason !== "other") methods.resetField("note");
+  }, [reason]);
 
   return (
     <div className="w-[500px] bg-background-950 rounded-4xl p-8 overflow-hidden">
@@ -604,10 +614,7 @@ function CancelModal(): React.JSX.Element {
             Vui lòng chọn lý do bạn muốn hủy cuốc xe
           </p>
           <FormProvider {...methods}>
-            <form
-              onSubmit={methods.handleSubmit(onValid)}
-              className="w-full space-y-8"
-            >
+            <form onSubmit={methods.handleSubmit(onValid)} className="w-full">
               <Field<CancelFormValues>
                 control={methods.control}
                 name="reason"
@@ -618,7 +625,38 @@ function CancelModal(): React.JSX.Element {
                   classNames={{ group: "space-y-5" }}
                 />
               </Field>
-              <Button intent="danger" className="w-full py-0 h-16">
+              <AnimatePresence>
+                {reason === "other" && (
+                  <motion.div
+                    key="note"
+                    initial={{ opacity: 0, y: "-10%" }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{
+                      opacity: 0,
+                      y: "-10%",
+                      transition: { duration: 0.1 },
+                    }}
+                    transition={{
+                      type: "tween",
+                      duration: 0.5,
+                      ease: "easeOut",
+                    }}
+                  >
+                    <Field<CancelFormValues>
+                      control={methods.control}
+                      name="note"
+                      size="default"
+                    >
+                      <TextareaField
+                        placeholder="Nhập lý do tại đây..."
+                        className="mt-4"
+                        classNames={{ textArea: "h-[120px] resize-none" }}
+                      />
+                    </Field>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <Button intent="danger" className="w-full py-0 h-16 mt-8">
                 Xác nhận hủy
               </Button>
             </form>
