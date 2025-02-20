@@ -4,7 +4,6 @@ import { Circle } from "lucide-react";
 
 import { cn } from "@/utils/styling";
 import { cva } from "class-variance-authority";
-import { useField } from "./field";
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -89,14 +88,18 @@ interface RadioGroupUnitProps {
     label?: string;
     description?: string;
   };
+  size?: "default" | "small" | null;
+}
+
+interface RadioGroupItemProps
+  extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+  size?: "default" | "small" | null;
 }
 
 const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, ...props }, ref) => {
-  const { size } = useField();
-
+  RadioGroupItemProps
+>(({ className, size, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
@@ -112,12 +115,10 @@ const RadioGroupItem = React.forwardRef<
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
 
 const RadioGroupUnit = React.forwardRef<HTMLDivElement, RadioGroupUnitProps>(
-  ({ value, label, description, classNames, ...props }, ref) => {
-    const { size } = useField();
-
+  ({ value, label, description, classNames, size, ...props }, ref) => {
     return (
       <div ref={ref} className={cn(containerVariants({ size }))} {...props}>
-        <RadioGroupItem value={value} id={value} />
+        <RadioGroupItem value={value} id={value} size={size} />
         <div className={cn(rightVariants({ size }))}>
           <label
             htmlFor={value}

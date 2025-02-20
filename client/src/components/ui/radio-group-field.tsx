@@ -26,7 +26,7 @@ interface RadioGroupFieldProps
 
 const RadioGroupField = React.forwardRef<HTMLDivElement, RadioGroupFieldProps>(
   ({ items, classNames, ...props }, ref) => {
-    const { control, name } = useField();
+    const { control, name, size } = useField();
 
     return (
       <FieldContainer ref={ref} {...props}>
@@ -41,6 +41,7 @@ const RadioGroupField = React.forwardRef<HTMLDivElement, RadioGroupFieldProps>(
             >
               {items.map((item) => (
                 <RadioGroupUnit
+                  size={size}
                   key={item.value}
                   label={item.label}
                   value={item.value}
