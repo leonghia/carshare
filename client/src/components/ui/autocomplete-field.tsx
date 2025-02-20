@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "@/lib/utils";
 import {
   Command,
   CommandEmpty,
@@ -12,14 +11,15 @@ import {
   PopoverAnchor,
   PopoverContent,
 } from "@/components/ui/popover";
-import { FieldContainer, FieldStyles, textVariants } from "./fieldContainer";
+import { FieldContainer, FieldStyles, textVariants } from "./field-container";
 import { useField } from "./field";
-import { FieldUpper } from "./fieldUpper";
-import { FieldLabel } from "./fieldLabel";
-import { FieldInput } from "./fieldInput";
-import { FieldLower } from "./fieldLower";
+import { FieldUpper } from "./field-upper";
+import { FieldLabel } from "./field-label";
+import { FieldInput } from "./field-input";
+import { FieldLower } from "./field-lower";
 import { useMediaQuery } from "react-responsive";
-import { FieldInner } from "./fieldInner";
+import { FieldInner } from "./field-inner";
+import { cn } from "@/utils/styling";
 
 export type Item = {
   id: string;

@@ -8,10 +8,11 @@ import { useMediaQuery } from "react-responsive";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
-import { BasicField } from "./ui/basicField";
-import { PasswordField } from "./ui/passwordField";
-import { CheckboxField } from "./ui/checkboxField";
+import { BasicField } from "./ui/basic-field";
+import { PasswordField } from "./ui/password-field";
+import { CheckboxField } from "./ui/checkbox-field";
 import { Button } from "./ui/button";
+import { PageTitle } from "./ui/page-title";
 
 export function Login(): React.JSX.Element {
   const logoRef = React.useRef<HTMLElement>(null);
@@ -51,12 +52,7 @@ export function Login(): React.JSX.Element {
           >
             {/* Heading */}
             <div className="w-full space-y-4 sm:space-y-1">
-              <div className="flex gap-2 sm:gap-1">
-                <h1 className="text-4xl sm:text-xl font-bold sm:font-semibold text-white shrink-0">
-                  Đăng nhập
-                </h1>
-                <span className="inline-block translate-y-6 sm:translate-y-[15px] size-[0.625rem] sm:size-[0.375rem] bg-primary-500 rounded-full"></span>
-              </div>
+              <PageTitle title="Đăng nhập" />
               <p className="font-normal text-base sm:text-xs text-foreground-500">
                 Bạn chưa có tài khoản?{" "}
                 <Link

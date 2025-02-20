@@ -6,17 +6,19 @@ import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, useAnimate } from "motion/react";
 import { Field } from "./ui/field";
-import { BasicField } from "./ui/basicField";
-import { DateField } from "./ui/dateField";
-import { PasswordField } from "./ui/passwordField";
-import { calculatePasswordStrength, obscureEmail } from "@/lib/utils";
-import { CheckboxField } from "./ui/checkboxField";
+import { BasicField } from "./ui/basic-field";
+import { DateField } from "./ui/date-field";
+import { PasswordField } from "./ui/password-field";
+import { CheckboxField } from "./ui/checkbox-field";
 import React from "react";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import checkEmailIllustrator from "../assets/images/check_email_illustrator.webp";
-import { VisuallyHidden } from "./ui/visuallyHidden";
+import { VisuallyHidden } from "./ui/visually-hidden";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router";
+import { PageTitle } from "./ui/page-title";
+import { calculatePasswordStrength } from "@/utils/password";
+import { obscureEmail } from "@/utils/email";
 
 export function Register(): JSX.Element {
   return (
@@ -38,12 +40,7 @@ export function Register(): JSX.Element {
             className="w-[34rem] sm:w-full sm:grid sm:justify-items-center h-fit space-y-12 sm:space-y-8"
           >
             <div className="w-full space-y-4 sm:space-y-2">
-              <div className="flex gap-2 sm:gap-1">
-                <h1 className="text-4xl sm:text-lg font-bold sm:font-semibold text-white shrink-0">
-                  Đăng ký tài khoản
-                </h1>
-                <span className="inline-block translate-y-6 sm:translate-y-[15px] size-[0.625rem] sm:size-[0.375rem] bg-primary-500 rounded-full"></span>
-              </div>
+              <PageTitle title="Đăng ký tài khoản" />
               <p className="font-normal text-base sm:text-xs text-foreground-500">
                 Bạn đã có tài khoản?{" "}
                 <Link

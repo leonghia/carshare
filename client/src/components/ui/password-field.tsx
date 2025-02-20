@@ -1,14 +1,16 @@
 import { cva } from "class-variance-authority";
 import React from "react";
 import { useField } from "./field";
-import { calculatePasswordStrength, cn } from "@/lib/utils";
 import { Eye, EyeSlash } from "iconsax-react";
-import { FieldLabel } from "./fieldLabel";
-import { FieldInput } from "./fieldInput";
-import { FieldContainer, FieldStyles } from "./fieldContainer";
-import { FieldUpper } from "./fieldUpper";
-import { FieldLower } from "./fieldLower";
-import { FieldInner } from "./fieldInner";
+import { FieldLabel } from "./field-label";
+import { FieldInput } from "./field-input";
+import { FieldContainer, FieldStyles } from "./field-container";
+import { FieldUpper } from "./field-upper";
+import { FieldLower } from "./field-lower";
+import { FieldInner } from "./field-inner";
+import { cn } from "@/utils/styling";
+import { calculatePasswordStrength } from "@/utils/password";
+import { PasswordStrength, PasswordStrengthText } from "@/types/password";
 
 const innerVariants = cva(undefined, {
   variants: {
@@ -66,10 +68,10 @@ const strengthTextVariants = cva("font-normal w-max", {
   defaultVariants: { size: "default", strength: "default" },
 });
 
-type Strength = "default" | "weak" | "average" | "strong";
-type StrengthText = "Độ mạnh" | "Yếu" | "Trung bình" | "Mạnh";
-
-const strengths: Record<Strength, [Strength, StrengthText]> = {
+const strengths: Record<
+  PasswordStrength,
+  [PasswordStrength, PasswordStrengthText]
+> = {
   default: ["default", "Độ mạnh"],
   weak: ["weak", "Yếu"],
   average: ["average", "Trung bình"],
@@ -101,7 +103,7 @@ const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
   ) => {
     const { label, size, fieldInputId, name, control } = useField();
     const [isVisible, setIsVisible] = React.useState(false);
-    const [strength, setStrength] = React.useState<Strength>("default");
+    const [strength, setStrength] = React.useState<PasswordStrength>("default");
 
     return (
       <FieldContainer
@@ -153,4 +155,4 @@ const PasswordField = React.forwardRef<HTMLDivElement, PasswordFieldProps>(
   }
 );
 
-export { PasswordField, type Strength };
+export { PasswordField, type PasswordStrength as Strength };

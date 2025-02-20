@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/styling";
 import { cva, VariantProps } from "class-variance-authority";
 import { useField } from "./field";
 

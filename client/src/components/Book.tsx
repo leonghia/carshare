@@ -1,56 +1,55 @@
 import React from "react";
-import logo from "../assets/images/logo.svg";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import {
-  Notification,
-  HambergerMenu,
   Money4,
   Calendar,
   SmartCar,
   Location,
-  People,
   Flag,
-  Routing,
+  Profile2User,
 } from "iconsax-react";
-import pfp from "../assets/images/user_pfp.webp";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "./ui/field";
 import { Button } from "./ui/button";
-import { CheckboxField } from "./ui/checkboxField";
-import { DatetimeField } from "./ui/datetimeField";
-import { QuantityField } from "./ui/quantityField";
-import { cn } from "@/lib/utils";
+import { CheckboxField } from "./ui/checkbox-field";
+import { DatetimeField } from "./ui/datetime-field";
+import { QuantityField } from "./ui/quantity-field";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { RadioGroup } from "./ui/radio-group";
 import carshareBasicIllustrator from "../assets/images/carshare_basic_illustrator.webp";
 import carsharePremiumIllustrator from "../assets/images/carshare_premium_illustrator.webp";
 import carshareExtraIllustrator from "../assets/images/carshare_extra_illustrator.webp";
-import { FieldLower } from "./ui/fieldLower";
+import { FieldLower } from "./ui/field-lower";
 import { AnimatePresence, motion } from "motion/react";
 import { cva } from "class-variance-authority";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
-import { VisuallyHidden } from "./ui/visuallyHidden";
+import { VisuallyHidden } from "./ui/visually-hidden";
 import { create } from "zustand";
-import { AutoCompleteField, Item } from "./ui/autoCompleteField";
+import { AutoCompleteField, Item } from "./ui/autocomplete-field";
 import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
 import ReactMapGL, {
-  Marker,
   MapRef,
   WebMercatorViewport,
-  Source,
-  Layer,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
-import { Hourglass } from "lucide-react";
-import polyline from "@mapbox/polyline";
-
-const GGMAPS_API_KEY = import.meta.env.VITE_GGMAPS_API_KEY;
-const GGMAPS_MAPTILES_KEY = import.meta.env.VITE_GGMAPS_MAPTILES_KEY;
-const GGMAPS_URL = import.meta.env.VITE_GGMAPS_URL;
+import { Marker } from "@/components/Marker";
+import { DirectionInfo, MotionDirectionInfo } from "./DirectionInfo";
+import { RouteLine } from "./RouteLine";
+import { PlaceDetail } from "@/types/placeDetail";
+import { Route } from "@/types/route";
+import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY } from "@/config/keys";
+import { GGMAPS_URL } from "@/config/urls";
+import { cn } from "@/utils/styling";
+import { moneyFormatter } from "@/utils/number";
+import { formatDate, timeFormatter } from "@/utils/datetime";
+import {
+  DirectionRequestParams,
+  DirectionServiceResponse,
+} from "@/types/direction";
 
 type BookStoreState = {
   searchFieldValues: SearchFieldValues | null;
@@ -156,18 +155,9 @@ const useBookStore = create<BookStore>()((set) => ({
   },
 }));
 
-const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
-  dateStyle: "short",
-});
-
-const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
-  timeStyle: "short",
-});
-
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
+// const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
+//   dateStyle: "medium",
+// });
 
 type Step = "search" | "service" | "summary";
 
@@ -186,75 +176,15 @@ const stepVariants = cva<{ step: Record<Step, string> }>(
 
 export function Book(): React.JSX.Element {
   return (
-    <div className="w-full min-h-screen bg-background-950 grid grid-rows-[max-content,minmax(0,1fr)]">
-      {/* Header */}
-      <header className="w-full px-16 lg:px-6 sm:px-4 pt-8 lg:pt-6 sm:pt-4 grid grid-cols-[repeat(3,max-content)] lg:grid-cols-[repeat(2,max-content)] items-center justify-between">
-        {/* Hamburger button & Logo */}
-        <div className="flex items-center gap-4 sm:gap-3">
-          <button type="button" className="hidden lg:block">
-            <HambergerMenu
-              variant="Bold"
-              className="size-8 sm:size-6 text-foreground-500"
-            />
-          </button>
-          <Link to="/">
-            <img
-              src={logo}
-              alt="carshare logo"
-              className="h-8 sm:h-5 object-cover"
-            />
-          </Link>
-        </div>
-        {/* Navbar */}
-        <nav className="w-[500px] xl:w-[450px] lg:hidden flex items-center justify-between">
-          <NavLink
-            to="/book"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Đặt xe
-          </NavLink>
-          <NavLink
-            to="/rules"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Quy định
-          </NavLink>
-          <NavLink
-            to="/feedback"
-            className="text-lg font-medium text-foreground-500 [&.active]:text-white"
-          >
-            Phản ánh
-          </NavLink>
-        </nav>
-        {/* Right */}
-        <div className="flex items-center gap-10 sm:gap-6">
-          <button type="button" className="relative">
-            <Notification
-              variant="Bold"
-              className="size-8 sm:size-6 text-foreground-500"
-            />
-            <span className="block absolute top-0 right-0 size-3 sm:size-2 rounded-full bg-danger-500 border-2 sm:border border-white"></span>
-          </button>
-          <button type="button">
-            <img
-              src={pfp}
-              alt="user profile picture"
-              className="size-10 sm:size-[30px] rounded-full border-2 sm:border border-primary-500 shadow-xl sm:shadow-md"
-            />
-          </button>
-        </div>
-      </header>
-      {/* Main */}
-      <main className="w-full pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
-        {/* Inner */}
-        <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)]">
-          {/* Left Section */}
-          <LeftSection className="relative z-10 h-full pt-[120px] 2xl:pt-16 xl:pt-0 grid auto-rows-min lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 lg:space-y-10 sm:space-y-6 xl:justify-items-center" />
-          {/* Right Section */}
-          <RightSection className="h-full relative z-0 min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
-        </div>
-      </main>
-    </div>
+    <main className="w-full pl-16 xl:pl-0 xl:pt-16 lg:pt-12 sm:pt-8 grid justify-items-end xl:justify-items-center">
+      {/* Inner */}
+      <div className="w-full h-full max-w-[1800px] grid grid-cols-[max-content,minmax(0,1fr)] xl:grid-cols-1 xl:grid-rows-[max-content,minmax(0,1fr)]">
+        {/* Left Section */}
+        <LeftSection className="relative z-10 h-full pt-[120px] 2xl:pt-16 xl:pt-0 grid auto-rows-min lg:px-8 sm:px-4 w-[500px] xl:w-full space-y-12 lg:space-y-10 sm:space-y-6 xl:justify-items-center" />
+        {/* Right Section */}
+        <RightSection className="h-full relative z-0 min-h-[900px] 2xl:min-h-[800px] xl:min-h-[700px] lg:min-h-[600px] md:min-h-[550px] sm:min-h-[450px]" />
+      </div>
+    </main>
   );
 }
 
@@ -263,94 +193,13 @@ function CustomMarker({
 }: {
   locationType: "Destination" | "Pickup";
 }): React.JSX.Element | null {
-  const isSM = useMediaQuery({ maxWidth: 639 });
-
   const placeDetail = useBookStore((state) =>
     locationType === "Destination"
       ? state.destinationDetail
       : state.pickupDetail
   );
 
-  if (!placeDetail?.geometry || !placeDetail.compound) return null;
-  return (
-    <Marker
-      latitude={placeDetail.geometry.location.lat}
-      longitude={placeDetail.geometry.location.lng}
-      offsetLeft={isSM ? -16 : -24}
-      offsetTop={isSM ? -16 : -24}
-      className="z-10 pointer-events-none"
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{
-          type: "spring",
-          duration: 1,
-        }}
-        className="relative"
-      >
-        <div className="absolute left-0 top-0 -translate-y-[calc(100%+12px)] sm:-translate-y-[calc(100%+8px)] -translate-x-[calc(50%-24px)] sm:-translate-x-[calc(50%-20px)] w-max max-w-[260px] sm:max-w-[200px] bg-background-950 border-2 border-divider rounded-2xl sm:rounded-xl p-4 sm:px-3 sm:py-2">
-          <div className="w-full flex items-center gap-3 sm:gap-2">
-            {isSM &&
-              (locationType === "Destination" ? (
-                <Flag variant="Bold" className="size-5 text-[#22C55E]" />
-              ) : (
-                <Location variant="Bold" className="size-5 text-[#EF4444]" />
-              ))}
-            {!isSM && (
-              <div
-                className={cn(
-                  "flex flex-none size-10 sm:size-[34px] rounded-full items-center justify-center",
-                  locationType === "Destination"
-                    ? "bg-[#22C55E]/15"
-                    : "bg-[#EF4444]/15"
-                )}
-              >
-                {locationType === "Destination" ? (
-                  <Flag
-                    variant="Bold"
-                    className="size-5 sm:size-4 text-[#22C55E]"
-                  />
-                ) : (
-                  <Location
-                    variant="Bold"
-                    className="size-5 sm:size-4 text-[#EF4444]"
-                  />
-                )}
-              </div>
-            )}
-            <div className="flex-1 min-w-0 space-y-2 sm:space-y-1">
-              <p className="text-xs sm:text-xxs font-normal text-foreground-500 w-full truncate">
-                {placeDetail.compound.district}, {placeDetail.compound.province}
-              </p>
-              <p className="text-sm sm:text-xs font-normal text-white w-full truncate">
-                {placeDetail.name}
-              </p>
-            </div>
-          </div>
-        </div>
-        <motion.div
-          animate={{ scale: [1.2, 1, 1.25] }}
-          transition={{
-            type: "tween",
-            ease: "linear",
-            repeat: Infinity,
-            duration: 0.7,
-          }}
-          className="mx-auto size-12 sm:size-8 rounded-full bg-[#1D90F5]/40 shadow-xl flex items-center justify-center"
-        >
-          <div className="size-5 sm:size-3 rounded-full bg-primary-500"></div>
-        </motion.div>
-      </motion.div>
-    </Marker>
-  );
-}
-
-interface DirectionRequestParams {
-  origin: string;
-  destination: string;
-  vehicle: "car";
-  api_key: string;
+  return <Marker locationType={locationType} placeDetail={placeDetail} />;
 }
 
 function RightSection({
@@ -487,11 +336,13 @@ function RightSection({
           right: 160,
           bottom: 200,
         };
-      if (isSM) padding = { top: 80, left: 100, right: 100, bottom: 80 };
+      if (isSM) padding = { top: 32, left: 64, right: 64, bottom: 80 };
       setIsTransitioning(true);
-      const { longitude, latitude, zoom } = new WebMercatorViewport(
-        viewport
-      ).fitBounds(
+      const {
+        longitude,
+        latitude,
+        zoom: dynamicZoom,
+      } = new WebMercatorViewport(viewport).fitBounds(
         [
           [
             pickupDetail.geometry.location.lng,
@@ -509,7 +360,7 @@ function RightSection({
       );
       mapRef.current?.getMap().flyTo({
         center: [longitude, latitude],
-        zoom,
+        zoom: dynamicZoom,
         duration: 1500,
         easing: easeCubic,
       });
@@ -522,7 +373,7 @@ function RightSection({
           ...viewport,
           longitude,
           latitude,
-          zoom,
+          zoom: dynamicZoom,
         });
         setIsTransitioning(false);
       });
@@ -553,38 +404,17 @@ function RightSection({
 
   console.log("map re-rendered");
 
-  const directionSource = React.useMemo(() => {
-    if (!route) return null;
-    const geometry_string = route.overview_polyline.points;
-    const geoJSON: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          geometry: polyline.toGeoJSON(geometry_string),
-          properties: null,
-        },
-      ],
-    };
-    return (
-      <Source id="route" type="geojson" data={geoJSON}>
-        <Layer
-          id="route"
-          type="line"
-          source="route"
-          layout={{ "line-join": "round", "line-cap": "round" }}
-          paint={{ "line-color": "#1D90F5", "line-width": 4 }}
-        />
-      </Source>
-    );
-  }, [hasRoute]);
+  const directionSource = React.useMemo(
+    () => <RouteLine route={route} />,
+    [hasRoute]
+  );
 
   return (
     <section className={cn("relative overflow-hidden", className)}>
-      {/* Vertical gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)30%)]"></div>
-      {/* Horizontal gradient */}
-      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,1)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.5)0%,rgba(39,42,55,0.5)50%,rgba(39,42,55,0.5)100%)]"></div>
+      {/* Vertical Overlay */}
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(180deg,rgba(39,42,55,1)0%,rgba(39,42,55,0)50%,rgba(39,42,55,1)95%)]" />
+      {/* Horizontal Overlay */}
+      <div className="absolute z-10 inset-0 bg-[linear-gradient(90deg,rgba(39,42,55,0.98)5%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.1)100%)] xl:bg-[linear-gradient(90deg,rgba(39,42,55,0.3)0%,rgba(39,42,55,0.1)50%,rgba(39,42,55,0.3)100%)]" />
       {/* Actual map */}
       <ReactMapGL
         ref={mapRef}
@@ -797,7 +627,7 @@ function SearchForm({
       >
         {/* Fields */}
         <div className="w-full grid gap-8 grid-cols-1 xl:grid-cols-[minmax(0,1fr),max-content] lg:grid-cols-[minmax(0,1fr),max-content] sm:grid-cols-1 sm:gap-5">
-          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 lg:col-span-1 md:col-span-full">
+          <div className="space-y-4 sm:space-y-3 col-span-full xl:col-span-1 xl:row-start-2 md:row-start-1 md:col-span-full">
             <Field<SearchFieldValues>
               label="Điểm đón"
               required
@@ -928,22 +758,6 @@ interface PlaceAutoComplete {
 
 interface PlaceDetailServiceResponse extends ServiceResponse {
   result: PlaceDetail;
-}
-
-interface Location {
-  lat: number;
-  lng: number;
-}
-
-interface PlaceDetail {
-  place_id: string;
-  formatted_address: string;
-  geometry: { location: Location };
-  name: string;
-  compound: {
-    district: string;
-    province: string;
-  };
 }
 
 function usePlacesSearch(
@@ -1360,43 +1174,65 @@ const Summary = React.forwardRef<HTMLDivElement, SummaryProps>(
             <span className="inline-block size-[6px] sm:size-1 rounded-full bg-primary-500"></span>
           </h2>
           <div className="w-full space-y-6 sm:space-y-5 mt-8 sm:mt-6">
-            <div className="grid grid-cols-2 gap-10 sm:grid-cols-1 sm:gap-5">
-              <div className="flex gap-2 text-foreground-400">
+            <div className="grid grid-cols-[repeat(5,max-content)] sm:grid-cols-[repeat(2,max-content)] gap-5 items-center">
+              <div className="flex gap-2">
                 <Calendar
                   variant="Bold"
-                  className="flex-none size-6 sm:size-5"
+                  className="flex-none size-6 sm:size-5 text-foreground-600"
                 />
-                <span className="flex-1 text-base sm:text-sm font-normal">
-                  {timeFormatter.format(output.departureTime)} ngày{" "}
-                  {dateFormatter.format(output.departureTime)}
+                <span className="flex-none w-[44px] sm:w-[38px] text-base sm:text-sm font-normal text-foreground-500">
+                  {timeFormatter.format(output.departureTime)}
+                </span>
+                <span className="flex-none w-[94px] sm:w-[82px] text-base sm:text-sm font-normal text-foreground-500">
+                  {formatDate(output.departureTime)}
                 </span>
               </div>
-              <div className="flex gap-2 text-foreground-400">
+              <span className="block w-[2px] h-4 rounded bg-divider sm:hidden" />
+              <div className="flex gap-2 sm:hidden">
                 <SmartCar
                   variant="Bold"
-                  className="flex-none size-6 sm:size-5"
+                  className="flex-none size-6 sm:size-5 text-foreground-600"
                 />
-                <span className="flex-1 text-base sm:text-sm font-normal">
+                <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
                   {output.service}
                 </span>
               </div>
+              <span className="block w-[2px] h-4 rounded bg-divider sm:hidden" />
+              <div className="flex gap-2">
+                <Profile2User
+                  variant="Bold"
+                  className="flex-none size-6 sm:size-5 text-foreground-600"
+                />
+                <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                  {output.numbersOfPassengers} {isSM && " hành khách"}
+                </span>
+              </div>
             </div>
-            <div className="flex gap-2 text-foreground-400">
-              <Location variant="Bold" className="flex-none size-6 sm:size-5" />
-              <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đến: {output.destination}
+            <div className="flex gap-2">
+              <Location
+                variant="Bold"
+                className="flex-none size-6 sm:size-5 text-foreground-600"
+              />
+              <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                {output.pickup}
               </span>
             </div>
-            <div className="flex gap-2 text-foreground-400">
-              <Location variant="Bold" className="flex-none size-6 sm:size-5" />
-              <span className="flex-1 text-base sm:text-sm font-normal">
-                Điểm đón: {output.pickup}
+            <div className="flex gap-2">
+              <Flag
+                variant="Bold"
+                className="flex-none size-6 sm:size-5 text-foreground-600"
+              />
+              <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                {output.destination}
               </span>
             </div>
-            <div className="flex gap-2 text-foreground-400">
-              <People variant="Bold" className="flex-none size-6 sm:size-5" />
-              <span className="flex-1 text-base sm:text-sm font-normal">
-                Số lượng hành khách: {output.numbersOfPassengers}
+            <div className="hidden sm:flex gap-2">
+              <SmartCar
+                variant="Bold"
+                className="flex-none size-6 sm:size-5 text-foreground-600"
+              />
+              <span className="flex-1 text-base sm:text-sm font-normal text-foreground-500">
+                {output.service}
               </span>
             </div>
           </div>
@@ -1610,76 +1446,3 @@ const CompleteModal = React.forwardRef<HTMLDivElement, CompleteModalProps>(
     );
   }
 );
-
-interface Leg {
-  distance: {
-    text: string;
-    value: number;
-  };
-  duration: {
-    text: string;
-    value: number;
-  };
-}
-
-interface Route {
-  legs: Leg[];
-  overview_polyline: {
-    points: string;
-  };
-}
-
-interface GeocodedWaypoint {
-  geocoder_status: "OK";
-  place_id: string;
-}
-
-interface DirectionServiceResponse {
-  routes: Route[];
-  geocoded_waypoints: GeocodedWaypoint[];
-}
-
-interface DirectionInfoProps extends React.ComponentPropsWithoutRef<"div"> {
-  distanceText: string;
-  durationText: string;
-}
-
-const DirectionInfo = React.forwardRef<HTMLDivElement, DirectionInfoProps>(
-  ({ distanceText, durationText, className }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        "bg-background-950 rounded-3xl sm:rounded-xl border-2 border-divider px-8 sm:px-4 py-5 sm:py-3 grid grid-cols-[repeat(2,max-content)] gap-16 sm:gap-8 items-center",
-        className
-      )}
-    >
-      <div className="flex gap-4 sm:gap-2 items-center">
-        <Routing
-          variant="Bold"
-          className="flex-none size-8 sm:size-[18px] text-primary-500"
-        />
-        <div className="flex-1 min-w-0 space-y-1 sm:space-y-0">
-          <p className="text-sm font-normal text-foreground-600 sm:hidden">
-            Khoảng cách quãng đường
-          </p>
-          <p className="text-lg sm:text-xs font-medium sm:font-normal text-white">
-            {distanceText}
-          </p>
-        </div>
-      </div>
-      <div className="flex gap-4 sm:gap-2 items-center">
-        <Hourglass className="flex-none size-6 sm:size-[14px] text-primary-500" />
-        <div className="flex-1 min-w-0 space-y-1 sm:space-y-0">
-          <p className="text-sm font-normal text-foreground-600 sm:hidden">
-            Thời gian di chuyển dự kiến
-          </p>
-          <p className="text-lg sm:text-xs font-medium sm:font-normal text-white">
-            {durationText}
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-);
-
-const MotionDirectionInfo = motion.create(DirectionInfo);

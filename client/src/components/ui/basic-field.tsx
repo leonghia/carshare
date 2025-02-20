@@ -1,11 +1,11 @@
 import React from "react";
-import { textVariants, FieldContainer, FieldStyles } from "./fieldContainer";
-import { cn } from "@/lib/utils";
-import { FieldLabel } from "./fieldLabel";
+import { textVariants, FieldContainer, FieldStyles } from "./field-container";
+import { FieldLabel } from "./field-label";
 import { useField } from "./field";
-import { FieldInput } from "./fieldInput";
-import { FieldUpper } from "./fieldUpper";
-import { FieldLower } from "./fieldLower";
+import { FieldInput } from "./field-input";
+import { FieldUpper } from "./field-upper";
+import { FieldLower } from "./field-lower";
+import { cn } from "@/utils/styling";
 
 interface BasicFieldProps
   extends Omit<React.ComponentPropsWithoutRef<"div">, "className"> {

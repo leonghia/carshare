@@ -36,6 +36,12 @@
       font-size: 400%;
     }
   }
+
+  @media screen("xs") {
+    html {
+      font-size: 87.5%;
+    }
+  }
 }
 
 @layer components {
