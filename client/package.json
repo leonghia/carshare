@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@goongmaps/goong-map-react": "github:leonghia/goong-map-react",
+    "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.9.1",
     "@mapbox/polyline": "^1.2.1",
     "@radix-ui/react-checkbox": "^1.1.3",
