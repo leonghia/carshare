@@ -25,29 +25,21 @@ import {
 } from "@/types/direction";
 import { Dimensions, ScreenDefault, ScreenMD, ScreenXL } from "./ui/screen";
 import { z } from "zod";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { VisuallyHidden } from "./ui/visually-hidden";
 import { Field } from "./ui/field";
 import { RadioGroupField, RadioItem } from "./ui/radio-group-field";
 import { TextareaField } from "./ui/textarea-field";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 interface Update {
   id: string;
   createdAt: Date;
-  status:
-    | RideStatus.Processing
-    | RideStatus.Incoming
-    | RideStatus.Reached
-    | RideStatus.Arriving
-    | RideStatus.Finished;
+  status: RideStatus;
   isRead: boolean;
-}
-
-interface AssignationUpdate extends Omit<Update, "status"> {
-  carInfo: CarInfo;
-  status: RideStatus.Assigned;
+  carInfo: CarInfo | null;
 }
 
 interface CarInfo {
@@ -62,58 +54,15 @@ enum RideStatus {
   Reached,
   Arriving,
   Finished,
+  Canceled,
 }
 
-const updates: (Update | AssignationUpdate)[] = [
-  {
-    id: "1",
-    createdAt: new Date("2025-02-01T05:18:00Z"),
-    status: RideStatus.Processing,
-    isRead: false,
-  },
-  {
-    id: "2",
-    createdAt: new Date("2025-02-01T05:30:00Z"),
-    status: RideStatus.Assigned,
-    isRead: false,
-    carInfo: {
-      id: "carfdsfd",
-      licensePlate: "29-B1 993.83",
-    },
-  },
-  {
-    id: "3",
-    createdAt: new Date("2025-02-01T06:05:00Z"),
-    status: RideStatus.Incoming,
-    isRead: false,
-  },
-  {
-    id: "4",
-    createdAt: new Date("2025-02-01T06:20:00Z"),
-    status: RideStatus.Reached,
-    isRead: false,
-  },
-  {
-    id: "5",
-    createdAt: new Date("2025-02-01T06:23:00Z"),
-    status: RideStatus.Arriving,
-    isRead: false,
-  },
-  {
-    id: "6",
-    createdAt: new Date("2025-02-01T06:45:00Z"),
-    status: RideStatus.Finished,
-    isRead: false,
-  },
-];
-
-updates.reverse();
-
-const statusText = (update: Update | AssignationUpdate): React.ReactNode => {
+const statusText = (update: Update): React.ReactNode => {
   switch (update.status) {
     case RideStatus.Processing:
       return "Cuốc xe đang được xử lý";
     case RideStatus.Assigned:
+      if (!update.carInfo) throw new Error("carinfo is null");
       return "Cuốc xe đã được giao cho xe " + update.carInfo.licensePlate;
     case RideStatus.Incoming:
       return "Xe đang trên đường đến điểm đón";
@@ -123,8 +72,10 @@ const statusText = (update: Update | AssignationUpdate): React.ReactNode => {
       return "Xe đang trên đường đến điểm đích";
     case RideStatus.Finished:
       return "Xe đã đến điểm đích";
+    case RideStatus.Canceled:
+      return "Cuốc xe đã hủy bởi hành khách";
     default:
-      const unexpected: never = update;
+      const unexpected: never = update.status;
       throw new Error("invalid status");
   }
 };
@@ -171,6 +122,8 @@ const StatusIcon = ({
       return <Location variant="Bold" className={cn(className)} />;
     case RideStatus.Finished:
       return <Flag variant="Bold" className={cn(className)} />;
+    case RideStatus.Canceled:
+      return <XMarkIcon className={cn(className)} />;
     default:
       const unexpected: never = status;
       throw new Error("invalid status");
@@ -210,7 +163,57 @@ export function Ride(): React.JSX.Element {
 
 function UpdatesSection(): React.JSX.Element {
   const { rideId } = useParams();
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const isSM = useMediaQuery({ maxWidth: Dimensions.SM.max });
+
+  const updates: Update[] = React.useMemo(
+    () =>
+      [
+        {
+          id: "1",
+          createdAt: new Date("2025-02-01T05:18:00Z"),
+          status: RideStatus.Processing,
+          isRead: false,
+          carInfo: null,
+        },
+        {
+          id: "2",
+          createdAt: new Date("2025-02-01T05:30:00Z"),
+          status: RideStatus.Assigned,
+          isRead: false,
+          carInfo: {
+            id: "carfdsfd",
+            licensePlate: "29-B1 993.83",
+          },
+        },
+        // {
+        //   id: "3",
+        //   createdAt: new Date("2025-02-01T06:05:00Z"),
+        //   status: RideStatus.Incoming,
+        //   isRead: false,
+        // },
+        // {
+        //   id: "4",
+        //   createdAt: new Date("2025-02-01T06:20:00Z"),
+        //   status: RideStatus.Reached,
+        //   isRead: false,
+        // },
+        // {
+        //   id: "5",
+        //   createdAt: new Date("2025-02-01T06:23:00Z"),
+        //   status: RideStatus.Arriving,
+        //   isRead: false,
+        // },
+        // {
+        //   id: "6",
+        //   createdAt: new Date("2025-02-01T06:45:00Z"),
+        //   status: RideStatus.Finished,
+        //   isRead: false,
+        // },
+      ].reverse(),
+    []
+  );
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -293,11 +296,12 @@ function UpdatesSection(): React.JSX.Element {
         }}
         className="self-end xl:justify-self-end sm:justify-self-stretch"
       >
-        <Dialog open={true}>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <Button
             intent="danger"
             className="w-[180px] sm:w-full h-[60px] sm:h-[56px]"
             size={isSM ? "small" : "default"}
+            onClick={() => setIsModalOpen(true)}
           >
             Hủy cuốc xe
           </Button>
@@ -308,7 +312,7 @@ function UpdatesSection(): React.JSX.Element {
             <VisuallyHidden asChild>
               <DialogTitle>Chọn lý do hủy cuốc xe</DialogTitle>
             </VisuallyHidden>
-            <CancelModal />
+            <CancelModal onClose={() => setIsModalOpen(false)} />
           </DialogContent>
         </Dialog>
       </motion.div>
@@ -588,7 +592,14 @@ const radioItems: RadioItem[] = [
   },
 ];
 
-function CancelModal(): React.JSX.Element {
+interface CancelModalProps {
+  onClose: () => void;
+}
+
+function CancelModal({ onClose }: CancelModalProps): React.JSX.Element {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isSuccessful, setIsSuccessful] = React.useState(false);
+
   const methods = useForm<CancelFormValues>({
     resolver: zodResolver(CancelFormSchema),
     defaultValues: {
@@ -598,6 +609,19 @@ function CancelModal(): React.JSX.Element {
 
   const onValid = (data: CancelFormValues) => {
     console.log(data);
+    setIsLoading(true);
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("foo");
+      }, 1000);
+    })
+      .then((value) => {
+        setIsSuccessful(true);
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const reason = methods.watch("reason");
@@ -608,61 +632,89 @@ function CancelModal(): React.JSX.Element {
 
   return (
     <div className="w-[500px] bg-background-950 rounded-4xl p-8 overflow-hidden">
-      <div className="w-full space-y-8">
-        <div className="w-full space-y-6">
-          <p className="text-sm font-medium text-foreground-600">
-            Vui lòng chọn lý do bạn muốn hủy cuốc xe
-          </p>
-          <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onValid)} className="w-full">
-              <Field<CancelFormValues>
-                control={methods.control}
-                name="reason"
-                size={"default"}
-              >
-                <RadioGroupField
-                  items={radioItems}
-                  classNames={{ group: "space-y-5" }}
-                />
-              </Field>
-              <AnimatePresence>
-                {reason === "other" && (
-                  <motion.div
-                    key="note"
-                    initial={{ opacity: 0, y: "-10%" }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{
-                      opacity: 0,
-                      y: "-10%",
-                      transition: { duration: 0.1 },
-                    }}
-                    transition={{
-                      type: "tween",
-                      duration: 0.5,
-                      ease: "easeOut",
-                    }}
+      <div className="w-full space-y-6">
+        <p className="text-sm font-medium text-foreground-600">
+          Vui lòng chọn lý do bạn muốn hủy cuốc xe
+        </p>
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onValid)} className="w-full">
+            <Field<CancelFormValues>
+              control={methods.control}
+              name="reason"
+              size={"default"}
+            >
+              <RadioGroupField
+                items={radioItems}
+                classNames={{ group: "space-y-5" }}
+              />
+            </Field>
+            <AnimatePresence>
+              {reason === "other" && (
+                <motion.div
+                  key="note"
+                  initial={{ opacity: 0, y: "-10%" }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{
+                    opacity: 0,
+                    y: "-10%",
+                    transition: { duration: 0.1 },
+                  }}
+                  transition={{
+                    type: "tween",
+                    duration: 0.5,
+                    ease: "easeOut",
+                  }}
+                >
+                  <Field<CancelFormValues>
+                    control={methods.control}
+                    name="note"
+                    size="default"
                   >
-                    <Field<CancelFormValues>
-                      control={methods.control}
-                      name="note"
-                      size="default"
-                    >
-                      <TextareaField
-                        placeholder="Nhập lý do tại đây..."
-                        className="mt-4"
-                        classNames={{ textArea: "h-[120px] resize-none" }}
-                      />
-                    </Field>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <Button intent="danger" className="w-full py-0 h-16 mt-8">
-                Xác nhận hủy
-              </Button>
-            </form>
-          </FormProvider>
-        </div>
+                    <TextareaField
+                      placeholder="Nhập lý do tại đây..."
+                      className="mt-4"
+                      classNames={{ textArea: "h-[120px] resize-none" }}
+                    />
+                  </Field>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <Button
+              hasLoader
+              isLoading={isLoading}
+              intent="danger"
+              className={cn(
+                "w-full py-0 h-16 mt-8",
+                isSuccessful && "pointer-events-none"
+              )}
+            >
+              {isSuccessful ? (
+                <CheckIcon className="size-6 text-danger-500" />
+              ) : (
+                "Xác nhận hủy"
+              )}
+            </Button>
+          </form>
+        </FormProvider>
       </div>
+      <button
+        type="button"
+        className="absolute right-5 top-5 size-6"
+        onClick={onClose}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="size-full text-foreground-500"
+        >
+          <path
+            fillRule="evenodd"
+            d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
     </div>
   );
 }
