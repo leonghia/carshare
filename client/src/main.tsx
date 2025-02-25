@@ -2,14 +2,14 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 import "./index.css";
-import { Welcome } from "./components/Welcome.tsx";
-import { Home } from "./components/Home.tsx";
-import { Register } from "./components/Register.tsx";
-import { Login } from "./components/Login.tsx";
-import { Book } from "./components/Book.tsx";
-import { Ride } from "./components/Ride.tsx";
+import { Welcome } from "./components/welcome.tsx";
+import { Home } from "./components/home.tsx";
+import { Register } from "./components/register.tsx";
+import { Login } from "./components/login.tsx";
+import { Book } from "./components/book.tsx";
+import { Ride } from "./components/ride.tsx";
 import { App } from "./App.tsx";
-import { UserLayout } from "./components/UserLayout.tsx";
+import { UserLayout } from "./components/user-layout.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

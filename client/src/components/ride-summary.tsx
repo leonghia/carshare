@@ -1,7 +1,7 @@
 import {
   RideSummaryTab,
   RideSummary as RideSummaryType,
-} from "@/types/rideSummary";
+} from "@/types/ride-summary";
 import {
   Calendar,
   Profile2User,

@@ -3,7 +3,7 @@ import { Marker as MarkerPrimitive } from "@goongmaps/goong-map-react";
 import { motion } from "motion/react";
 import { useMediaQuery } from "react-responsive";
 import { Flag, Location } from "iconsax-react";
-import { PlaceDetail } from "@/types/placeDetail";
+import { PlaceDetail } from "@/types/place-detail";
 import { cn } from "@/utils/styling";
 
 interface MarkerProps {

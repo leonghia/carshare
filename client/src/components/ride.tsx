@@ -6,19 +6,19 @@ import { DirectRight, Location, Flag } from "iconsax-react";
 import { StaticMap, WebMercatorViewport } from "@goongmaps/goong-map-react";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Marker } from "@/components/Marker";
+import { Marker } from "@/components/marker";
 import axios from "axios";
-import { MotionDirectionInfo } from "./DirectionInfo";
-import { RouteLine } from "./RouteLine";
+import { MotionDirectionInfo } from "./direction-info";
+import { RouteLine } from "./route-line";
 import useMeasure from "react-use-measure";
 import { useMediaQuery } from "react-responsive";
 import { cn } from "@/utils/styling";
 import { formatDate, timeFormatter } from "@/utils/datetime";
 import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY } from "@/config/keys";
 import { GGMAPS_URL } from "@/config/urls";
-import { PlaceDetail } from "@/types/placeDetail";
+import { PlaceDetail } from "@/types/place-detail";
 import { Route } from "@/types/route";
-import { MotionRideSummary } from "./RideSummary";
+import { MotionRideSummary } from "./ride-summary";
 import {
   DirectionRequestParams,
   DirectionServiceResponse,

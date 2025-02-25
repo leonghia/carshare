@@ -1,4 +1,4 @@
-import { GeocodedWaypoint } from "./geocodeWaypoint";
+import { GeocodedWaypoint } from "./geocode-waypoint";
 import { Route } from "./route";
 
 export interface DirectionServiceResponse {

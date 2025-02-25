@@ -1,4 +1,4 @@
-import { CarshareService } from "./carshareService";
+import { CarshareService } from "./carshare-service";
 
 export interface RideSummary {
   pickupAt: Date;

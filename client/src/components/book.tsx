@@ -36,10 +36,10 @@ import ReactMapGL, {
   WebMercatorViewport,
 } from "@goongmaps/goong-map-react";
 import { easeCubic } from "d3-ease";
-import { Marker } from "@/components/Marker";
-import { DirectionInfo, MotionDirectionInfo } from "./DirectionInfo";
-import { RouteLine } from "./RouteLine";
-import { PlaceDetail } from "@/types/placeDetail";
+import { Marker } from "@/components/marker";
+import { DirectionInfo, MotionDirectionInfo } from "./direction-info";
+import { RouteLine } from "./route-line";
+import { PlaceDetail } from "@/types/place-detail";
 import { Route } from "@/types/route";
 import { GGMAPS_API_KEY, GGMAPS_MAPTILES_KEY } from "@/config/keys";
 import { GGMAPS_URL } from "@/config/urls";
