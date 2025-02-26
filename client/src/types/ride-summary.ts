@@ -1,10 +1,10 @@
 import { CarshareService } from "./carshare-service";
 
 export interface RideSummary {
-  pickupAt: Date;
+  pickupTime: Date;
   service: CarshareService;
   numbersOfPassengers: number;
-  pickup: string;
+  pickupPlace: string;
   destination: string;
 }
 
