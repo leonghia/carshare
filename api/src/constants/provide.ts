@@ -1,0 +1,2 @@
+export const DATABASE_PROVIDE = 'DATA_SOURCE';
+export const RIDE_PROVIDE = 'RIDE_REPOSITORY';

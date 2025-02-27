@@ -1,4 +1,4 @@
-import { CarshareService } from 'src/utils/types/carshare-service';
+import { CarshareService } from 'src/constants/carshare-service';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
